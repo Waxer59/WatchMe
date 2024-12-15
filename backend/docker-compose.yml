@@ -3,12 +3,13 @@ version: "3"
 services:
   db:
     image: postgres:14.3
+    container_name: watchme-db
     restart: always
     ports:
       - "${DB_PORT}:5432"
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_DB: ${DB_NAME}
-    container_name: watchme-db
     volumes:
       - ./_postgres:/var/lib/postgresql/data
