@@ -1,0 +1,29 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the API documentation for the WatchMe application.",
+        "title": "WatchMe API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/api",
+    "paths": {
+        "/auth/github": {
+            "get": {
+                "description": "OAuth2 login with Github",
+                "tags": [
+                    "Auth"
+                ],
+                "responses": {}
+            }
+        },
+        "/auth/github/callback": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "responses": {}
+            }
+        }
+    }
+}

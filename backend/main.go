@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/gofiber/contrib/swagger"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
@@ -12,8 +11,14 @@ import (
 	"github.com/waxer59/watchMe/database"
 	"github.com/waxer59/watchMe/router"
 	"log"
+
+	_ "github.com/waxer59/watchMe/docs"
 )
 
+// @title			WatchMe API
+// @version		1.0
+// @description	This is the API documentation for the WatchMe application.
+// @BasePath		/api
 func main() {
 	app := fiber.New(fiber.Config{
 		AppName:       "Watchme Backend",
@@ -35,5 +40,4 @@ func middlewares(app *fiber.App) {
 	app.Use(encryptcookie.New(encryptcookie.Config{
 		Key: config.GetEnv("COOKIE_ENCRYPTION_KEY"),
 	}))
-	app.Use(swagger.New())
 }

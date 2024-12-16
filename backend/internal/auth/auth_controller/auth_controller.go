@@ -8,6 +8,7 @@ import (
 	"github.com/waxer59/watchMe/internal/auth/auth_service"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
+	"github.com/waxer59/watchMe/pkg/utils/jwt_utils"
 	"strconv"
 	"time"
 )
@@ -24,6 +25,10 @@ func New(router fiber.Router) {
 	auth.Get("/github/callback", githubCallback)
 }
 
+//	@title			Github Login
+//	@description	OAuth2 login with Github
+//	@tags			Auth
+//	@router			/auth/github [get]
 func githubLogin(c *fiber.Ctx) error {
 	url, err := auth_service.GithubLogin(c)
 
@@ -35,6 +40,9 @@ func githubLogin(c *fiber.Ctx) error {
 	return c.Redirect(url)
 }
 
+//	@title	Github Callback
+//	@tags	Auth
+//	@router	/auth/github/callback [get]
 func githubCallback(c *fiber.Ctx) error {
 	token, err := auth_service.GithubCallback(c)
 
@@ -63,7 +71,9 @@ func githubCallback(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	jwtToken, err := generateJwtToken(user.ID.String())
+	jwtToken, err := jwt_utils.GenerateJwtToken(jwt.MapClaims{
+		"id": user.ID,
+	})
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -80,18 +90,4 @@ func githubCallback(c *fiber.Ctx) error {
 	})
 
 	return c.Redirect(config.GetEnv("FRONTEND_URL"))
-}
-
-func generateJwtToken(id string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id": id,
-	})
-
-	tokenString, err := token.SignedString([]byte(config.GetEnv("JWT_SECRET_KEY")))
-
-	if err != nil {
-		return "", err
-	}
-
-	return tokenString, nil
 }

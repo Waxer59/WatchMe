@@ -26,7 +26,7 @@ const (
 var oauthConf = &oauth2.Config{
 	ClientID:     config.GetEnv("OAUTH_GITHUB_CLIENT_ID"),
 	ClientSecret: config.GetEnv("OAUTH_GITHUB_CLIENT_SECRET"),
-	RedirectURL:  config.GetEnv("OAUTH_REDIRECT_URL"),
+	RedirectURL:  config.GetEnv("OAUTH_GITHUB_REDIRECT_URL"),
 	Endpoint:     github.Endpoint,
 	Scopes:       []string{"user"},
 }
