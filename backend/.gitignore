@@ -9,6 +9,10 @@
 *.so
 *.dylib
 
+tmp/
+postgres/
+_postgres/
+
 .env
 
 # Test binary, built with `go test -c`
