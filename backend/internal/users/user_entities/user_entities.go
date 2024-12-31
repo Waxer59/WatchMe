@@ -13,6 +13,8 @@ type User struct {
 	Username        string    `gorm:"unique;not null" validate:"required"`
 	Avatar          string    `gorm:"not null"`
 	GithubAccountId *string
+	Following       []User `gorm:"many2many:user_follows;"`
+	Followers       []User `gorm:"many2many:user_follows;"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {

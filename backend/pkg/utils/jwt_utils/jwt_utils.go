@@ -16,3 +16,21 @@ func GenerateJwtToken(claims jwt.MapClaims) (string, error) {
 
 	return tokenString, nil
 }
+
+func ParseJwtToken(tokenString string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte(config.GetEnv("JWT_SECRET_KEY")), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+
+	if !ok {
+		return nil, err
+	}
+
+	return claims, nil
+}
