@@ -2,10 +2,11 @@ package database
 
 import (
 	"fmt"
+	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"log"
 	"strconv"
 
-	"github.com/Waxer59/WatchMe/config"
+	"github.com/waxer59/watchMe/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -26,12 +27,18 @@ func Connect() {
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		log.Fatal(err)
 		panic("Failed to connect to database")
 	}
 
 	fmt.Println("Connected to database")
 
-	DB.AutoMigrate()
+	err = DB.AutoMigrate(
+		&user_entities.User{},
+	)
+
+	if err != nil {
+		panic("Failed to migrate database")
+	}
+
 	fmt.Println("Migrated database")
 }
