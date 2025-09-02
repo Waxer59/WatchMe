@@ -1,36 +1,36 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@theme {
+  --color-background: #0d0d0d;
+  --color-foreground: #fafafa;
+  --color-card: #1a1a1a;
+  --color-card-foreground: #fafafa;
+  --color-popover: #1a1a1a;
+  --color-popover-foreground: #fafafa;
+  --color-primary: #fafafa;
+  --color-primary-foreground: #0d0d0d;
+  --color-secondary: #262626;
+  --color-secondary-foreground: #d4d4d4;
+  --color-muted: #1f1f1f;
+  --color-muted-foreground: #999999;
+  --color-accent: #333333;
+  --color-accent-foreground: #fafafa;
+  --color-destructive: #666666;
+  --color-destructive-foreground: #fafafa;
+  --color-border: #2e2e2e;
+  --color-input: #141414;
+  --color-ring: #fafafa;
+  --color-sidebar: #141414;
+  --color-sidebar-foreground: #d4d4d4;
+  --color-sidebar-primary: #fafafa;
+  --color-sidebar-primary-foreground: #0d0d0d;
+  --color-sidebar-accent: #262626;
+  --color-sidebar-accent-foreground: #d4d4d4;
+  --color-sidebar-border: #2e2e2e;
+  --color-sidebar-ring: #fafafa;
+}
 
 @layer base {
-  :root {
-    --background: #0d0d0d;
-    --foreground: #fafafa;
-    --card: #1a1a1a;
-    --card-foreground: #fafafa;
-    --popover: #1a1a1a;
-    --popover-foreground: #fafafa;
-    --primary: #fafafa;
-    --primary-foreground: #0d0d0d;
-    --secondary: #262626;
-    --secondary-foreground: #d4d4d4;
-    --muted: #1f1f1f;
-    --muted-foreground: #999999;
-    --accent: #333333;
-    --accent-foreground: #fafafa;
-    --destructive: #666666;
-    --destructive-foreground: #fafafa;
-    --border: #2e2e2e;
-    --input: #141414;
-    --ring: #fafafa;
-    --sidebar: #141414;
-    --sidebar-foreground: #d4d4d4;
-    --sidebar-primary: #fafafa;
-    --sidebar-primary-foreground: #0d0d0d;
-    --sidebar-accent: #262626;
-    --sidebar-accent-foreground: #d4d4d4;
-    --sidebar-border: #2e2e2e;
-    --sidebar-ring: #fafafa;
-  }
-
   html,
   body {
     width: 100%;
