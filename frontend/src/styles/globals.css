@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #141517;
+    --foreground: #232628;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
+}
