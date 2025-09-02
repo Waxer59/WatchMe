@@ -1,9 +1,11 @@
-import { Avatar, Button } from "@chakra-ui/react";
+import { Avatar, Button } from '@chakra-ui/react'
 
 export function UserAvatar() {
   return (
     <Button variant="plain" padding="unset">
-      <Avatar size="sm" name="Waxer59" />
+      <Avatar.Root>
+        <Avatar.Fallback name="Waxer59" className='shadow-xl' />
+      </Avatar.Root>
     </Button>
   )
 }
