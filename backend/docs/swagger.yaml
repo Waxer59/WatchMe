@@ -1,0 +1,19 @@
+basePath: /api
+info:
+  contact: {}
+  description: This is the API documentation for the WatchMe application.
+  title: WatchMe API
+  version: "1.0"
+paths:
+  /auth/github:
+    get:
+      description: OAuth2 login with Github
+      responses: {}
+      tags:
+      - Auth
+  /auth/github/callback:
+    get:
+      responses: {}
+      tags:
+      - Auth
+swagger: "2.0"
