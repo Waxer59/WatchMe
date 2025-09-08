@@ -26,3 +26,5 @@ _postgres/
 
 # Go workspace file
 go.work
+
+_postgres

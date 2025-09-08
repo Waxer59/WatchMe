@@ -1,3 +1,60 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@supports selector(::-webkit-scrollbar) {
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400;
+    border-radius: 5px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+}
+
+@theme {
+  --color-background: #0d0d0d;
+  --color-foreground: #fafafa;
+  --color-card: #1a1a1a;
+  --color-card-foreground: #fafafa;
+  --color-popover: #1a1a1a;
+  --color-popover-foreground: #fafafa;
+  --color-primary: #fafafa;
+  --color-primary-foreground: #0d0d0d;
+  --color-secondary: #262626;
+  --color-secondary-foreground: #d4d4d4;
+  --color-muted: #1f1f1f;
+  --color-muted-foreground: #999999;
+  --color-accent: #333333;
+  --color-accent-foreground: #fafafa;
+  --color-destructive: #666666;
+  --color-destructive-foreground: #fafafa;
+  --color-border: #2e2e2e;
+  --color-input: #141414;
+  --color-ring: #fafafa;
+  --color-sidebar: #141414;
+  --color-sidebar-foreground: #d4d4d4;
+  --color-sidebar-primary: #fafafa;
+  --color-sidebar-primary-foreground: #0d0d0d;
+  --color-sidebar-accent: #262626;
+  --color-sidebar-accent-foreground: #d4d4d4;
+  --color-sidebar-border: #2e2e2e;
+  --color-sidebar-ring: #fafafa;
+}
+
+@layer base {
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
+}
