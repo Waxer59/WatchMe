@@ -13,8 +13,14 @@ type User struct {
 	Username        string    `gorm:"unique;not null" validate:"required"`
 	Avatar          string    `gorm:"not null"`
 	GithubAccountId *string
-	Following       []User `gorm:"many2many:user_follows;"`
-	Followers       []User `gorm:"many2many:user_follows;"`
+	StreamKeys      []StreamKey `gorm:"many2many:user_stream_keys;"`
+	Following       []User      `gorm:"many2many:user_follows;"`
+	Followers       []User      `gorm:"many2many:user_follows;"`
+}
+
+type StreamKey struct {
+	UserID uuid.UUID `gorm:"type:uuid;primary_key"`
+	Key    string    `gorm:"unique;not null" validate:"required"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {

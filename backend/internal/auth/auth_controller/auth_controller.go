@@ -2,6 +2,9 @@ package auth_controller
 
 import (
 	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/waxer59/watchMe/config"
@@ -9,8 +12,6 @@ import (
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
 	"github.com/waxer59/watchMe/pkg/utils/jwt_utils"
-	"strconv"
-	"time"
 )
 
 const (
@@ -23,12 +24,13 @@ func New(router fiber.Router) {
 
 	auth.Get("/github", githubLogin)
 	auth.Get("/github/callback", githubCallback)
+	auth.Post("/logout", logout)
 }
 
-//	@title			Github Login
-//	@description	OAuth2 login with Github
-//	@tags			Auth
-//	@router			/auth/github [get]
+// @title			Github Login
+// @description	OAuth2 login with Github
+// @tags			Auth
+// @router			/auth/github [get]
 func githubLogin(c *fiber.Ctx) error {
 	url, err := auth_service.GithubLogin(c)
 
@@ -40,9 +42,9 @@ func githubLogin(c *fiber.Ctx) error {
 	return c.Redirect(url)
 }
 
-//	@title	Github Callback
-//	@tags	Auth
-//	@router	/auth/github/callback [get]
+// @title	Github Callback
+// @tags	Auth
+// @router	/auth/github/callback [get]
 func githubCallback(c *fiber.Ctx) error {
 	token, err := auth_service.GithubCallback(c)
 
@@ -86,8 +88,24 @@ func githubCallback(c *fiber.Ctx) error {
 		HTTPOnly: true,
 		Secure:   true,
 		Expires:  time.Now().Add(AuthExpiration * time.Second),
-		SameSite: fiber.CookieSameSiteStrictMode,
+		SameSite: fiber.CookieSameSiteLaxMode,
 	})
 
 	return c.Redirect(config.GetEnv("FRONTEND_URL"))
+}
+
+// @title	Logout
+// @tags	Auth
+// @router	/auth/logout [post]
+func logout(c *fiber.Ctx) error {
+	c.Cookie(&fiber.Cookie{
+		Name:     CookieAuth,
+		Value:    "",
+		HTTPOnly: true,
+		Secure:   true,
+		Expires:  time.Now().Add(-1 * AuthExpiration * time.Second),
+		SameSite: fiber.CookieSameSiteLaxMode,
+	})
+
+	return c.SendStatus(fiber.StatusOK)
 }

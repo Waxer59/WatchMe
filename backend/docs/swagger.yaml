@@ -16,4 +16,15 @@ paths:
       responses: {}
       tags:
       - Auth
+  /auth/logout:
+    post:
+      responses: {}
+      tags:
+      - Auth
+  /streams/generate-key:
+    get:
+      description: Generate a stream key for a live stream
+      responses: {}
+      tags:
+      - Streams
 swagger: "2.0"

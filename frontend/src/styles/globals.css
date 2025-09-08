@@ -4,6 +4,10 @@
   @apply rounded-lg;
 }
 
+[data-highlighted] {
+  background: inherit;
+}
+
 @supports selector(::-webkit-scrollbar) {
 
   /* width */

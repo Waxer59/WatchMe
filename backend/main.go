@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
@@ -10,7 +12,6 @@ import (
 	"github.com/waxer59/watchMe/config"
 	"github.com/waxer59/watchMe/database"
 	"github.com/waxer59/watchMe/router"
-	"log"
 
 	_ "github.com/waxer59/watchMe/docs"
 )
@@ -34,7 +35,11 @@ func main() {
 }
 
 func middlewares(app *fiber.App) {
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     config.GetEnv("FRONTEND_URL"),
+		AllowCredentials: true,
+		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS",
+	}))
 	app.Use(logger.New())
 	app.Use(helmet.New())
 	app.Use(encryptcookie.New(encryptcookie.Config{

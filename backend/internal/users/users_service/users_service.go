@@ -33,3 +33,17 @@ func CreateGithubUser(user *user_entities.User) (*user_entities.User, error) {
 
 	return user, nil
 }
+
+func GetUserById(id string) (*user_entities.User, error) {
+	db := database.DB
+
+	var user user_entities.User
+
+	err := db.Find(&user, "id = ?", id).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

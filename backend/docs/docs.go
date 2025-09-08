@@ -31,6 +31,23 @@ const docTemplate = `{
                 ],
                 "responses": {}
             }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "responses": {}
+            }
+        },
+        "/streams/generate-key": {
+            "get": {
+                "description": "Generate a stream key for a live stream",
+                "tags": [
+                    "Streams"
+                ],
+                "responses": {}
+            }
         }
     }
 }`
