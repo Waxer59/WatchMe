@@ -1,2 +1,2 @@
 # WatchMe
-<img src="./public/watchme-og.png" width="800px" />
+<img src="./docs/watchme-og.png" width="800px" />
