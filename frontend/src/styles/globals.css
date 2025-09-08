@@ -1,5 +1,25 @@
 @import 'tailwindcss';
 
+@supports selector(::-webkit-scrollbar) {
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400;
+    border-radius: 5px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+}
+
 @theme {
   --color-background: #0d0d0d;
   --color-foreground: #fafafa;
@@ -31,6 +51,7 @@
 }
 
 @layer base {
+
   html,
   body {
     width: 100%;

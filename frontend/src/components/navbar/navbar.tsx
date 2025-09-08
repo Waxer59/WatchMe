@@ -1,6 +1,6 @@
 import { Box, Button } from '@chakra-ui/react'
 import { SearchInput } from './search-input'
-import { UserAvatar } from './user-avatar'
+import { UserAvatar } from '../user-avatar'
 import NextLink from 'next/link'
 
 export function Navbar() {

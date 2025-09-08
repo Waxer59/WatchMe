@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Box } from '@chakra-ui/react'
-import { Navbar } from '@/components/navbar'
-import { Sidebar } from '@/components/sidebar'
+import { Navbar } from '@/components/navbar/navbar'
+import { Sidebar } from '@/components/sidebar/sidebar'
 import { Provider } from '@/components/ui/provider'
 import '../styles/globals.css'
 
