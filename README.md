@@ -3,6 +3,37 @@
 <img src="./docs/watchme-og.png" width="800px" />
 
 ## Frontend
+The frontend is written in React and uses the package [Next.js](https://nextjs.org/) for the frontend framework.
+
+### Setup
+
+To set up the frontend, follow these steps:
+
+1. Clone the repository.
+ ```bash
+ git clone https://github.com/Waxer59/WatchMe.git
+ ```
+2. Change the working directory to the frontend directory.
+ ```bash
+ cd WatchMe/frontend
+ ```
+3. Install the dependencies.
+ ```bash
+ pnpm install
+ ```
+4. Run the development server.
+ ```bash
+ pnpm dev
+ ```
+
+### Dependencies
+The frontend uses the following dependencies:
+
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Chakra UI](https://chakra-ui.com/)
+- [Lucide](https://lucide.dev/)
+- [Plyr](https://plyr.com/)
 
 ## Backend
 The backend is written in Go and uses the package [fiber](https://github.com/gofiber/fiber) for the backend framework.
@@ -36,7 +67,11 @@ To set up the backend, follow these steps:
 * The `MUX_ACCESS_TOKEN` and `MUX_SECRET_KEY` are the Mux credentials, this services is being used for live streaming
 > [!TIP]
 > To generate a random string, you can use the command `openssl rand -base64 32`.
-5. Run the backend.
+5. Run local database.
+ ```bash
+ docker-compose up -d
+ ```
+6. Run the backend.
  ```bash
  go run main.go
  
