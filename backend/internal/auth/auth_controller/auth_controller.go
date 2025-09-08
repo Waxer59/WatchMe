@@ -3,6 +3,7 @@ package auth_controller
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -63,7 +64,7 @@ func githubCallback(c *fiber.Ctx) error {
 	profileIdString := strconv.Itoa(profile.ID)
 
 	user, err := users_service.CreateGithubUser(&user_entities.User{
-		Username:        profile.Login,
+		Username:        strings.ToLower(profile.Login),
 		Avatar:          profile.AvatarURL,
 		GithubAccountId: &profileIdString,
 	})
