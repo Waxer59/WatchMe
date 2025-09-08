@@ -35,7 +35,7 @@ export default function RootLayout({
               flexDirection="column"
               width="full"
               padding="4"
-              className="bg-gray-900">
+              className="bg-gray-900 p-6">
               {children}
             </Box>
           </Box>

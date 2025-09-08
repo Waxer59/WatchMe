@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+.plyr {
+  @apply rounded-lg;
+}
+
 @supports selector(::-webkit-scrollbar) {
 
   /* width */
