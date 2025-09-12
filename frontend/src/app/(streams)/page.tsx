@@ -1,4 +1,4 @@
-import { HomeChannel } from '@/components/home/home-channel'
+import { VideoOffIcon } from 'lucide-react'
 
 export default function Home() {
   return (
@@ -9,7 +9,11 @@ export default function Home() {
           Discover amazing live content from creators around the world
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div className="flex flex-col items-center justify-center gap-6 rounded-xl border py-10 shadow-sm bg-gray-800 border-gray-700 overflow-hidden group">
+        <VideoOffIcon className="w-12 h-12 text-gray-400" />
+        <p>Looks like no-one is streaming right now</p>
+      </div>
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <HomeChannel
           title="Primer directo de SCHEDULE 1 (Haciendo MEDICINAS y DINERO)"
           thumbnail="https://static-cdn.jtvnw.net/previews-ttv/live_user_dakrox7-440x248.jpg"
@@ -18,7 +22,7 @@ export default function Home() {
           topic="Art"
           count={0}
         />
-      </div>
+      </div> */}
     </>
   )
 }

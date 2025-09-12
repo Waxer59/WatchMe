@@ -3,9 +3,11 @@
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { useAccountStore } from '@/store/account'
 import { Avatar, Button, Menu } from '@chakra-ui/react'
-import { LogOutIcon, SettingsIcon } from 'lucide-react'
+import { LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react'
+import Link from 'next/link'
 
 export function UserAvatar() {
+  const username = useAccountStore((state) => state.username)
   const clearAccount = useAccountStore((state) => state.clear)
 
   const handleLogout = async () => {
@@ -20,23 +22,36 @@ export function UserAvatar() {
   return (
     <Menu.Root>
       <Menu.Trigger asChild>
-        <Button variant="plain">
+        <Button variant="plain" className="outline-none">
           <Avatar.Root colorPalette="gray">
             <Avatar.Fallback name="Waxer59" />
           </Avatar.Root>
         </Button>
       </Menu.Trigger>
       <Menu.Positioner>
-        <Menu.Content className="rounded-md! bg-gray-800! border-gray-700! border">
+        <Menu.Content
+          className={'rounded-md bg-gray-800 border-gray-700 border'}>
           <Menu.Item
-            value="logout"
-            className="cursor-pointer! hover:bg-gray-700! transition-all!">
-            <SettingsIcon size={18} />
-            Settings
+            value="me"
+            className="cursor-pointer hover:bg-gray-700 transition-all"
+            asChild>
+            <Link href={`/${username}`}>
+              <UserIcon size={18} />
+              My Channel
+            </Link>
           </Menu.Item>
           <Menu.Item
             value="logout"
-            className="cursor-pointer! hover:bg-gray-700! transition-all!"
+            className="cursor-pointer hover:bg-gray-700 transition-all"
+            asChild>
+            <Link href="/settings">
+              <SettingsIcon size={18} />
+              Settings
+            </Link>
+          </Menu.Item>
+          <Menu.Item
+            value="logout"
+            className="cursor-pointer hover:bg-gray-700 transition-all"
             onClick={handleLogout}>
             <LogOutIcon size={18} />
             Logout

@@ -6,7 +6,7 @@ import (
 )
 
 func New(router fiber.Router) {
-	user := router.Group("/user")
+	user := router.Group("/users")
 
 	user.Use(router_middlewares.AuthMiddleware)
 	user.Get("/", GetUser)

@@ -30,6 +30,7 @@ To set up the frontend, follow these steps:
 The frontend uses the following dependencies:
 
 - [Next.js](https://nextjs.org/)
+- [Zustand](https://github.com/pmndrs/zustand)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Chakra UI](https://chakra-ui.com/)
 - [Lucide](https://lucide.dev/)
@@ -92,6 +93,7 @@ The backend uses the following dependencies:
 - [gorm](https://github.com/go-gorm/gorm)
 - [gorm/postgres](https://github.com/go-gorm/postgres)
 - [air](https://github.com/air-verse/air)
+- [Mux](https://www.mux.com/)
 
 ### Swagger
 
@@ -110,3 +112,21 @@ To format the documentation, run the following command:
 ```bash
 swag fmt
 ```
+
+# Ngrok
+
+When using de backend its necessary to recieve webhooks from Mux. To do this you can use [ngrok](https://ngrok.com/).
+
+## Installation
+
+To install ngrok refer to the [installation guide](https://ngrok.com/docs/getting-started/).
+
+## Usage
+
+To start ngrok, run the following command:
+
+```bash
+ngrok http <backend-port>
+```
+
+This will return the ngrok url, with this url you can recieve webhooks from Mux after configuring the webhooks in the Mux dashboard.

@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import 'tailwindcss' important;
 
 .plyr {
   @apply rounded-lg;
@@ -9,7 +9,6 @@
 }
 
 @supports selector(::-webkit-scrollbar) {
-
   /* width */
   ::-webkit-scrollbar {
     width: 6px;
@@ -59,7 +58,6 @@
 }
 
 @layer base {
-
   html,
   body {
     width: 100%;

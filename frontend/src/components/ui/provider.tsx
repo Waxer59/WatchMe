@@ -1,21 +1,10 @@
 'use client'
 
-import {
-  ChakraProvider,
-  createSystem,
-  defaultConfig,
-  defineConfig
-} from '@chakra-ui/react'
+import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
 import { ColorModeProvider, type ColorModeProviderProps } from './color-mode'
 import { useEffect } from 'react'
 import { useAccountStore } from '@/store/account'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
-
-const config = defineConfig({
-  preflight: false
-})
-
-const system = createSystem(defaultConfig, config)
 
 export function Provider(props: ColorModeProviderProps) {
   const setUsername = useAccountStore((state) => state.setUsername)
@@ -25,7 +14,7 @@ export function Provider(props: ColorModeProviderProps) {
 
   useEffect(() => {
     const getUserData = async () => {
-      const response = await fetch(getPublicEnv().BACKEND_URL + '/user', {
+      const response = await fetch(getPublicEnv().BACKEND_URL + '/users', {
         credentials: 'include'
       })
       const data = await response.json()
@@ -39,7 +28,7 @@ export function Provider(props: ColorModeProviderProps) {
       if (event.key === 'isLoggedIn') {
         if (event.newValue === 'true') {
           window.location.reload()
-        }else{
+        } else {
           clearAccount()
         }
       }
@@ -49,7 +38,7 @@ export function Provider(props: ColorModeProviderProps) {
   }, [])
 
   return (
-    <ChakraProvider value={system}>
+    <ChakraProvider value={defaultSystem}>
       <ColorModeProvider {...props} />
     </ChakraProvider>
   )

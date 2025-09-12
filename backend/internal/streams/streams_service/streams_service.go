@@ -11,7 +11,7 @@ var muxClient = muxgo.NewAPIClient(
 	),
 )
 
-func GenerateStreamKey(channelId string) (string, error) {
+func GenerateStreamKey(channelId string) (muxgo.LiveStreamResponse, error) {
 	streamParams, err := muxClient.LiveStreamsApi.CreateLiveStream(muxgo.CreateLiveStreamRequest{
 		PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC},
 		LatencyMode:    "low",
@@ -20,5 +20,11 @@ func GenerateStreamKey(channelId string) (string, error) {
 		},
 	})
 
-	return streamParams.Data.StreamKey, err
+	return streamParams, err
+}
+
+func DeleteStreamKey(streamKeyId string) error {
+	err := muxClient.LiveStreamsApi.DeleteLiveStream(streamKeyId)
+
+	return err
 }

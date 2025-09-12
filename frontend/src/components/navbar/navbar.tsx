@@ -3,7 +3,6 @@
 import { Box, Button, Dialog } from '@chakra-ui/react'
 import { SearchInput } from './search-input'
 import { UserAvatar } from './user-avatar'
-import NextLink from 'next/link'
 import { GithubIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useAccountStore } from '@/store/account'
@@ -21,21 +20,21 @@ export function Navbar() {
       justifyContent="space-between"
       padding="4">
       <Box as="div" display="flex" alignItems="center" gap="12">
-        <NextLink href="/" className="text-2xl uppercase">
-          <h2>
+        <Link href="/" className="text-2xl uppercase">
+          <h1>
             <strong>WATCHME</strong>
-          </h2>
-        </NextLink>
-        <NextLink
+          </h1>
+        </Link>
+        <Link
           href="/following"
           className="rounded-md text-sm hover:text-white hover:bg-gray-700 transition-all h-9 px-4 py-2">
           Following
-        </NextLink>
-        <NextLink
+        </Link>
+        <Link
           href="/discover"
           className="rounded-md text-sm hover:text-white hover:bg-gray-700 transition-all h-9 px-4 py-2">
           Discover
-        </NextLink>
+        </Link>
       </Box>
       <SearchInput />
       <Box as="div" display="flex" alignItems="center" gap="2">
@@ -50,7 +49,7 @@ export function Navbar() {
             </Dialog.Trigger>
             <Dialog.Backdrop />
             <Dialog.Positioner>
-              <Dialog.Content className="bg-gray-900!">
+              <Dialog.Content className="bg-gray-800 border rounded-lg border-gray-700">
                 <Dialog.CloseTrigger />
                 <Dialog.Header>
                   <Dialog.Title>Log in</Dialog.Title>

@@ -2,9 +2,11 @@ package database
 
 import (
 	"fmt"
-	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"log"
 	"strconv"
+
+	"github.com/waxer59/watchMe/internal/streams/streams_entities"
+	"github.com/waxer59/watchMe/internal/users/user_entities"
 
 	"github.com/waxer59/watchMe/config"
 	"gorm.io/driver/postgres"
@@ -34,6 +36,8 @@ func Connect() {
 
 	err = DB.AutoMigrate(
 		&user_entities.User{},
+		&user_entities.StreamKey{},
+		&streams_entities.Stream{},
 	)
 
 	if err != nil {
