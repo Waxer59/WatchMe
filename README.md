@@ -34,7 +34,6 @@ The frontend uses the following dependencies:
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Chakra UI](https://chakra-ui.com/)
 - [Lucide](https://lucide.dev/)
-- [Plyr](https://plyr.com/)
 
 ## Backend
 The backend is written in Go and uses the package [fiber](https://github.com/gofiber/fiber) for the backend framework.
