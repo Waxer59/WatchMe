@@ -25,16 +25,6 @@ export function Navbar() {
             <strong>WATCHME</strong>
           </h1>
         </Link>
-        <Link
-          href="/following"
-          className="rounded-md text-sm hover:text-white hover:bg-gray-700 transition-all h-9 px-4 py-2">
-          Following
-        </Link>
-        <Link
-          href="/discover"
-          className="rounded-md text-sm hover:text-white hover:bg-gray-700 transition-all h-9 px-4 py-2">
-          Discover
-        </Link>
       </Box>
       <SearchInput />
       <Box as="div" display="flex" alignItems="center" gap="2">

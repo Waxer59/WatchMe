@@ -98,7 +98,7 @@ func GetLiveStreamByUsername(username string) (*streams_entities.Stream, error) 
 
 	var stream streams_entities.Stream
 
-	user := users_service.GetUserByUsername(username)
+	user := users_service.FindUserByUsername(username)
 
 	err := db.Find(&stream, "user_id = ? and is_completed = ?", user.ID, false).Error
 

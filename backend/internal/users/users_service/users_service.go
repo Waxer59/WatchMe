@@ -1,10 +1,21 @@
 package users_service
 
 import (
+	"errors"
+	"strings"
+
 	"github.com/google/uuid"
+	"github.com/waxer59/watchMe/config"
 	"github.com/waxer59/watchMe/database"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 )
+
+type UpdateUser struct {
+	Username                  string `json:"username"`
+	Avatar                    string `json:"avatar"`
+	IsStreaming               bool
+	IsUpdatingStreamingStatus bool
+}
 
 func CreateGithubUser(user *user_entities.User) (*user_entities.User, error) {
 	db := database.DB
@@ -44,14 +55,39 @@ func GetUserById(id string) (*user_entities.User, error) {
 	return &user, nil
 }
 
-func UpdateUserById(id string, user user_entities.User) error {
+func UpdateUserById(id string, updateUser UpdateUser) error {
 	db := database.DB
 
-	err := db.Model(&user_entities.User{}).Where("id = ?", id).Updates(map[string]interface{}{
-		"username":     user.Username,
-		"avatar":       user.Avatar,
-		"is_streaming": user.IsStreaming,
-	}).Error
+	if updateUser.Username != "" {
+		isUsernameTaken := FindUserByUsername(updateUser.Username)
+
+		if isUsernameTaken != nil {
+			return errors.New("username already taken")
+		}
+
+		realUsernameSize := len(strings.TrimSpace(updateUser.Username))
+		isUsernameValid := realUsernameSize >= config.MIN_USERNAME_LENGTH && realUsernameSize <= config.MAX_USERNAME_LENGTH
+
+		if !isUsernameValid {
+			return errors.New("username must be between 3 and 20 characters")
+		}
+	}
+
+	updateFields := map[string]interface{}{}
+
+	if updateUser.Username != "" {
+		updateFields["username"] = updateUser.Username
+	}
+
+	if updateUser.Avatar != "" {
+		updateFields["avatar"] = updateUser.Avatar
+	}
+
+	if updateUser.IsUpdatingStreamingStatus {
+		updateFields["is_streaming"] = updateUser.IsStreaming
+	}
+
+	err := db.Model(&user_entities.User{}).Where("id = ?", id).Updates(updateFields).Error
 
 	if err != nil {
 		return err
@@ -146,14 +182,14 @@ func FindAllStreamKeysByUserId(userId uuid.UUID) ([]user_entities.StreamKey, err
 	return streamKeys, nil
 }
 
-func GetUserByUsername(username string) *user_entities.User {
+func FindUserByUsername(username string) *user_entities.User {
 	db := database.DB
 
 	var user user_entities.User
 
 	err := db.Find(&user, "username = ?", username).Error
 
-	if err != nil {
+	if err != nil || user.ID == uuid.Nil {
 		return nil
 	}
 

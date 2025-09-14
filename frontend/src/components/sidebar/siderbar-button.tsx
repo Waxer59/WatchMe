@@ -1,11 +1,14 @@
 "use client"
 
+import React from "react"
+
 interface SidebarButtonProps {
   children: React.ReactNode
-  as?: 'button' | 'a'
+  as?: 'button' | 'a' | React.ElementType
   className?: string
   isActive?: boolean
   icon: React.ReactNode
+  [key: string]: unknown
 }
 
 export const SidebarButton: React.FC<SidebarButtonProps> = ({

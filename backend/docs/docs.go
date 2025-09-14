@@ -40,11 +40,38 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/streams/:username": {
+            "get": {
+                "description": "Get the live stream for the user",
+                "tags": [
+                    "Streams"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username of the user",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/streams/delete-key/:streamKeyId": {
             "delete": {
                 "description": "Delete a stream key for a live stream",
                 "tags": [
                     "Streams"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Stream key id",
+                        "name": "streamKeyId",
+                        "in": "path",
+                        "required": true
+                    }
                 ],
                 "responses": {}
             }
@@ -74,6 +101,13 @@ const docTemplate = `{
                     "Users"
                 ],
                 "responses": {}
+            },
+            "patch": {
+                "description": "Update a user's information",
+                "tags": [
+                    "Users"
+                ],
+                "responses": {}
             }
         },
         "/users/follow/:username": {
@@ -81,6 +115,15 @@ const docTemplate = `{
                 "description": "Follow a user",
                 "tags": [
                     "Users"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username of the user",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
                 ],
                 "responses": {}
             }
@@ -90,6 +133,15 @@ const docTemplate = `{
                 "description": "Unfollow a user",
                 "tags": [
                     "Users"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username of the user",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
                 ],
                 "responses": {}
             }

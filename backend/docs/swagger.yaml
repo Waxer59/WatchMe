@@ -21,9 +21,27 @@ paths:
       responses: {}
       tags:
       - Auth
+  /streams/:username:
+    get:
+      description: Get the live stream for the user
+      parameters:
+      - description: Username of the user
+        in: path
+        name: username
+        required: true
+        type: string
+      responses: {}
+      tags:
+      - Streams
   /streams/delete-key/:streamKeyId:
     delete:
       description: Delete a stream key for a live stream
+      parameters:
+      - description: Stream key id
+        in: path
+        name: streamKeyId
+        required: true
+        type: string
       responses: {}
       tags:
       - Streams
@@ -45,15 +63,32 @@ paths:
       responses: {}
       tags:
       - Users
+    patch:
+      description: Update a user's information
+      responses: {}
+      tags:
+      - Users
   /users/follow/:username:
     post:
       description: Follow a user
+      parameters:
+      - description: Username of the user
+        in: path
+        name: username
+        required: true
+        type: string
       responses: {}
       tags:
       - Users
   /users/unfollow/:username:
     post:
       description: Unfollow a user
+      parameters:
+      - description: Username of the user
+        in: path
+        name: username
+        required: true
+        type: string
       responses: {}
       tags:
       - Users

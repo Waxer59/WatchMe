@@ -9,3 +9,6 @@ var FiberSession = session.New(session.Config{
 	CookieSecure:   true,
 	KeyLookup:      "cookie:watchMe_session_id",
 })
+
+const MIN_USERNAME_LENGTH = 3
+const MAX_USERNAME_LENGTH = 20

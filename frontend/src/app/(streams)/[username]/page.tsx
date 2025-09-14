@@ -1,7 +1,8 @@
 'use client'
 
+import { NoStreaming } from '@/components/streamer/no-streaming'
+import { Streaming } from '@/components/streamer/streaming'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
-import MuxPlayer from '@mux/mux-player-react'
 import { useEffect, useState } from 'react'
 
 interface Stream {
@@ -28,15 +29,10 @@ export default function User({ params }: { params: { username: string } }) {
 
   return (
     <div className="rounded-lg w-full overflow-hidden">
-      {streamData && (
-        <MuxPlayer
-          playbackId={streamData.playback_id}
-          accentColor="#1e2939"
-          metadata={{
-            videoTitle: 'Test VOD',
-            ViewerUserId: 'user-id-007'
-          }}
-        />
+      {streamData ? (
+        <Streaming playbackId={streamData.playback_id} />
+      ) : (
+        <NoStreaming />
       )}
     </div>
   )

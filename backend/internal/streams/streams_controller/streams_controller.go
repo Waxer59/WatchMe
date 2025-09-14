@@ -43,10 +43,11 @@ func generateStreamKey(c *fiber.Ctx) error {
 	})
 }
 
-// @title			Delete Stream Key
+// @title	Delete Stream Key
 // @description	Delete a stream key for a live stream
-// @tags			Streams
-// @router			/streams/delete-key/:streamKeyId [delete]
+// @tags Streams
+// @router /streams/delete-key/:streamKeyId [delete]
+// @param	streamKeyId path string	true	"Stream key id"
 func deleteStreamKey(c *fiber.Ctx) error {
 	streamKeyId := c.Params("streamKeyId")
 
@@ -93,6 +94,7 @@ func getStreamFeed(c *fiber.Ctx) error {
 // @description	Get the live stream for the user
 // @tags			Streams
 // @router			/streams/:username [get]
+// @param			username	path string	true	"Username of the user"
 func getLiveStream(c *fiber.Ctx) error {
 	username := c.Params("username")
 

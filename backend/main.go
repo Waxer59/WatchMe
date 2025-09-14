@@ -17,7 +17,7 @@ import (
 	_ "github.com/waxer59/watchMe/docs"
 )
 
-// @title			WatchMe API
+// @Title			WatchMe API
 // @version		1.0
 // @description	This is the API documentation for the WatchMe application.
 // @BasePath		/api
@@ -49,7 +49,7 @@ func middlewares(app *fiber.App) {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     os.Getenv("FRONTEND_URL"),
 		AllowCredentials: true,
-		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS",
+		AllowMethods:     "GET, POST, PUT, PATCH, DELETE, OPTIONS",
 	}))
 	app.Use(logger.New())
 	app.Use(helmet.New())

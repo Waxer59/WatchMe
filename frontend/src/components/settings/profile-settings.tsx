@@ -11,16 +11,89 @@ import { PasswordInput } from '../ui/password-input'
 import { useState } from 'react'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { toaster } from '../ui/toaster'
+import { MAX_USERNAME_LENGTH, MIN_USERNAME_LENGTH } from '@/constants'
 
 export const ProfileSettings = () => {
   const [isGeneratingNewKey, setIsGeneratingNewKey] = useState<boolean>(false)
   const username = useAccountStore((state) => state.username)
+  const avatar = useAccountStore((state) => state.avatar)
   const stream_keys = useAccountStore((state) => state.stream_keys)
+  const setAvatar = useAccountStore((state) => state.setAvatar)
+  const setUsername = useAccountStore((state) => state.setUsername)
   const addStreamKey = useAccountStore((state) => state.addStreamKey)
   const removeStreamKey = useAccountStore((state) => state.removeStreamKey)
 
-  const handleSaveProfileSettings = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSaveProfileSettings = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault()
+
+    const target = e.target as HTMLFormElement
+    const formData = new FormData(e.target as HTMLFormElement)
+
+    const newUsername = formData.get('username') as string
+    const newAvatar = formData.get('avatar') as string
+
+    if (newUsername === username) {
+      toaster.error({
+        title: 'Error',
+        description: 'Your username cannot be the same as your current username'
+      })
+    }
+
+    if (
+      (newUsername.length < MIN_USERNAME_LENGTH ||
+        newUsername.length > MAX_USERNAME_LENGTH) &&
+      newUsername !== ''
+    ) {
+      toaster.error({
+        title: 'Error',
+        description: 'Username must be between 3 and 20 characters'
+      })
+      return
+    }
+
+    try {
+      const response = await fetch(`${getPublicEnv().BACKEND_URL}/users`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: newUsername || undefined,
+          avatar: newAvatar || undefined
+        })
+      })
+
+      if (response.status === 200) {
+        toaster.success({
+          title: 'Success',
+          description: 'Profile updated successfully'
+        })
+
+        if (newUsername) {
+          setUsername(newUsername)
+        }
+
+        if (newAvatar) {
+          setAvatar(newAvatar)
+        }
+      } else {
+        toaster.error({
+          title: 'Error',
+          description: 'Something went wrong while updating the username'
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      toaster.error({
+        title: 'Error',
+        description: 'Something went wrong while updating the username'
+      })
+    }
+
+    target.reset()
   }
 
   const handleDeleteStreamKey = async (id: string) => {
@@ -85,7 +158,19 @@ export const ProfileSettings = () => {
         <div className="flex items-center gap-4">
           <Field.Root>
             <Field.Label>Username</Field.Label>
-            <Input placeholder={username} className="border-gray-700" />
+            <Input
+              name="username"
+              placeholder={username}
+              className="border-gray-700"
+            />
+          </Field.Root>
+          <Field.Root>
+            <Field.Label>Avatar</Field.Label>
+            <Input
+              name="avatar"
+              placeholder={avatar}
+              className="border-gray-700"
+            />
           </Field.Root>
         </div>
         <button
