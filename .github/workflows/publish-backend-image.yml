@@ -15,9 +15,6 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Change backend directory
-        run: cd backend
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -33,7 +30,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: backend
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
