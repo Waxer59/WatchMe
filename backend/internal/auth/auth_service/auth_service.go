@@ -4,13 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/waxer59/watchMe/config"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
-	"io"
-	"net/http"
 )
 
 type GithubUser struct {
@@ -24,9 +26,9 @@ const (
 )
 
 var oauthConf = &oauth2.Config{
-	ClientID:     config.GetEnv("OAUTH_GITHUB_CLIENT_ID"),
-	ClientSecret: config.GetEnv("OAUTH_GITHUB_CLIENT_SECRET"),
-	RedirectURL:  config.GetEnv("OAUTH_GITHUB_REDIRECT_URL"),
+	ClientID:     os.Getenv("OAUTH_GITHUB_CLIENT_ID"),
+	ClientSecret: os.Getenv("OAUTH_GITHUB_CLIENT_SECRET"),
+	RedirectURL:  os.Getenv("OAUTH_GITHUB_REDIRECT_URL"),
 	Endpoint:     github.Endpoint,
 	Scopes:       []string{"user"},
 }

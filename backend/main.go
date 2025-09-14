@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/waxer59/watchMe/config"
+	"github.com/joho/godotenv"
 	"github.com/waxer59/watchMe/database"
 	"github.com/waxer59/watchMe/router"
 
@@ -21,6 +22,16 @@ import (
 // @description	This is the API documentation for the WatchMe application.
 // @BasePath		/api
 func main() {
+	isProduction := os.Getenv("ENVIRONMENT") == "PROD"
+
+	if !isProduction {
+		err := godotenv.Load()
+
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+	}
+
 	app := fiber.New(fiber.Config{
 		AppName:       "Watchme Backend",
 		CaseSensitive: true,
@@ -31,18 +42,18 @@ func main() {
 	database.Connect()
 	router.New(app)
 
-	log.Fatal(app.Listen(fmt.Sprintf(":%s", config.GetEnv("PORT"))))
+	log.Fatal(app.Listen(fmt.Sprintf(":%s", os.Getenv("PORT"))))
 }
 
 func middlewares(app *fiber.App) {
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     config.GetEnv("FRONTEND_URL"),
+		AllowOrigins:     os.Getenv("FRONTEND_URL"),
 		AllowCredentials: true,
 		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS",
 	}))
 	app.Use(logger.New())
 	app.Use(helmet.New())
 	app.Use(encryptcookie.New(encryptcookie.Config{
-		Key: config.GetEnv("COOKIE_ENCRYPTION_KEY"),
+		Key: os.Getenv("COOKIE_ENCRYPTION_KEY"),
 	}))
 }

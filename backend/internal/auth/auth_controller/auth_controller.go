@@ -2,13 +2,13 @@ package auth_controller
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/waxer59/watchMe/config"
 	"github.com/waxer59/watchMe/internal/auth/auth_service"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
@@ -92,7 +92,7 @@ func githubCallback(c *fiber.Ctx) error {
 		SameSite: fiber.CookieSameSiteLaxMode,
 	})
 
-	return c.Redirect(config.GetEnv("FRONTEND_URL"))
+	return c.Redirect(os.Getenv("FRONTEND_URL"))
 }
 
 // @title	Logout

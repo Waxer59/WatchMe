@@ -66,6 +66,7 @@ To set up the backend, follow these steps:
 * The `FRONTEND_URL` is the URL of the frontend.
 * The `MUX_ACCESS_TOKEN` and `MUX_SECRET_KEY` are the Mux credentials, this services is being used for live streaming
 * The `MUX_WEBHOOK_SECRET` is the secret key used to sign the Mux webhooks.
+* The `ENVIRONMENT` is the environment the backend is running in, either `DEV` or `PROD`.
 
 > [!TIP]
 > To generate a random string, you can use the command `openssl rand -base64 32`.

@@ -1,14 +1,15 @@
 package jwt_utils
 
 import (
+	"os"
+
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/waxer59/watchMe/config"
 )
 
 func GenerateJwtToken(claims jwt.MapClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString([]byte(config.GetEnv("JWT_SECRET_KEY")))
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
 
 	if err != nil {
 		return "", err
@@ -19,7 +20,7 @@ func GenerateJwtToken(claims jwt.MapClaims) (string, error) {
 
 func ParseJwtToken(tokenString string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.GetEnv("JWT_SECRET_KEY")), nil
+		return []byte(os.Getenv("JWT_SECRET_KEY")), nil
 	})
 
 	if err != nil {

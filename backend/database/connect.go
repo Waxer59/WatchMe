@@ -3,12 +3,12 @@ package database
 import (
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 
 	"github.com/waxer59/watchMe/internal/streams/streams_entities"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 
-	"github.com/waxer59/watchMe/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -16,7 +16,7 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	p := config.GetEnv("DB_PORT")
+	p := os.Getenv("DB_PORT")
 
 	port, err := strconv.ParseUint((p), 10, 16)
 
@@ -24,7 +24,7 @@ func Connect() {
 		log.Fatal(err)
 	}
 
-	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", config.GetEnv("DB_HOST"), port, config.GetEnv("DB_USERNAME"), config.GetEnv("DB_PASSWORD"), config.GetEnv("DB_NAME"))
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", os.Getenv("DB_HOST"), port, os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
 
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 

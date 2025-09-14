@@ -1,8 +1,9 @@
 package streams_service
 
 import (
+	"os"
+
 	muxgo "github.com/muxinc/mux-go/v6"
-	"github.com/waxer59/watchMe/config"
 	"github.com/waxer59/watchMe/database"
 	"github.com/waxer59/watchMe/internal/streams/streams_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
@@ -17,7 +18,7 @@ type StreamFeed struct {
 
 var muxClient = muxgo.NewAPIClient(
 	muxgo.NewConfiguration(
-		muxgo.WithBasicAuth(config.GetEnv("MUX_ACCESS_TOKEN"), config.GetEnv("MUX_SECRET_KEY")),
+		muxgo.WithBasicAuth(os.Getenv("MUX_ACCESS_TOKEN"), os.Getenv("MUX_SECRET_KEY")),
 	),
 )
 
