@@ -7,6 +7,7 @@ import { LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react'
 import Link from 'next/link'
 
 export function UserAvatar() {
+  const avatar = useAccountStore((state) => state.avatar)
   const username = useAccountStore((state) => state.username)
   const clearAccount = useAccountStore((state) => state.clear)
 
@@ -24,7 +25,8 @@ export function UserAvatar() {
       <Menu.Trigger asChild>
         <Button variant="plain" className="outline-none">
           <Avatar.Root colorPalette="gray">
-            <Avatar.Fallback name="Waxer59" />
+            <Avatar.Fallback name={username} />
+            <Avatar.Image src={avatar} />
           </Avatar.Root>
         </Button>
       </Menu.Trigger>

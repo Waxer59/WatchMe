@@ -40,11 +40,56 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/streams/delete-key/:streamKeyId": {
+            "delete": {
+                "description": "Delete a stream key for a live stream",
+                "tags": [
+                    "Streams"
+                ],
+                "responses": {}
+            }
+        },
+        "/streams/feed": {
+            "get": {
+                "description": "Get the feed for the home page",
+                "tags": [
+                    "Streams"
+                ],
+                "responses": {}
+            }
+        },
         "/streams/generate-key": {
             "get": {
                 "description": "Generate a stream key for a live stream",
                 "tags": [
                     "Streams"
+                ],
+                "responses": {}
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Get the user's information",
+                "tags": [
+                    "Users"
+                ],
+                "responses": {}
+            }
+        },
+        "/users/follow/:username": {
+            "post": {
+                "description": "Follow a user",
+                "tags": [
+                    "Users"
+                ],
+                "responses": {}
+            }
+        },
+        "/users/unfollow/:username": {
+            "post": {
+                "description": "Unfollow a user",
+                "tags": [
+                    "Users"
                 ],
                 "responses": {}
             }

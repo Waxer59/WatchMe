@@ -1,6 +1,21 @@
+import { HomeChannel } from '@/components/home/home-channel'
+import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { VideoOffIcon } from 'lucide-react'
+import { unstable_noStore as noStore } from 'next/cache';
 
-export default function Home() {
+interface Stream {
+  title: string
+  username: string
+  avatar: string
+  playback_id: string
+}
+
+export default async function Home() {
+  noStore();
+  const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`)
+
+  const data = await streams.json()
+
   return (
     <>
       <div className="flex flex-col gap-2 mb-8">
@@ -9,20 +24,28 @@ export default function Home() {
           Discover amazing live content from creators around the world
         </p>
       </div>
-      <div className="flex flex-col items-center justify-center gap-6 rounded-xl border py-10 shadow-sm bg-gray-800 border-gray-700 overflow-hidden group">
-        <VideoOffIcon className="w-12 h-12 text-gray-400" />
-        <p>Looks like no-one is streaming right now</p>
-      </div>
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <HomeChannel
-          title="Primer directo de SCHEDULE 1 (Haciendo MEDICINAS y DINERO)"
-          thumbnail="https://static-cdn.jtvnw.net/previews-ttv/live_user_dakrox7-440x248.jpg"
-          username="Hgo"
-          avatar=""
-          topic="Art"
-          count={0}
-        />
-      </div> */}
+      {data.length > 0 ? (
+        <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-20">
+          {data.map((stream: Stream) => (
+            <li key={stream.username}>
+              <HomeChannel
+                title={stream.title}
+                thumbnail={`https://image.mux.com/${stream.playback_id}/thumbnail.webp`}
+                thumbnail_gif={`https://image.mux.com/${stream.playback_id}/animated.webp`}
+                username={stream.username}
+                avatar={stream.avatar}
+                topic="Art"
+                count={0}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="flex flex-col items-center justify-center gap-6 rounded-xl border px-8 py-10 shadow-sm bg-gray-800 border-gray-700 overflow-hidden group">
+          <VideoOffIcon className="w-12 h-12 text-gray-400" />
+          <p>Looks like no-one is streaming right now</p>
+        </div>
+      )}
     </>
   )
 }

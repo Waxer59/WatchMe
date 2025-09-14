@@ -2,6 +2,7 @@ package streams_controller
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/waxer59/watchMe/internal/streams/streams_service"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
@@ -11,9 +12,10 @@ import (
 func New(router fiber.Router) {
 	streams := router.Group("/streams")
 
-	streams.Use(router_middlewares.AuthMiddleware)
-	streams.Get("/generate-key", generateStreamKey)
-	streams.Delete("/delete-key/:streamKeyId", deleteStreamKey)
+	streams.Post("/generate-key", router_middlewares.AuthMiddleware, generateStreamKey)
+	streams.Delete("/delete-key/:streamKeyId", router_middlewares.AuthMiddleware, deleteStreamKey)
+	streams.Get("/feed", getStreamFeed)
+	streams.Get("/:username", getLiveStream)
 }
 
 // @title			Generate Stream Key
@@ -64,5 +66,45 @@ func deleteStreamKey(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
+	err = users_service.DeleteStreamKeyById(streamKeyId)
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
 	return c.SendStatus(fiber.StatusOK)
+}
+
+// @title			Get Stream Feed
+// @description	Get the feed for the home page
+// @tags			Streams
+// @router			/streams/feed [get]
+func getStreamFeed(c *fiber.Ctx) error {
+	streamsFeed, err := streams_service.GetStreamFeed()
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	return c.JSON(streamsFeed)
+}
+
+// @title			Get Live Stream
+// @description	Get the live stream for the user
+// @tags			Streams
+// @router			/streams/:username [get]
+func getLiveStream(c *fiber.Ctx) error {
+	username := c.Params("username")
+
+	stream, err := streams_service.GetLiveStreamByUsername(username)
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	if stream.UserId == uuid.Nil {
+		return c.SendStatus(fiber.StatusNotFound)
+	}
+
+	return c.JSON(stream)
 }

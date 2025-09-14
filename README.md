@@ -65,13 +65,15 @@ To set up the backend, follow these steps:
 * The `PORT` is the port the backend will listen on.
 * The `FRONTEND_URL` is the URL of the frontend.
 * The `MUX_ACCESS_TOKEN` and `MUX_SECRET_KEY` are the Mux credentials, this services is being used for live streaming
+* The `MUX_WEBHOOK_SECRET` is the secret key used to sign the Mux webhooks.
+
 > [!TIP]
 > To generate a random string, you can use the command `openssl rand -base64 32`.
-5. Run local database.
+1. Run local database.
  ```bash
  docker-compose up -d
  ```
-6. Run the backend.
+1. Run the backend.
  ```bash
  go run main.go
  
@@ -111,6 +113,8 @@ To format the documentation, run the following command:
 ```bash
 swag fmt
 ```
+
+You can view the documentation at `http://localhost:<port>/swagger`.
 
 # Ngrok
 

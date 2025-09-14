@@ -16,13 +16,19 @@ type MuxWebhook struct {
 			Type    string `json:"type"`
 			Message string `json:"message"`
 		} `json:"warning"`
-		StreamKey     string `json:"stream_key"`
-		Status        string `json:"status"`
-		Id            string `json:"id"`
-		ActiveAssetId string `json:"active_asset_id"`
+		StreamKey     string       `json:"stream_key"`
+		Status        string       `json:"status"`
+		Id            string       `json:"id"`
+		ActiveAssetId string       `json:"active_asset_id"`
+		PlaybackIds   []PlaybackId `json:"playback_ids"`
 	} `json:"data"`
 	CreatedAt      string      `json:"created_at"`
 	AccessorSource interface{} `json:"accessor_source"`
 	Accessor       interface{} `json:"accessor"`
 	RequestId      interface{} `json:"request_id"`
+}
+
+type PlaybackId struct {
+	Policy string `json:"policy"`
+	Id     string `json:"id"`
 }

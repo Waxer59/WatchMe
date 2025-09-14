@@ -21,10 +21,40 @@ paths:
       responses: {}
       tags:
       - Auth
+  /streams/delete-key/:streamKeyId:
+    delete:
+      description: Delete a stream key for a live stream
+      responses: {}
+      tags:
+      - Streams
+  /streams/feed:
+    get:
+      description: Get the feed for the home page
+      responses: {}
+      tags:
+      - Streams
   /streams/generate-key:
     get:
       description: Generate a stream key for a live stream
       responses: {}
       tags:
       - Streams
+  /users:
+    get:
+      description: Get the user's information
+      responses: {}
+      tags:
+      - Users
+  /users/follow/:username:
+    post:
+      description: Follow a user
+      responses: {}
+      tags:
+      - Users
+  /users/unfollow/:username:
+    post:
+      description: Unfollow a user
+      responses: {}
+      tags:
+      - Users
 swagger: "2.0"

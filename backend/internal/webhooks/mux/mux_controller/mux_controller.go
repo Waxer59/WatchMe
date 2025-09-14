@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/waxer59/watchMe/internal/webhooks/mux/mux_helper"
 	"github.com/waxer59/watchMe/internal/webhooks/mux/mux_models"
 	"github.com/waxer59/watchMe/internal/webhooks/mux/mux_service"
 )
@@ -23,11 +24,20 @@ func muxWebhook(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
+	err = mux_helper.IsValidMuxSignature(c.Get("Mux-Signature"), c.Body())
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
+	fmt.Println(webhook.Type)
+	fmt.Println(webhook.Data.StreamKey)
+
 	switch webhook.Type {
 	case "video.live_stream.connected":
-		err = mux_service.HandleStreamConnected(webhook.Data.StreamKey)
+		err = mux_service.HandleStreamConnected(webhook)
 	case "video.live_stream.disconnected":
-		err = mux_service.HandleStreamDisconnected(webhook.Data.StreamKey)
+		err = mux_service.HandleStreamDisconnected(webhook)
 	}
 
 	if err != nil {

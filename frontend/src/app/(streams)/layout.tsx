@@ -19,7 +19,7 @@ export default function Layout({
           flexDirection="column"
           width="full"
           padding="4"
-          className="bg-gray-900 p-6">
+          className="bg-gray-900 p-6 overflow-auto">
           {children}
         </Box>
       </Box>

@@ -1,9 +1,12 @@
+"use client"
+
 import { formatViewersCountShort } from '@/helpers/formatViewersCountShort'
 import { Avatar } from '@chakra-ui/react'
 import Link from 'next/link'
 
 interface Props {
   thumbnail: string
+  thumbnail_gif: string
   username: string
   avatar: string
   title: string
@@ -14,6 +17,7 @@ interface Props {
 export const HomeChannel: React.FC<Props> = ({
   username,
   thumbnail,
+  thumbnail_gif,
   avatar,
   topic,
   count,
@@ -28,6 +32,16 @@ export const HomeChannel: React.FC<Props> = ({
           alt={title}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           src={thumbnail}
+          onMouseEnter={(e: React.MouseEvent<HTMLImageElement>) => {
+            const target = e.target as HTMLImageElement
+
+            target.src = thumbnail_gif
+          }}
+          onMouseLeave={(e: React.MouseEvent<HTMLImageElement>) => {
+            const target = e.target as HTMLImageElement
+
+            target.src = thumbnail
+          }}
         />
         <span
           data-slot="badge"
