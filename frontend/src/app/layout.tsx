@@ -7,16 +7,16 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'WatchMe',
-  description: 'WatchMe is the new streaming platform for the world of live streaming',
+  description: 'The new streaming platform for the world of live streaming',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://watchme.hgo.one',
     title: 'WatchMe',
-    description: 'WatchMe is the new streaming platform for the world of live streaming',
+    description: 'The new streaming platform for the world of live streaming',
     images: [
       {
-        url: 'https://watchme.hgo.one/og-image.png',
+        url: 'https://watchme.hgo.one/watchme-og.png',
         width: 1200,
         height: 630,
         alt: 'WatchMe'
@@ -26,10 +26,10 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'WatchMe',
-    description: 'WatchMe is the new streaming platform for the world of live streaming',
+    description: 'The new streaming platform for the world of live streaming',
     images: [
       {
-        url: 'https://watchme.hgo.one/og-image.png',
+        url: 'https://watchme.hgo.one/watchme-og.png',
         width: 1200,
         height: 630,
         alt: 'WatchMe'
