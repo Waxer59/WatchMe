@@ -24,7 +24,14 @@ func Connect() {
 		log.Fatal(err)
 	}
 
-	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", os.Getenv("DB_HOST"), port, os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
+	isProduction := os.Getenv("ENVIRONMENT") == "PROD"
+	sslMode := "disable"
+
+	if isProduction {
+		sslMode = "require"
+	}
+
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", os.Getenv("DB_HOST"), port, os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), sslMode)
 
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
