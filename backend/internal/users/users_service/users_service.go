@@ -13,6 +13,7 @@ import (
 type UpdateUser struct {
 	Username                  string `json:"username"`
 	Avatar                    string `json:"avatar"`
+	PresenceColor             string `json:"presence_color"`
 	IsStreaming               bool
 	IsUpdatingStreamingStatus bool
 }
@@ -55,7 +56,7 @@ func GetUserById(id string) (*user_entities.User, error) {
 	return &user, nil
 }
 
-func UpdateUserById(id string, updateUser UpdateUser) error {
+func UpdateUserById(id uuid.UUID, updateUser UpdateUser) error {
 	db := database.DB
 
 	if updateUser.Username != "" {
@@ -91,7 +92,13 @@ func UpdateUserById(id string, updateUser UpdateUser) error {
 		updateFields["is_streaming"] = updateUser.IsStreaming
 	}
 
-	err := db.Model(&user_entities.User{}).Where("id = ?", id).Updates(updateFields).Error
+	if updateUser.PresenceColor != "" {
+		updateFields["presence_color"] = updateUser.PresenceColor
+	}
+
+	err := db.Model(&user_entities.User{
+		ID: id,
+	}).Updates(updateFields).Error
 
 	if err != nil {
 		return err

@@ -1,5 +1,14 @@
 import { useAccountStore } from '@/store/account'
-import { Field, Input, Dialog, Button, IconButton } from '@chakra-ui/react'
+import {
+  Field,
+  Input,
+  Dialog,
+  Button,
+  IconButton,
+  ColorPicker,
+  parseColor,
+  HStack
+} from '@chakra-ui/react'
 import {
   CircleHelpIcon,
   CopyIcon,
@@ -12,9 +21,11 @@ import { useState } from 'react'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { toaster } from '../ui/toaster'
 import { MAX_USERNAME_LENGTH, MIN_USERNAME_LENGTH } from '@/constants'
+import rgbHex from 'rgb-hex';
 
 export const ProfileSettings = () => {
   const [isGeneratingNewKey, setIsGeneratingNewKey] = useState<boolean>(false)
+  const [newColor, setNewColor] = useState<string | null>()
   const username = useAccountStore((state) => state.username)
   const avatar = useAccountStore((state) => state.avatar)
   const stream_keys = useAccountStore((state) => state.stream_keys)
@@ -22,7 +33,7 @@ export const ProfileSettings = () => {
   const setUsername = useAccountStore((state) => state.setUsername)
   const addStreamKey = useAccountStore((state) => state.addStreamKey)
   const removeStreamKey = useAccountStore((state) => state.removeStreamKey)
-
+  
   const handleSaveProfileSettings = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
@@ -62,7 +73,8 @@ export const ProfileSettings = () => {
         },
         body: JSON.stringify({
           username: newUsername || undefined,
-          avatar: newAvatar || undefined
+          avatar: newAvatar || undefined,
+          presence_color: newColor ? rgbHex(newColor) : undefined
         })
       })
 
@@ -155,7 +167,22 @@ export const ProfileSettings = () => {
       <form
         className="flex flex-col gap-4 mt-6"
         onSubmit={handleSaveProfileSettings}>
-        <div className="flex items-center gap-4">
+        <div className="flex items-end gap-4">
+          <ColorPicker.Root defaultValue={parseColor('#0909adff')} maxW="200px" onValueChange={(color) => setNewColor(color.valueAsString)} >
+            <ColorPicker.HiddenInput />
+            <ColorPicker.Control>
+              <ColorPicker.Trigger className="border-gray-700" />
+            </ColorPicker.Control>
+            <ColorPicker.Positioner>
+              <ColorPicker.Content className='bg-gray-800 border rounded-lg border-gray-700'>
+                <ColorPicker.Area />
+                <HStack >
+                  <ColorPicker.EyeDropper size="xs" variant="outline" />
+                  <ColorPicker.Sliders />
+                </HStack>
+              </ColorPicker.Content>
+            </ColorPicker.Positioner>
+          </ColorPicker.Root>
           <Field.Root>
             <Field.Label>Username</Field.Label>
             <Input

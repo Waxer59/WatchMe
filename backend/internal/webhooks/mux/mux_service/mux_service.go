@@ -24,7 +24,7 @@ func HandleStreamActive(webhook mux_models.MuxWebhook) error {
 		return err
 	}
 
-	err = users_service.UpdateUserById(user.ID.String(), users_service.UpdateUser{
+	err = users_service.UpdateUserById(user.ID, users_service.UpdateUser{
 		IsStreaming:               true,
 		IsUpdatingStreamingStatus: true,
 	})
@@ -64,7 +64,7 @@ func HandleStreamDisconnected(webhook mux_models.MuxWebhook) error {
 		return err
 	}
 
-	err = users_service.UpdateUserById(user.ID.String(), users_service.UpdateUser{
+	err = users_service.UpdateUserById(user.ID, users_service.UpdateUser{
 		IsStreaming:               false,
 		IsUpdatingStreamingStatus: true,
 	})

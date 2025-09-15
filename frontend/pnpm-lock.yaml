@@ -41,6 +41,9 @@ importers:
       react-dom:
         specifier: ^18
         version: 18.3.1(react@18.3.1)
+      rgb-hex:
+        specifier: ^4.1.0
+        version: 4.1.0
       tailwind-scrollbar-hide:
         specifier: ^4.0.0
         version: 4.0.0(tailwindcss@4.1.12)
@@ -2154,6 +2157,10 @@ packages:
 
   rfdc@1.4.1:
     resolution: {integrity: sha512-q1b3N5QkRUWUl7iyylaaj3kOpIT0N2i9MqIEQXP73GVsN9cw3fdx8X63cEmWhJGi2PPCF23Ijp7ktmd39rawIA==}
+
+  rgb-hex@4.1.0:
+    resolution: {integrity: sha512-UZLM57BW09Yi9J1R3OP8B1yCbbDK3NT8BDtihGZkGkGEs2b6EaV85rsfJ6yK4F+8UbxFFmfA+9xHT5ZWhN1gDQ==}
+    engines: {node: '>=12'}
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
@@ -5116,6 +5123,8 @@ snapshots:
   reusify@1.1.0: {}
 
   rfdc@1.4.1: {}
+
+  rgb-hex@4.1.0: {}
 
   rimraf@3.0.2:
     dependencies:
