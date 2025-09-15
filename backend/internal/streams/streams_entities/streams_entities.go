@@ -9,16 +9,19 @@ import (
 var validate = validator.New()
 
 type Stream struct {
-	ID          uuid.UUID `gorm:"primary_key:not null" json:"id"`
-	UserId      uuid.UUID `gorm:"not null" json:"user_id"`
-	Title       string    `gorm:"not null" json:"title"`
-	PlaybackId  string    `gorm:"not null" json:"playback_id"`
-	Topic       string    `json:"topic"`
-	IsCompleted bool      `json:"is_completed"`
+	ID          uuid.UUID `gorm:"primary_key:not null" json:"id,omitempty"`
+	UserId      uuid.UUID `gorm:"not null" json:"user_id,omitempty"`
+	Title       string    `gorm:"not null" json:"title,omitempty"`
+	PlaybackId  string    `gorm:"not null" json:"playback_id,omitempty"`
+	Category    string    `json:"category,omitempty"`
+	Viewers     int       `json:"viewers,omitempty"`
+	IsCompleted bool      `json:"is_completed,omitempty"`
 }
 
-func (u *Stream) BeforeCreate(tx *gorm.DB) error {
-	u.ID = uuid.New()
+func (u *Stream) BeforeSave(tx *gorm.DB) error {
+	if u.ID == uuid.Nil {
+		u.ID = uuid.New()
+	}
 	return nil
 }
 

@@ -31,7 +31,24 @@ func getUser(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
+	followingUsers, err := users_service.FindAllFollowingUsersByUserId(user.ID)
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
 	user.StreamKeys = streamKeys
+
+	for _, followingUser := range followingUsers {
+		// Prevent giving the following user's sensitive info as stream keys
+		user.Following = append(user.Following, user_entities.User{
+			ID:          followingUser.ID,
+			Username:    followingUser.Username,
+			Avatar:      followingUser.Avatar,
+			IsStreaming: followingUser.IsStreaming,
+			Streams:     followingUser.Streams,
+		})
+	}
 
 	return c.JSON(user)
 }
@@ -40,24 +57,35 @@ func getUser(c *fiber.Ctx) error {
 // @description	Follow a user
 // @tags			Users
 // @router			/users/follow/:username [post]
-// @param			username	path string	true	"Username of the user"
+// @param			username	path string	true	"Username of the user to follow"
 func followUser(c *fiber.Ctx) error {
 	username := c.Params("username")
-	return c.JSON(fiber.Map{
-		"message": username,
-	})
+
+	err := users_service.FollowUserByUsername(c.Locals("user").(*user_entities.User), username)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	return c.SendStatus(fiber.StatusOK)
 }
 
 // @title			Unfollow User
 // @description	Unfollow a user
 // @tags			Users
 // @router			/users/unfollow/:username [post]
-// @param			username	path string	true	"Username of the user"
+// @param			username	path string	true	"Username of the user to unfollow"
 func unfollowUser(c *fiber.Ctx) error {
 	username := c.Params("username")
-	return c.JSON(fiber.Map{
-		"message": username,
-	})
+
+	err := users_service.UnfollowUserByUsername(c.Locals("user").(*user_entities.User), username)
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	return c.SendStatus(fiber.StatusOK)
 }
 
 // @title			Update User

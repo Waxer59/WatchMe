@@ -1,30 +1,47 @@
 'use client'
 
-import { useAccountStore } from '@/store/account'
-import { Avatar, Button } from '@chakra-ui/react'
+import { Avatar } from '@chakra-ui/react'
+import FollowButton from './follow-button'
+import { useState } from 'react'
+import { StreamData, StreamerDetails } from '@/types'
+import { SavedStreams } from './saved-streams'
 
-export const NoStreaming = () => {
-  const avatar = useAccountStore((state) => state.avatar)
-  const username = useAccountStore((state) => state.username)
+interface Props {
+ streamer: StreamerDetails
+ savedStreams: StreamData[]
+}
+
+export const NoStreaming: React.FC<Props> = ({
+  streamer,
+  savedStreams
+}) => {
+  const [currentFollowers, setCurrentFollowers] = useState(streamer.followers ?? 0)
 
   return (
     <div className="p-6">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Avatar.Root colorPalette="blue" size="full" className="w-32">
-            <Avatar.Fallback name={username} />
-            <Avatar.Image src={avatar} />
+          <Avatar.Root colorPalette="blue" size="full" className="w-32 h-32">
+            <Avatar.Fallback name={streamer.username} className="text-4xl" />
+            <Avatar.Image src={streamer.avatar} />
           </Avatar.Root>
           <div className="flex flex-col gap-2">
-            <h2 className="text-3xl font-bold capitalize">{username}</h2>
-            <p className="text-gray-400">100 followers</p>
+            <h2 className="text-3xl font-bold capitalize">{streamer.username}</h2>
+            <p className="text-gray-400">{currentFollowers} followers</p>
           </div>
         </div>
-        <Button variant="subtle" colorPalette="blue" rounded="lg" size="lg">
-          Follow
-        </Button>
+        <FollowButton
+          streamer={streamer}
+          onFollow={() => setCurrentFollowers(currentFollowers + 1)}
+          onUnfollow={() => setCurrentFollowers((prev) => prev > 0 ? prev - 1 : prev)}
+        />
       </header>
-      <h3 className="text-xl font-bold mt-8">Recent Streams</h3>
+      <h3 className="text-xl font-bold my-8">Recent Streams</h3>
+      <SavedStreams
+        username={streamer.username}
+        avatar={streamer.avatar}
+        savedStreams={savedStreams}
+      />
     </div>
   )
 }

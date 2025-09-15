@@ -49,7 +49,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} m-auto bg-gray-900 text-gray-100 overflow-hidden`}>
+        className={`${inter.className} overflow-hidden bg-gray-900`}>
         <Provider>{children}</Provider>
       </body>
     </html>

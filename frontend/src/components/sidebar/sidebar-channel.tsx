@@ -1,27 +1,26 @@
 import { Avatar, Circle, Float } from '@chakra-ui/react'
 import { EyeIcon } from 'lucide-react'
+import Link from 'next/link'
 
 interface SidebarChannelProps {
-  as?: 'button' | 'a'
   isLive?: boolean
   username: string
   avatar: string
   topic?: string
   count?: number
+  [key: string]: unknown
 }
 
 export const SidebarChannel: React.FC<SidebarChannelProps> = ({
-  as = 'button',
   username,
   avatar,
   isLive,
   topic,
-  count
+  count,
+  ...props
 }) => {
-  const CustomAs = as
-
   return (
-    <CustomAs className="w-full p-2 flex items-center gap-4 rounded-md hover:bg-gray-700 transition-all cursor-pointer">
+    <Link className="w-full p-2 flex items-center gap-4 rounded-md hover:bg-gray-700 transition-all cursor-pointer" href={`/${username}`} {...props}>
       <Avatar.Root colorPalette="blue">
         <Avatar.Fallback name={username} />
         <Avatar.Image src={avatar} />
@@ -50,6 +49,6 @@ export const SidebarChannel: React.FC<SidebarChannelProps> = ({
       ) : (
         <p className="text-sm text-white truncate">{username}</p>
       )}
-    </CustomAs>
+    </Link>
   )
 }

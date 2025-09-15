@@ -11,8 +11,6 @@ import (
 
 type StreamFeed struct {
 	Title      string `json:"title"`
-	Username   string `json:"username"`
-	Avatar     string `json:"avatar"`
 	PlaybackId string `json:"playback_id"`
 }
 
@@ -52,8 +50,6 @@ func GetStreamFeed() ([]StreamFeed, error) {
 
 		streamsFeed = append(streamsFeed, StreamFeed{
 			Title:      user.Username, // TODO: Add title
-			Username:   user.Username,
-			Avatar:     user.Avatar,
 			PlaybackId: stream.PlaybackId,
 		})
 	}
@@ -98,9 +94,17 @@ func GetLiveStreamByUsername(username string) (*streams_entities.Stream, error) 
 
 	var stream streams_entities.Stream
 
-	user := users_service.FindUserByUsername(username)
+	user, err := users_service.FindUserByUsername(username)
 
-	err := db.Find(&stream, "user_id = ? and is_completed = ?", user.ID, false).Error
+	if user == nil {
+		return nil, nil
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Find(&stream, "user_id = ? and is_completed = ?", user.ID, false).Error
 
 	if err != nil {
 		return nil, err

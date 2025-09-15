@@ -28,3 +28,28 @@ func AuthMiddleware(c *fiber.Ctx) error {
 
 	return c.Next()
 }
+
+func OptionalAuthMiddleware(c *fiber.Ctx) error {
+	cookie := c.Cookies(auth_controller.CookieAuth)
+
+	if cookie == "" {
+		return c.Next()
+	}
+
+	jwtToken, err := jwt_utils.ParseJwtToken(cookie)
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	user, err := users_service.GetUserById(jwtToken["id"].(string))
+
+	if err != nil || user.ID == uuid.Nil {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	// Add user to context
+	c.Locals("user", user)
+
+	return c.Next()
+}

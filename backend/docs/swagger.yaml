@@ -21,6 +21,18 @@ paths:
       responses: {}
       tags:
       - Auth
+  /streamer/:username:
+    get:
+      description: Get the streamer's information
+      parameters:
+      - description: Username of the user
+        in: path
+        name: username
+        required: true
+        type: string
+      responses: {}
+      tags:
+      - Streamer
   /streams/:username:
     get:
       description: Get the live stream for the user
@@ -72,7 +84,7 @@ paths:
     post:
       description: Follow a user
       parameters:
-      - description: Username of the user
+      - description: Username of the user to follow
         in: path
         name: username
         required: true
@@ -84,7 +96,7 @@ paths:
     post:
       description: Unfollow a user
       parameters:
-      - description: Username of the user
+      - description: Username of the user to unfollow
         in: path
         name: username
         required: true

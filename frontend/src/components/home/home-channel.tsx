@@ -2,6 +2,7 @@
 
 import { formatViewersCountShort } from '@/helpers/formatViewersCountShort'
 import { Avatar } from '@chakra-ui/react'
+import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 
 interface Props {
@@ -26,7 +27,7 @@ export const HomeChannel: React.FC<Props> = ({
   return (
     <Link
       href={`/${username}`}
-      className="text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm bg-gray-800 border-gray-700 overflow-hidden hover:border-white transition-colors cursor-pointer group">
+      className="text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm bg-gray-800 border-gray-700 overflow-hidden hover:border-white transition-colors cursor-pointer group">
       <div className="relative">
         <img
           alt={title}
@@ -50,21 +51,10 @@ export const HomeChannel: React.FC<Props> = ({
           LIVE
         </span>
         <div className="absolute bottom-2 right-2 bg-black/70 text-white text-sm px-2 py-1 rounded flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-eye w-3 h-3 mr-1">
-            <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
+          <EyeIcon size={24} strokeWidth={1.5} />
+          <span className='ml-1'>
           {formatViewersCountShort(count)}
+          </span>
         </div>
       </div>
       <div data-slot="card-content" className="p-4">
@@ -73,13 +63,13 @@ export const HomeChannel: React.FC<Props> = ({
             <Avatar.Fallback name={username} />
             <Avatar.Image src={avatar} />
           </Avatar.Root>
-          <div className="flex flex-col gap-2">
-            <h3 className="font-semibold text-white text-sm mb-1 line-clamp-2">
+          <div className="flex flex-col gap-1">
+            <h3 className="font-semibold text-white text-lg line-clamp-2">
               {title}
             </h3>
             <div className="flex flex-col gap-1">
-              <p className="text-white text-sm font-medium">{username}</p>
-              <p className="text-gray-400 text-sm">{topic}</p>
+              <p className="text-white text-md font-medium">{username}</p>
+              <p className="text-gray-400">{topic}</p>
             </div>
           </div>
         </div>

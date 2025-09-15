@@ -10,25 +10,27 @@ import (
 var validate = validator.New()
 
 type User struct {
-	ID              uuid.UUID                 `gorm:"type:uuid;primary_key" json:"id"`
-	Username        string                    `gorm:"unique;not null" validate:"required" json:"username"`
-	Avatar          string                    `gorm:"not null" json:"avatar"`
-	GithubAccountId *string                   `json:"github_account_id"`
-	StreamKeys      []StreamKey               `json:"stream_keys"`
-	Streams         []streams_entities.Stream `json:"streams"`
-	IsStreaming     bool                      `gorm:"default:false" json:"is_streaming"`
-	Following       []User                    `gorm:"many2many:user_follows;" json:"following"`
-	Followers       []User                    `gorm:"many2many:user_follows;" json:"followers"`
+	ID              uuid.UUID                 `gorm:"type:uuid;primary_key" json:"id,omitempty"`
+	Username        string                    `gorm:"unique;not null" validate:"required" json:"username,omitempty"`
+	Avatar          string                    `gorm:"not null" json:"avatar,omitempty"`
+	GithubAccountId *string                   `json:"-"`
+	PresenceColor   string                    `json:"presence_color,omitempty"`
+	StreamKeys      []StreamKey               `json:"stream_keys,omitempty"`
+	Streams         []streams_entities.Stream `json:"streams,omitempty"`
+	IsStreaming     bool                      `gorm:"default:false" json:"is_streaming,omitempty"`
+	Following       []User                    `gorm:"many2many:user_following;" json:"following,omitempty"`
 }
 
 type StreamKey struct {
-	ID     string    `gorm:"primary_key:not null"`
-	UserID uuid.UUID `gorm:"type:uuid;"`
-	Key    string    `gorm:"unique;not null" validate:"required"`
+	ID     string    `gorm:"primary_key:not null" json:"id"`
+	UserID uuid.UUID `gorm:"type:uuid;" json:"user_id"`
+	Key    string    `gorm:"unique;not null" validate:"required" json:"key"`
 }
 
-func (u *User) BeforeCreate(tx *gorm.DB) error {
-	u.ID = uuid.New()
+func (u *User) BeforeSave(tx *gorm.DB) error {
+	if u.ID == uuid.Nil {
+		u.ID = uuid.New()
+	}
 	return nil
 }
 

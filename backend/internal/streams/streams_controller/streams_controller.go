@@ -100,6 +100,10 @@ func getLiveStream(c *fiber.Ctx) error {
 
 	stream, err := streams_service.GetLiveStreamByUsername(username)
 
+	if stream == nil {
+		return c.SendStatus(fiber.StatusNotFound)
+	}
+
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}

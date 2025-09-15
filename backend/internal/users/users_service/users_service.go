@@ -59,7 +59,11 @@ func UpdateUserById(id string, updateUser UpdateUser) error {
 	db := database.DB
 
 	if updateUser.Username != "" {
-		isUsernameTaken := FindUserByUsername(updateUser.Username)
+		isUsernameTaken, errr := FindUserByUsername(updateUser.Username)
+
+		if errr != nil {
+			return errr
+		}
 
 		if isUsernameTaken != nil {
 			return errors.New("username already taken")
@@ -182,7 +186,7 @@ func FindAllStreamKeysByUserId(userId uuid.UUID) ([]user_entities.StreamKey, err
 	return streamKeys, nil
 }
 
-func FindUserByUsername(username string) *user_entities.User {
+func FindUserByUsername(username string) (*user_entities.User, error) {
 	db := database.DB
 
 	var user user_entities.User
@@ -190,8 +194,88 @@ func FindUserByUsername(username string) *user_entities.User {
 	err := db.Find(&user, "username = ?", username).Error
 
 	if err != nil || user.ID == uuid.Nil {
-		return nil
+		return nil, err
 	}
 
-	return &user
+	return &user, nil
+}
+
+func FollowUserByUsername(user *user_entities.User, usernameToFollow string) error {
+	db := database.DB
+
+	userToFollow, err := FindUserByUsername(usernameToFollow)
+
+	if err != nil {
+		return err
+	}
+
+	if userToFollow == nil {
+		return errors.New("user not found")
+	}
+
+	err = db.Model(user).Association("Following").Append([]user_entities.User{*userToFollow})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UnfollowUserByUsername(user *user_entities.User, usernameToUnfollow string) error {
+	db := database.DB
+
+	userToUnFollow, err := FindUserByUsername(usernameToUnfollow)
+
+	if err != nil {
+		return err
+	}
+
+	if userToUnFollow == nil {
+		return errors.New("user not found")
+	}
+
+	err = db.Model(&user).Association("Following").Delete(userToUnFollow)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetFollowersCount(username string) (int64, error) {
+	db := database.DB
+
+	user, err := FindUserByUsername(username)
+
+	if err != nil {
+		return 0, err
+	}
+
+	if user == nil {
+		return 0, nil
+	}
+
+	var followersCount int64
+
+	db.Raw(`SELECT COUNT(*) FROM user_following WHERE user_following.following_id = ?`, user.ID).Scan(&followersCount)
+
+	return followersCount, nil
+}
+
+func FindAllFollowingUsersByUserId(userId uuid.UUID) ([]user_entities.User, error) {
+	db := database.DB
+
+	var users []user_entities.User
+
+	err := db.Model(&user_entities.User{
+		ID: userId,
+	}).Where("user_id = ?", userId).Association("Following").Find(&users)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

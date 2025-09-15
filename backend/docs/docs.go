@@ -40,6 +40,24 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/streamer/:username": {
+            "get": {
+                "description": "Get the streamer's information",
+                "tags": [
+                    "Streamer"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username of the user",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/streams/:username": {
             "get": {
                 "description": "Get the live stream for the user",
@@ -119,7 +137,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Username of the user",
+                        "description": "Username of the user to follow",
                         "name": "username",
                         "in": "path",
                         "required": true
@@ -137,7 +155,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Username of the user",
+                        "description": "Username of the user to unfollow",
                         "name": "username",
                         "in": "path",
                         "required": true

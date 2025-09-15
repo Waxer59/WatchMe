@@ -1,8 +1,5 @@
+@import 'tailwind-scrollbar-hide/v4' important;
 @import 'tailwindcss' important;
-
-.plyr {
-  @apply rounded-lg;
-}
 
 [data-highlighted] {
   background: inherit;

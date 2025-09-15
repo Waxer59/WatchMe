@@ -12,19 +12,31 @@ export function Provider(props: ColorModeProviderProps) {
   const setAvatar = useAccountStore((state) => state.setAvatar)
   const setIsLoggedIn = useAccountStore((state) => state.setIsLoggedIn)
   const setStreamKeys = useAccountStore((state) => state.setStreamKeys)
+  const setIsLoading = useAccountStore((state) => state.setIsLoading)
+  const setId = useAccountStore((state) => state.setId)
+  const setFollowing = useAccountStore((state) => state.setFollowing)
   const clearAccount = useAccountStore((state) => state.clear)
 
   useEffect(() => {
     const getUserData = async () => {
-      const response = await fetch(getPublicEnv().BACKEND_URL + '/users', {
-        credentials: 'include'
-      })
-      const data = await response.json()
-      setUsername(data.username)
-      setAvatar(data.avatar)
-      setStreamKeys(data.stream_keys)
-      setIsLoggedIn(true)
-      localStorage.setItem('isLoggedIn', 'true')
+      setIsLoading(true)
+      try {
+        const response = await fetch(getPublicEnv().BACKEND_URL + '/users', {
+          credentials: 'include'
+        })
+        const data = await response.json()
+        setUsername(data.username)
+        setAvatar(data.avatar)
+        setStreamKeys(data.stream_keys)
+        setId(data.id)
+        setFollowing(data.following)
+        setIsLoggedIn(true)
+        localStorage.setItem('isLoggedIn', 'true')
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setIsLoading(false)
+      }
     }
 
     window.addEventListener('storage', (event) => {

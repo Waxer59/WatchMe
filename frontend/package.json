@@ -21,6 +21,7 @@
     "next-themes": "^0.4.6",
     "react": "^18",
     "react-dom": "^18",
+    "tailwind-scrollbar-hide": "^4.0.0",
     "zustand": "^5.0.8"
   },
   "devDependencies": {

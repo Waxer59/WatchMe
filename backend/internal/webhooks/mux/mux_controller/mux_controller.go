@@ -34,8 +34,8 @@ func muxWebhook(c *fiber.Ctx) error {
 	fmt.Println(webhook.Data.StreamKey)
 
 	switch webhook.Type {
-	case "video.live_stream.connected":
-		err = mux_service.HandleStreamConnected(webhook)
+	case "video.live_stream.active":
+		err = mux_service.HandleStreamActive(webhook)
 	case "video.live_stream.disconnected":
 		err = mux_service.HandleStreamDisconnected(webhook)
 	}

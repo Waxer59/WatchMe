@@ -10,13 +10,14 @@ interface Props {
 
 export const ProtectedRoute: React.FC<Props> = ({ children }) => {
   const isLoggedIn = useAccountStore((state) => state.isLoggedIn)
+  const isLoading = useAccountStore((state) => state.isLoading)
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn && !isLoading) {
       router.push('/')
     }
-  }, [isLoggedIn])
+  }, [isLoggedIn, isLoading])
 
   return children
 }

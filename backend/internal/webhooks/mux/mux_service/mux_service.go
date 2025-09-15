@@ -9,7 +9,7 @@ import (
 	"github.com/waxer59/watchMe/internal/webhooks/mux/mux_models"
 )
 
-func HandleStreamConnected(webhook mux_models.MuxWebhook) error {
+func HandleStreamActive(webhook mux_models.MuxWebhook) error {
 	streamKeyEntity, err := users_service.FindStreamKeyByKey(webhook.Data.StreamKey)
 
 	if err != nil {

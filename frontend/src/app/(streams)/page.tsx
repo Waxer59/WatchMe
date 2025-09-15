@@ -1,9 +1,10 @@
 import { HomeChannel } from '@/components/home/home-channel'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
+import { VideosLayout } from '@/layouts/videos-layout';
 import { VideoOffIcon } from 'lucide-react'
 import { unstable_noStore as noStore } from 'next/cache';
 
-interface Stream {
+export interface Stream {
   title: string
   username: string
   avatar: string
@@ -25,7 +26,7 @@ export default async function Home() {
         </p>
       </div>
       {data.length > 0 ? (
-        <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-20">
+        <VideosLayout>
           {data.map((stream: Stream) => (
             <li key={stream.username}>
               <HomeChannel
@@ -39,7 +40,7 @@ export default async function Home() {
               />
             </li>
           ))}
-        </ul>
+        </VideosLayout>
       ) : (
         <div className="flex flex-col items-center justify-center gap-6 rounded-xl border px-8 py-10 shadow-sm bg-gray-800 border-gray-700 overflow-hidden group">
           <VideoOffIcon className="w-12 h-12 text-gray-400" />
