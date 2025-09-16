@@ -1,4 +1,3 @@
-
 export interface StreamKey {
   id: string
   key: string
@@ -31,4 +30,12 @@ export interface StreamData {
   title: string
   category: string
   playback_id: string
+}
+
+export enum StreamCategory {
+  ART = 'art',
+  GAMES = 'games',
+  MUSIC = 'music',
+  TECH = 'tech',
+  JUST_CHATTING = 'just_chatting'
 }

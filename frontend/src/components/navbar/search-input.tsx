@@ -4,6 +4,7 @@ import { useUiStore } from '@/store/ui'
 import { SearchIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { toaster } from '../ui/toaster'
 
 export function SearchInput() {
   const [searchInput, setSearchInput] = useState<string>('')
@@ -13,7 +14,6 @@ export function SearchInput() {
   useEffect(() => {
     setSearchInput(searchInputStore)
   }, [searchInputStore])
-  
 
   return (
     <div className="relative hidden sm:block">
@@ -21,7 +21,14 @@ export function SearchInput() {
       <input
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
           if (e.key === 'Enter') {
-            router.push(`/search/${searchInput}`)
+            if (searchInput.trim().length > 0) {
+              router.push(`/search/${searchInput}`)
+            } else {
+              toaster.error({
+                title: 'Error',
+                description: 'Please enter a username'
+              })
+            }
           }
         }}
         value={searchInput}

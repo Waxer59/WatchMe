@@ -1,11 +1,11 @@
 'use client'
 
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
-import { ColorModeProvider, type ColorModeProviderProps } from './color-mode'
+import { ColorModeProvider, type ColorModeProviderProps } from '../components/ui/color-mode'
 import { useEffect } from 'react'
 import { useAccountStore } from '@/store/account'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
-import { Toaster } from './toaster'
+import { Toaster } from '../components/ui/toaster'
 
 export function Provider(props: ColorModeProviderProps) {
   const setUsername = useAccountStore((state) => state.setUsername)
@@ -15,6 +15,12 @@ export function Provider(props: ColorModeProviderProps) {
   const setIsLoading = useAccountStore((state) => state.setIsLoading)
   const setId = useAccountStore((state) => state.setId)
   const setFollowing = useAccountStore((state) => state.setFollowing)
+  const setDefaultStreamTitle = useAccountStore(
+    (state) => state.setDefaultStreamTitle
+  )
+  const setDefaultStreamCategory = useAccountStore(
+    (state) => state.setDefaultStreamCategory
+  )
   const setPresenceColor = useAccountStore((state) => state.setPresenceColor)
   const clearAccount = useAccountStore((state) => state.clear)
 
@@ -32,6 +38,8 @@ export function Provider(props: ColorModeProviderProps) {
         setId(data.id)
         setFollowing(data.following)
         setPresenceColor(data.presence_color)
+        setDefaultStreamTitle(data.default_stream_title)
+        setDefaultStreamCategory(data.default_stream_category)
         setIsLoggedIn(true)
         localStorage.setItem('isLoggedIn', 'true')
       } catch (error) {

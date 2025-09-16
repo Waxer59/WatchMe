@@ -2,6 +2,7 @@ package users_service
 
 import (
 	"errors"
+	"slices"
 	"strings"
 
 	"github.com/google/uuid"
@@ -11,9 +12,11 @@ import (
 )
 
 type UpdateUser struct {
-	Username                  string `json:"username"`
-	Avatar                    string `json:"avatar"`
-	PresenceColor             string `json:"presence_color"`
+	Username                  string                       `json:"username"`
+	Avatar                    string                       `json:"avatar"`
+	PresenceColor             string                       `json:"presence_color"`
+	DefaultStreamTitle        string                       `json:"default_stream_title"`
+	DefaultStreamCategory     user_entities.StreamCategory `json:"default_stream_category"`
 	IsStreaming               bool
 	IsUpdatingStreamingStatus bool
 }
@@ -94,6 +97,19 @@ func UpdateUserById(id uuid.UUID, updateUser UpdateUser) error {
 
 	if updateUser.PresenceColor != "" {
 		updateFields["presence_color"] = updateUser.PresenceColor
+	}
+
+	if updateUser.DefaultStreamTitle != "" {
+		updateFields["default_stream_title"] = updateUser.DefaultStreamTitle
+	}
+
+	if updateUser.DefaultStreamCategory != "" {
+
+		if !slices.Contains(user_entities.StreamCategories, updateUser.DefaultStreamCategory) {
+			return errors.New("default stream category not found")
+		}
+
+		updateFields["default_stream_category"] = updateUser.DefaultStreamCategory
 	}
 
 	err := db.Model(&user_entities.User{

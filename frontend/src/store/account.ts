@@ -1,4 +1,4 @@
-import { StreamerDetails, StreamKey } from '@/types'
+import { StreamCategory, StreamerDetails, StreamKey } from '@/types'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
@@ -6,6 +6,8 @@ interface State {
   id: string | null
   username: string
   avatar: string
+  default_stream_title: string
+  default_stream_category: StreamCategory
   isLoggedIn: boolean
   presence_color: string
   isLoading: boolean
@@ -20,6 +22,8 @@ interface Actions {
   setStreamKeys(streamKeys: StreamKey[]): void
   addStreamKey(id: string, key: string): void
   removeStreamKey(id: string): void
+  setDefaultStreamTitle(defaultStreamTitle: string): void
+  setDefaultStreamCategory(defaultStreamCategory: StreamCategory): void
   setIsLoading(isLoading: boolean): void
   setId(id: string): void
   setFollowing(following: StreamerDetails[]): void
@@ -34,6 +38,8 @@ const initialState: State = {
   username: '',
   avatar: '',
   presence_color: '#fff',
+  default_stream_title: 'Untitled',
+  default_stream_category: StreamCategory.JUST_CHATTING,
   isLoggedIn: false,
   isLoading: true,
   stream_keys: [],
@@ -63,6 +69,8 @@ export const useAccountStore = create<State & Actions>()(
       following: state.following.filter((following) => following.id !== id)
     })),
     setIsLoggedIn: (isLoggedIn: boolean) => set({ isLoggedIn }),
+    setDefaultStreamTitle: (defaultStreamTitle: string) => set({ default_stream_title: defaultStreamTitle }),
+    setDefaultStreamCategory: (defaultStreamCategory: StreamCategory) => set({ default_stream_category: defaultStreamCategory }),
     clear: () => set(initialState)
   }))
 )

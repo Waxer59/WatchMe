@@ -1,4 +1,11 @@
+'use client'
+
+import { getPublicEnv } from '@/helpers/getPublicEnv'
+import { useAccountStore } from '@/store/account'
 import { createListCollection, Field, Input, Select } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { toaster } from '../ui/toaster'
+import { StreamCategory } from '@/types'
 
 const categories = createListCollection({
   items: [
@@ -14,9 +21,70 @@ const categories = createListCollection({
 })
 
 export const StreamSettings = () => {
-  const handleSaveStreamSettings = (e: React.FormEvent<HTMLFormElement>) => {
+  const defaultStreamTitle = useAccountStore(
+    (state) => state.default_stream_title
+  )
+  const defaultStreamCategory = useAccountStore(
+    (state) => state.default_stream_category
+  )
+  const [newDefaultStreamTitle, setNewDefaultStreamTitle] =
+    useState<string>(defaultStreamTitle)
+  const [newDefaultStreamCategory, setNewDefaultStreamCategory] =
+    useState<StreamCategory>(defaultStreamCategory)
+  const setDefaultStreamTitle = useAccountStore(
+    (state) => state.setDefaultStreamTitle
+  )
+  const setDefaultStreamCategory = useAccountStore(
+    (state) => state.setDefaultStreamCategory
+  )
+
+  const handleSaveStreamSettings = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault()
+
+    try {
+      const resp = await fetch(`${getPublicEnv().BACKEND_URL}/users`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          default_stream_title: newDefaultStreamTitle || undefined,
+          default_stream_category: newDefaultStreamCategory || undefined
+        })
+      })
+      setDefaultStreamTitle(newDefaultStreamTitle)
+      setDefaultStreamCategory(newDefaultStreamCategory)
+
+      if (resp.status === 200) {
+        toaster.success({
+          title: 'Success',
+          description: 'Stream settings updated successfully'
+        })
+      } else {
+        toaster.error({
+          title: 'Error',
+          description: 'Something went wrong while updating the stream settings'
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      toaster.error({
+        title: 'Error',
+        description: 'Something went wrong while updating the stream settings'
+      })
+    }
   }
+
+  useEffect(() => {
+    setNewDefaultStreamTitle(defaultStreamTitle)
+  }, [defaultStreamTitle])
+
+  useEffect(() => {
+    setNewDefaultStreamCategory(defaultStreamCategory)
+  }, [defaultStreamCategory])
 
   return (
     <>
@@ -29,11 +97,22 @@ export const StreamSettings = () => {
           <Field.Root>
             <Field.Label>Stream title</Field.Label>
             <Input
-              placeholder="Making some good stuff"
+              placeholder={defaultStreamTitle}
+              value={newDefaultStreamTitle}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setNewDefaultStreamTitle(e.target.value)
+              }}
               className="border-gray-700"
             />
           </Field.Root>
-          <Select.Root collection={categories} size="sm" width="320px">
+          <Select.Root
+            collection={categories}
+            value={[newDefaultStreamCategory]}
+            onValueChange={(details) => {
+              setNewDefaultStreamCategory(details.value[0] as StreamCategory)
+            }}
+            size="sm"
+            width="320px">
             <Select.HiddenSelect />
             <Select.Label>Select category</Select.Label>
             <Select.Control>

@@ -103,9 +103,11 @@ func updateUser(c *fiber.Ctx) error {
 	}
 
 	err = users_service.UpdateUserById(c.Locals("user").(*user_entities.User).ID, users_service.UpdateUser{
-		Username:      user.Username,
-		Avatar:        user.Avatar,
-		PresenceColor: user.PresenceColor,
+		Username:              user.Username,
+		Avatar:                user.Avatar,
+		PresenceColor:         user.PresenceColor,
+		DefaultStreamTitle:    user.DefaultStreamTitle,
+		DefaultStreamCategory: user.DefaultStreamCategory,
 	})
 
 	if err != nil {
