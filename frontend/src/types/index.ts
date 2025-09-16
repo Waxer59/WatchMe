@@ -1,6 +1,14 @@
+
 export interface StreamKey {
   id: string
   key: string
+}
+
+export interface StreamFeedDetails {
+  title: string
+  username: string
+  avatar: string
+  playback_id: string
 }
 
 export interface StreamerDetails {

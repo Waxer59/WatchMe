@@ -1,15 +1,9 @@
 import { HomeChannel } from '@/components/home/home-channel'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { VideosLayout } from '@/layouts/videos-layout';
+import { StreamFeedDetails } from '@/types';
 import { VideoOffIcon } from 'lucide-react'
 import { unstable_noStore as noStore } from 'next/cache';
-
-export interface Stream {
-  title: string
-  username: string
-  avatar: string
-  playback_id: string
-}
 
 export default async function Home() {
   noStore();
@@ -27,7 +21,7 @@ export default async function Home() {
       </header>
       {data.length > 0 ? (
         <VideosLayout>
-          {data.map((stream: Stream) => (
+          {data.map((stream: StreamFeedDetails) => (
             <li key={stream.username}>
               <HomeChannel
                 title={stream.title}

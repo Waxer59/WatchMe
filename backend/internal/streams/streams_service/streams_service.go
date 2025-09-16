@@ -11,6 +11,8 @@ import (
 
 type StreamFeed struct {
 	Title      string `json:"title"`
+	Username   string `json:"username"`
+	Avatar     string `json:"avatar"`
 	PlaybackId string `json:"playback_id"`
 }
 
@@ -50,6 +52,8 @@ func GetStreamFeed() ([]StreamFeed, error) {
 
 		streamsFeed = append(streamsFeed, StreamFeed{
 			Title:      user.Username, // TODO: Add title
+			Username:   user.Username,
+			Avatar:     user.Avatar,
 			PlaybackId: stream.PlaybackId,
 		})
 	}
