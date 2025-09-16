@@ -55,9 +55,9 @@ export function Sidebar() {
             key={following.id}
             username={following.username}
             avatar={following.avatar}
+            isLive={following.is_streaming}
             topic="Art"
             count={24}
-            isLive={following.is_streaming}
           />
         ))}
       </div>

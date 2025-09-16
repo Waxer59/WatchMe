@@ -15,6 +15,7 @@ export function Provider(props: ColorModeProviderProps) {
   const setIsLoading = useAccountStore((state) => state.setIsLoading)
   const setId = useAccountStore((state) => state.setId)
   const setFollowing = useAccountStore((state) => state.setFollowing)
+  const setPresenceColor = useAccountStore((state) => state.setPresenceColor)
   const clearAccount = useAccountStore((state) => state.clear)
 
   useEffect(() => {
@@ -30,6 +31,7 @@ export function Provider(props: ColorModeProviderProps) {
         setStreamKeys(data.stream_keys)
         setId(data.id)
         setFollowing(data.following)
+        setPresenceColor(data.presence_color)
         setIsLoggedIn(true)
         localStorage.setItem('isLoggedIn', 'true')
       } catch (error) {

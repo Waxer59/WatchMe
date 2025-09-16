@@ -7,6 +7,7 @@ export interface StreamerDetails {
   id: string
   username: string
   avatar: string
+  presence_color: string
   followers: number
   is_streaming: boolean
 }

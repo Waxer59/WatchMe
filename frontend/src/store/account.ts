@@ -7,6 +7,7 @@ interface State {
   username: string
   avatar: string
   isLoggedIn: boolean
+  presence_color: string
   isLoading: boolean
   stream_keys: StreamKey[]
   following: StreamerDetails[]
@@ -23,6 +24,7 @@ interface Actions {
   setId(id: string): void
   setFollowing(following: StreamerDetails[]): void
   addFollowing(following: StreamerDetails): void
+  setPresenceColor(presenceColor: string): void
   removeFollowing(id: string): void
   clear(): void
 }
@@ -31,6 +33,7 @@ const initialState: State = {
   id: null,
   username: '',
   avatar: '',
+  presence_color: '#fff',
   isLoggedIn: false,
   isLoading: true,
   stream_keys: [],
@@ -55,6 +58,7 @@ export const useAccountStore = create<State & Actions>()(
     addFollowing: (following: StreamerDetails) => set((state) => ({
       following: [...state.following, following]
     })),
+    setPresenceColor: (presence_color: string) => set({ presence_color }),
     removeFollowing: (id: string) => set((state) => ({
       following: state.following.filter((following) => following.id !== id)
     })),

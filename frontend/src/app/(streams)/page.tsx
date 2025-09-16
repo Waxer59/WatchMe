@@ -19,12 +19,12 @@ export default async function Home() {
 
   return (
     <>
-      <div className="flex flex-col gap-2 mb-8">
+      <header className="flex flex-col gap-2 mb-8">
         <h2 className="text-3xl font-bold">Live Channels</h2>
         <p className="text-gray-400">
           Discover amazing live content from creators around the world
         </p>
-      </div>
+      </header>
       {data.length > 0 ? (
         <VideosLayout>
           {data.map((stream: Stream) => (

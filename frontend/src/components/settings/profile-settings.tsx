@@ -17,15 +17,16 @@ import {
   TrashIcon
 } from 'lucide-react'
 import { PasswordInput } from '../ui/password-input'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { toaster } from '../ui/toaster'
 import { MAX_USERNAME_LENGTH, MIN_USERNAME_LENGTH } from '@/constants'
-import rgbHex from 'rgb-hex';
+import rgbHex from 'rgb-hex'
 
 export const ProfileSettings = () => {
   const [isGeneratingNewKey, setIsGeneratingNewKey] = useState<boolean>(false)
-  const [newColor, setNewColor] = useState<string | null>()
+  const presenceColor = useAccountStore((state) => state.presence_color)
+  const [newColorHex, setNewColorHex] = useState<string>(presenceColor)
   const username = useAccountStore((state) => state.username)
   const avatar = useAccountStore((state) => state.avatar)
   const stream_keys = useAccountStore((state) => state.stream_keys)
@@ -33,7 +34,12 @@ export const ProfileSettings = () => {
   const setUsername = useAccountStore((state) => state.setUsername)
   const addStreamKey = useAccountStore((state) => state.addStreamKey)
   const removeStreamKey = useAccountStore((state) => state.removeStreamKey)
-  
+  const setPresenceColor = useAccountStore((state) => state.setPresenceColor)
+
+  useEffect(() => {
+    setNewColorHex(presenceColor)
+  }, [presenceColor])
+
   const handleSaveProfileSettings = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
@@ -74,11 +80,12 @@ export const ProfileSettings = () => {
         body: JSON.stringify({
           username: newUsername || undefined,
           avatar: newAvatar || undefined,
-          presence_color: newColor ? rgbHex(newColor) : undefined
+          presence_color: newColorHex ? newColorHex : undefined
         })
       })
 
       if (response.status === 200) {
+        target.reset()
         toaster.success({
           title: 'Success',
           description: 'Profile updated successfully'
@@ -90,6 +97,10 @@ export const ProfileSettings = () => {
 
         if (newAvatar) {
           setAvatar(newAvatar)
+        }
+
+        if (newColorHex) {
+          setPresenceColor(newColorHex)
         }
       } else {
         toaster.error({
@@ -103,9 +114,8 @@ export const ProfileSettings = () => {
         title: 'Error',
         description: 'Something went wrong while updating the username'
       })
+      target.reset()
     }
-
-    target.reset()
   }
 
   const handleDeleteStreamKey = async (id: string) => {
@@ -168,15 +178,20 @@ export const ProfileSettings = () => {
         className="flex flex-col gap-4 mt-6"
         onSubmit={handleSaveProfileSettings}>
         <div className="flex items-end gap-4">
-          <ColorPicker.Root defaultValue={parseColor('#0909adff')} maxW="200px" onValueChange={(color) => setNewColor(color.valueAsString)} >
+          <ColorPicker.Root
+            maxW="200px"
+            value={parseColor(newColorHex)}
+            onValueChange={(color) =>
+              setNewColorHex(`#${rgbHex(color.valueAsString)}`)
+            }>
             <ColorPicker.HiddenInput />
             <ColorPicker.Control>
               <ColorPicker.Trigger className="border-gray-700" />
             </ColorPicker.Control>
             <ColorPicker.Positioner>
-              <ColorPicker.Content className='bg-gray-800 border rounded-lg border-gray-700'>
+              <ColorPicker.Content className="bg-gray-800 border rounded-lg border-gray-700">
                 <ColorPicker.Area />
-                <HStack >
+                <HStack>
                   <ColorPicker.EyeDropper size="xs" variant="outline" />
                   <ColorPicker.Sliders />
                 </HStack>
