@@ -42,11 +42,12 @@ func getUser(c *fiber.Ctx) error {
 	for _, followingUser := range followingUsers {
 		// Prevent giving the following user's sensitive info as stream keys
 		user.Following = append(user.Following, user_entities.User{
-			ID:          followingUser.ID,
-			Username:    followingUser.Username,
-			Avatar:      followingUser.Avatar,
-			IsStreaming: followingUser.IsStreaming,
-			Streams:     followingUser.Streams,
+			ID:            followingUser.ID,
+			Username:      followingUser.Username,
+			Avatar:        followingUser.Avatar,
+			IsStreaming:   followingUser.IsStreaming,
+			Streams:       followingUser.Streams,
+			PresenceColor: followingUser.PresenceColor,
 		})
 	}
 

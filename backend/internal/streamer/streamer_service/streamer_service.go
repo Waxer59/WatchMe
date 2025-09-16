@@ -1,19 +1,18 @@
 package streamer_service
 
 import (
-	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
 )
 
 type Streamer struct {
-	ID          string `json:"id"`
-	Username    string `json:"username"`
-	Avatar      string `json:"avatar"`
-	Followers   int64  `json:"followers"`
-	IsFollowing bool   `json:"is_following"`
+	ID             string `json:"id"`
+	Username       string `json:"username"`
+	Avatar         string `json:"avatar"`
+	Followers      int64  `json:"followers"`
+	Presence_color string `json:"presence_color"`
 }
 
-func GetStreamer(username string, userLooking *user_entities.User) (*Streamer, error) {
+func GetStreamer(username string) (*Streamer, error) {
 	streamer, err := users_service.FindUserByUsername(username)
 
 	if err != nil {
@@ -31,9 +30,10 @@ func GetStreamer(username string, userLooking *user_entities.User) (*Streamer, e
 	}
 
 	return &Streamer{
-		ID:        streamer.ID.String(),
-		Username:  streamer.Username,
-		Avatar:    streamer.Avatar,
-		Followers: followersCount,
+		ID:             streamer.ID.String(),
+		Username:       streamer.Username,
+		Avatar:         streamer.Avatar,
+		Followers:      followersCount,
+		Presence_color: streamer.PresenceColor,
 	}, nil
 }

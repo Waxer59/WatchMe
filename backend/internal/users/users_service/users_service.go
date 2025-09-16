@@ -286,3 +286,17 @@ func FindAllFollowingUsersByUserId(userId uuid.UUID) ([]user_entities.User, erro
 
 	return users, nil
 }
+
+func FindUsernameSearch(username string) ([]user_entities.User, error) {
+	db := database.DB
+
+	var users []user_entities.User
+
+	err := db.Where("LOWER(username) LIKE ?", "%"+strings.ToLower(username)+"%").Find(&users).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}

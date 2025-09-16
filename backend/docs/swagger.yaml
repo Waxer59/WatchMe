@@ -33,6 +33,18 @@ paths:
       responses: {}
       tags:
       - Streamer
+  /streamer/search/:username:
+    get:
+      description: Get the streamer's information
+      parameters:
+      - description: Username of the user
+        in: path
+        name: username
+        required: true
+        type: string
+      responses: {}
+      tags:
+      - Streamer
   /streams/:username:
     get:
       description: Get the live stream for the user

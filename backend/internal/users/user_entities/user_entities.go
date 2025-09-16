@@ -14,7 +14,7 @@ type User struct {
 	Username        string                    `gorm:"unique;not null" validate:"required" json:"username,omitempty"`
 	Avatar          string                    `gorm:"not null" json:"avatar,omitempty"`
 	GithubAccountId *string                   `json:"-"`
-	PresenceColor   string                    `json:"presence_color,omitempty"`
+	PresenceColor   string                    `gorm:"default:#fff" json:"presence_color,omitempty"`
 	StreamKeys      []StreamKey               `json:"stream_keys,omitempty"`
 	Streams         []streams_entities.Stream `json:"streams,omitempty"`
 	IsStreaming     bool                      `gorm:"default:false" json:"is_streaming,omitempty"`

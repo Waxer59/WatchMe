@@ -51,6 +51,24 @@
                 "responses": {}
             }
         },
+        "/streamer/search/:username": {
+            "get": {
+                "description": "Get the streamer's information",
+                "tags": [
+                    "Streamer"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username of the user",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/streams/:username": {
             "get": {
                 "description": "Get the live stream for the user",
