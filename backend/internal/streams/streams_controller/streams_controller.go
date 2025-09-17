@@ -83,7 +83,9 @@ func deleteStreamKey(c *fiber.Ctx) error {
 // @tags			Streams
 // @router			/streams/feed [get]
 func getStreamFeed(c *fiber.Ctx) error {
-	streamsFeed, err := streams_service.GetStreamFeed()
+	category := c.Query("category")
+
+	streamsFeed, err := streams_service.GetStreamFeed(&category)
 
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)

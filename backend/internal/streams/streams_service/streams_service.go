@@ -37,7 +37,7 @@ func GenerateStreamKey(channelId string) (muxgo.LiveStreamResponse, error) {
 	return streamParams, err
 }
 
-func GetStreamFeed() ([]StreamFeed, error) {
+func GetStreamFeed(category *string) ([]StreamFeed, error) {
 	usersStreaming, err := users_service.GetUsersStreaming()
 
 	if err != nil {
@@ -51,6 +51,10 @@ func GetStreamFeed() ([]StreamFeed, error) {
 
 		if err != nil {
 			return nil, err
+		}
+
+		if category != nil && *category != "" && *category != stream.Category {
+			continue
 		}
 
 		streamsFeed = append(streamsFeed, StreamFeed{

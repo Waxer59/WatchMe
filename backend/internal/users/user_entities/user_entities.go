@@ -13,7 +13,6 @@ type StreamCategory string
 
 const (
 	ART           StreamCategory = "art"
-	GAMES         StreamCategory = "games"
 	MUSIC         StreamCategory = "music"
 	TECH          StreamCategory = "tech"
 	GAMING        StreamCategory = "gaming"
@@ -22,7 +21,6 @@ const (
 
 var StreamCategories = []StreamCategory{
 	ART,
-	GAMES,
 	MUSIC,
 	TECH,
 	JUST_CHATTING,

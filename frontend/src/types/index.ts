@@ -36,8 +36,16 @@ export interface StreamData {
 
 export enum StreamCategory {
   ART = 'art',
-  GAMES = 'games',
+  GAMING = 'gaming',
   MUSIC = 'music',
   TECH = 'tech',
   JUST_CHATTING = 'just_chatting'
 }
+
+export const allCategories = [
+  StreamCategory.ART,
+  StreamCategory.GAMING,
+  StreamCategory.MUSIC,
+  StreamCategory.TECH,
+  StreamCategory.JUST_CHATTING
+]
