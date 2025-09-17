@@ -8,7 +8,7 @@ import { unstable_noStore as noStore } from 'next/cache'
 const Page = async () => {
   noStore()
   const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`, {
-    next: { revalidate: 60 }
+    next: { revalidate: 0 }
   })
 
   const data = await streams.json()

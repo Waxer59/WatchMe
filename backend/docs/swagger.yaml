@@ -69,6 +69,18 @@ paths:
       responses: {}
       tags:
       - Streams
+  /streams/delete-stream/:playbackId:
+    delete:
+      description: Delete the stream from the database
+      parameters:
+      - description: Playback ID of the stream
+        in: path
+        name: playbackId
+        required: true
+        type: string
+      responses: {}
+      tags:
+      - Streams
   /streams/edit-stream/:playbackId:
     patch:
       description: Edit the title of a live stream

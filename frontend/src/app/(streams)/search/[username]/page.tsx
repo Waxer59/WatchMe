@@ -6,12 +6,15 @@ import { useUiStore } from '@/store/ui'
 import { StreamerDetails } from '@/types'
 import { FrownIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { BounceLoader } from 'react-spinners'
 
 const Page = ({ params }: { params: { username: string } }) => {
   const setSearchInput = useUiStore((state) => state.setSearchInput)
   const [streamersFound, setStreamersFound] = useState<StreamerDetails[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const getStreamers = async () => {
+    setIsLoading(true)
     try {
       const response = await fetch(
         `${getPublicEnv().BACKEND_URL}/streamer/search/${params.username}`
@@ -20,6 +23,8 @@ const Page = ({ params }: { params: { username: string } }) => {
       setStreamersFound(data)
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -27,6 +32,14 @@ const Page = ({ params }: { params: { username: string } }) => {
     getStreamers()
     setSearchInput(params.username)
   }, [])
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center w-full h-full">
+        <BounceLoader size={80} color={'#1e2939'} loading={true} />
+      </div>
+    )
+  }
 
   return (
     <>

@@ -13,9 +13,14 @@ interface Props {
 
 export const NoStreaming: React.FC<Props> = ({
   streamer,
-  savedStreams
+  savedStreams: savedStreamsProp,
 }) => {
+  const [savedStreams, setSavedStreams] = useState(savedStreamsProp)
   const [currentFollowers, setCurrentFollowers] = useState(streamer.followers ?? 0)
+
+  const onDeleteStream = (playbackId: string) => {
+    setSavedStreams(savedStreams.filter((savedStream) => savedStream.playback_id !== playbackId))
+  }
 
   return (
     <div className="p-6">
@@ -38,9 +43,11 @@ export const NoStreaming: React.FC<Props> = ({
       </header>
       <h3 className="text-xl font-bold my-8">Recent Streams</h3>
       <SavedStreams
+        userId={streamer.id}
         username={streamer.username}
         avatar={streamer.avatar}
         savedStreams={savedStreams}
+        onDeleteStream={onDeleteStream}
       />
     </div>
   )

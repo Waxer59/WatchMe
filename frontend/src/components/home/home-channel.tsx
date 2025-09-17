@@ -75,7 +75,7 @@ export const HomeChannel: React.FC<Props> = ({
               {title}
             </h3>
             <div className="flex flex-col gap-1">
-              <p className="text-white text-md font-medium">{username}</p>
+              <p className="text-white text-md font-medium text-left">{username}</p>
               <p className="text-gray-400">{category}</p>
             </div>
           </div>

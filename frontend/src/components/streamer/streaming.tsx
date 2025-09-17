@@ -42,11 +42,12 @@ export const Streaming: React.FC<Props> = ({
   category,
   streamer,
   playbackId,
-  savedStreams,
+  savedStreams: savedStreamsProp,
   streamingChat,
   blurHashBase64,
   showChat = true
 }) => {
+  const [savedStreams, setSavedStreams] = useState(savedStreamsProp)
   const [newCategory, setNewCategory] = useState<StreamCategory>(category)
   const currentUserId = useAccountStore((state) => state.id)
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -91,6 +92,10 @@ export const Streaming: React.FC<Props> = ({
     }
   }
 
+  const onDeleteStream = (playbackId: string) => {
+    setSavedStreams(savedStreams.filter((savedStream) => savedStream.playback_id !== playbackId))
+  }
+
   return (
     <div className="flex gap-4 h-full">
       <div
@@ -105,8 +110,8 @@ export const Streaming: React.FC<Props> = ({
                   playbackId={playbackId}
                   placeholder={blurHashBase64}
                   accentColor="#1e2939"
-                  autoPlay
                   videoTitle={title}
+                  autoPlay
                 />
               </Suspense>
             </div>
@@ -213,9 +218,11 @@ export const Streaming: React.FC<Props> = ({
             </header>
             <h3 className="text-xl font-bold">Recent Streams</h3>
             <SavedStreams
+              userId={streamer.id}
               username={streamer.username}
               avatar={streamer.avatar}
               savedStreams={savedStreams}
+              onDeleteStream={onDeleteStream}
             />
           </div>
         </div>

@@ -1,33 +1,80 @@
+'use client'
+
 import { StreamData } from '@/types'
 import React from 'react'
 import { HomeChannel } from '../home/home-channel'
 import { VideoOffIcon } from 'lucide-react'
 import { VideosLayout } from '@/layouts/videos-layout'
 import { categoryCodeToCategory } from '@/helpers/categoryCodeToCategory'
+import { useAccountStore } from '@/store/account'
+import { getPublicEnv } from '@/helpers/getPublicEnv'
+import { toaster } from '../ui/toaster'
+import { StreamActions } from '@/layouts/stream-actions'
 
 interface Props {
+  userId: string
   username: string
   avatar: string
   savedStreams: StreamData[]
+  onDeleteStream?: (playbackId: string) => void
 }
 
-export const SavedStreams: React.FC<Props> = ({ savedStreams, username, avatar }) => {
+export const SavedStreams: React.FC<Props> = ({
+  userId,
+  savedStreams,
+  username,
+  avatar,
+  onDeleteStream
+}) => {
+  const currentUserId = useAccountStore((state) => state.id)
+  const isOwnChannel = currentUserId === userId
+
+  const handleDeleteStream = async (playbackId: string) => {
+    try {
+      await fetch(
+        `${getPublicEnv().BACKEND_URL}/streams/delete-stream/${playbackId}`,
+        {
+          method: 'DELETE',
+          credentials: 'include'
+        }
+      )
+
+      toaster.success({
+        title: 'Success',
+        description: 'Stream deleted successfully'
+      })
+      onDeleteStream?.(playbackId)
+    } catch (error) {
+      console.log(error)
+      toaster.error({
+        title: 'Error',
+        description: 'Something went wrong while deleting the stream'
+      })
+    }
+  }
+
   return (
     <>
       {savedStreams.length > 0 ? (
         <VideosLayout>
           {savedStreams.map((savedStream) => (
             <li key={savedStream.id}>
-              <HomeChannel
-                href={`/${username}/${savedStream.playback_id}`}
-                title={savedStream.title}
-                thumbnail={`https://image.mux.com/${savedStream.playback_id}/thumbnail.webp`}
-                thumbnail_gif={`https://image.mux.com/${savedStream.playback_id}/animated.webp`}
-                username={username}
-                avatar={avatar}
-                category={categoryCodeToCategory(savedStream.category)}
-                isLive={false}
-              />
+              <StreamActions
+                handleDeleteStream={handleDeleteStream}
+                playbackId={savedStream.playback_id}
+                disabled={!isOwnChannel}
+                >
+                <HomeChannel
+                  href={`/${username}/${savedStream.playback_id}`}
+                  title={savedStream.title}
+                  thumbnail={`https://image.mux.com/${savedStream.playback_id}/thumbnail.webp`}
+                  thumbnail_gif={`https://image.mux.com/${savedStream.playback_id}/animated.webp`}
+                  username={username}
+                  avatar={avatar}
+                  category={categoryCodeToCategory(savedStream.category)}
+                  isLive={false}
+                />
+              </StreamActions>
             </li>
           ))}
         </VideosLayout>

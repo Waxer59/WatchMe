@@ -18,6 +18,7 @@ type Stream struct {
 	PlaybackId   string    `gorm:"not null" json:"playback_id,omitempty"`
 	Category     string    `json:"category,omitempty"`
 	Viewers      int       `json:"viewers,omitempty"`
+	AssetId      string    `json:"-"`
 	IsCompleted  bool      `json:"is_completed,omitempty"`
 	IsUploadDone bool      `json:"-" default:"false"`
 	CreatedAt    time.Time `json:"-" gorm:"default:CURRENT_TIMESTAMP"`

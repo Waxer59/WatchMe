@@ -19,10 +19,10 @@ export default async function User({
   try {
     const [streamDataResponse, userDataResponse] = await Promise.all([
       fetch(`${getPublicEnv().BACKEND_URL}/streams/${params.username}`, {
-        next: { revalidate: 60 }
+        next: { revalidate: 0 }
       }),
       fetch(`${getPublicEnv().BACKEND_URL}/streamer/${params.username}`, {
-        next: { revalidate: 60 }
+        next: { revalidate: 0 }
       })
     ])
 

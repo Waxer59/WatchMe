@@ -1,11 +1,12 @@
 package streams_service
 
 import (
+	"errors"
 	"fmt"
-	"os"
 
 	"github.com/google/uuid"
 	muxgo "github.com/muxinc/mux-go/v6"
+	"github.com/waxer59/watchMe/config"
 	"github.com/waxer59/watchMe/database"
 	"github.com/waxer59/watchMe/internal/streams/streams_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
@@ -19,13 +20,9 @@ type StreamFeed struct {
 	PlaybackId string `json:"playback_id"`
 }
 
-var muxClient = muxgo.NewAPIClient(
-	muxgo.NewConfiguration(
-		muxgo.WithBasicAuth(os.Getenv("MUX_ACCESS_TOKEN"), os.Getenv("MUX_SECRET_KEY")),
-	),
-)
-
 func GenerateStreamKey(channelId string) (muxgo.LiveStreamResponse, error) {
+	muxClient := config.GetMuxClient()
+
 	streamParams, err := muxClient.LiveStreamsApi.CreateLiveStream(muxgo.CreateLiveStreamRequest{
 		PlaybackPolicy: []muxgo.PlaybackPolicy{muxgo.PUBLIC},
 		LatencyMode:    "low",
@@ -70,6 +67,8 @@ func GetStreamFeed(category *string) ([]StreamFeed, error) {
 }
 
 func DeleteStreamKey(streamKeyId string) error {
+	muxClient := config.GetMuxClient()
+
 	err := muxClient.LiveStreamsApi.DeleteLiveStream(streamKeyId)
 
 	return err
@@ -95,6 +94,10 @@ func GetLiveStreamByUsername(username string) (*streams_entities.Stream, error) 
 	user, err := users_service.FindUserByUsername(username)
 
 	if user == nil {
+		return nil, nil
+	}
+
+	if !user.IsStreaming {
 		return nil, nil
 	}
 
@@ -148,6 +151,10 @@ func UpdateStreamById(id uuid.UUID, stream *streams_entities.Stream) error {
 
 	if stream.IsCompleted {
 		updateField["is_completed"] = stream.IsCompleted
+	}
+
+	if stream.AssetId != "" {
+		updateField["asset_id"] = stream.AssetId
 	}
 
 	updateField["is_upload_done"] = stream.IsUploadDone
@@ -220,6 +227,35 @@ func EditStreamByPlaybackId(playbackId string, stream *streams_entities.Stream) 
 	}
 
 	err := db.Table("streams").Where("playback_id = ?", playbackId).Updates(updateFields).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteStreamByPlaybackId(playbackId string) error {
+	db := database.DB
+	muxClient := config.GetMuxClient()
+
+	stream, err := GetStreamByPlaybackId(playbackId)
+
+	if err != nil {
+		return err
+	}
+
+	if stream.UserId == uuid.Nil {
+		return errors.New("stream not found")
+	}
+
+	err = muxClient.AssetsApi.DeleteAsset(stream.AssetId)
+
+	if err != nil {
+		return err
+	}
+
+	err = db.Table("streams").Where("playback_id = ?", playbackId).Delete(&streams_entities.Stream{}).Error
 
 	if err != nil {
 		return err

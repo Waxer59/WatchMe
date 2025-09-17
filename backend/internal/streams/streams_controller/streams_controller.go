@@ -1,6 +1,8 @@
 package streams_controller
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/waxer59/watchMe/internal/streams/streams_entities"
@@ -18,6 +20,7 @@ func New(router fiber.Router) {
 	streams.Get("/feed", getStreamFeed)
 	streams.Get("/:username", getLiveStream)
 	streams.Patch("/edit-stream/:playbackId", router_middlewares.AuthMiddleware, editStream)
+	streams.Delete("/delete-stream/:playbackId", router_middlewares.AuthMiddleware, deleteStream)
 }
 
 // @title			Generate Stream Key
@@ -30,12 +33,14 @@ func generateStreamKey(c *fiber.Ctx) error {
 	streamKey, err := streams_service.GenerateStreamKey(channelId)
 
 	if err != nil {
+		fmt.Println(err.Error())
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	_, err = users_service.CreateStreamKey(streamKey.Data.Id, streamKey.Data.StreamKey, c.Locals("user").(*user_entities.User).ID)
 
 	if err != nil {
+		fmt.Println(err.Error())
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
@@ -160,6 +165,39 @@ func editStream(c *fiber.Ctx) error {
 	})
 
 	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	return c.SendStatus(fiber.StatusOK)
+}
+
+// @title			Delete Stream
+// @description	Delete the stream from the database
+// @tags			Streams
+// @router			/streams/delete-stream/:playbackId [delete]
+// @param			playbackId	path string	true	"Playback ID of the stream"
+func deleteStream(c *fiber.Ctx) error {
+	playbackId := c.Params("playbackId")
+
+	stream, err := streams_service.GetStreamByPlaybackId(playbackId)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	if stream.UserId == uuid.Nil {
+		return c.SendStatus(fiber.StatusNotFound)
+	}
+
+	if stream.UserId != c.Locals("user").(*user_entities.User).ID {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	err = streams_service.DeleteStreamByPlaybackId(playbackId)
+
+	if err != nil {
+		fmt.Println(err.Error())
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 

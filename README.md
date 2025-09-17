@@ -64,7 +64,7 @@ To set up the backend, follow these steps:
 * The `JWT_SECRET_KEY` is a random string used to sign the JWT tokens.
 * The `PORT` is the port the backend will listen on.
 * The `FRONTEND_URL` is the URL of the frontend.
-* The `MUX_ACCESS_TOKEN` and `MUX_SECRET_KEY` are the Mux credentials, this services is being used for live streaming
+* The `MUX_TOKEN_ID` and `MUX_SECRET_KEY` are the Mux credentials, this services is being used for live streaming
 * The `MUX_WEBHOOK_SECRET` is the secret key used to sign the Mux webhooks.
 * The `ENVIRONMENT` is the environment the backend is running in, either `DEV` or `PROD`.
 

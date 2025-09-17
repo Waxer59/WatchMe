@@ -121,6 +121,7 @@ func HandleAssetLiveStreamCompleted(webhook mux_models.MuxWebhook) error {
 
 	stream.PlaybackId = webhook.Data.PlaybackIds[0].Id
 	stream.IsUploadDone = true
+	stream.AssetId = webhook.Object.Id
 
 	err = streams_service.UpdateStreamById(stream.ID, stream)
 
