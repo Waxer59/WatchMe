@@ -37,7 +37,7 @@ export function UserAvatar() {
             value="me"
             className="cursor-pointer hover:bg-gray-700 transition-all"
             asChild>
-            <Link href={`/${username}`}>
+            <Link href={`/${username}`} scroll={false}>
               <UserIcon size={18} />
               My Channel
             </Link>

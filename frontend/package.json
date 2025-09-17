@@ -22,6 +22,7 @@
     "react": "^18",
     "react-dom": "^18",
     "rgb-hex": "^4.1.0",
+    "sharp": "^0.34.3",
     "tailwind-scrollbar-hide": "^4.0.0",
     "zustand": "^5.0.8"
   },

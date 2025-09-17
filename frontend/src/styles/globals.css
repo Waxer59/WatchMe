@@ -5,6 +5,18 @@
   background: inherit;
 }
 
+.player-wrapper {
+  width: 100%;
+  aspect-ratio: var(--asset-aspect-ratio, 16/9);
+  position: relative;
+}
+
+.player-placeholder,
+mux-player {
+  position: absolute;
+  inset: 0;
+}
+
 @supports selector(::-webkit-scrollbar) {
   /* width */
   ::-webkit-scrollbar {

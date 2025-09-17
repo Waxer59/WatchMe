@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { formatViewersCountShort } from '@/helpers/formatViewersCountShort'
 import { Avatar } from '@chakra-ui/react'
@@ -26,6 +26,7 @@ export const HomeChannel: React.FC<Props> = ({
 }) => {
   return (
     <Link
+      scroll={false}
       href={`/${username}`}
       className="text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm bg-gray-800 border-gray-700 overflow-hidden hover:border-white transition-colors cursor-pointer group">
       <div className="relative">
@@ -52,9 +53,7 @@ export const HomeChannel: React.FC<Props> = ({
         </span>
         <div className="absolute bottom-2 right-2 bg-black/70 text-white text-sm px-2 py-1 rounded flex items-center">
           <EyeIcon size={24} strokeWidth={1.5} />
-          <span className='ml-1'>
-          {formatViewersCountShort(count)}
-          </span>
+          <span className="ml-1">{formatViewersCountShort(count)}</span>
         </div>
       </div>
       <div data-slot="card-content" className="p-4">
