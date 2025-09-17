@@ -3,7 +3,7 @@ import { Streaming } from '@/components/streamer/streaming'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { getBlurredMuxThumbnail } from '@/helpers/server/getBlurredMuxThumbnail'
 import { StreamCategory, StreamData, StreamerDetails } from '@/types'
-import { unstable_noStore as noStore } from 'next/cache';
+import { unstable_noStore as noStore } from 'next/cache'
 import { FrownIcon } from 'lucide-react'
 
 export default async function User({
@@ -11,15 +11,19 @@ export default async function User({
 }: {
   params: { username: string }
 }) {
-  noStore();
+  noStore()
   let streamData: StreamData | null = null
   let userData: StreamerDetails | null = null
   let blurHashBase64: string | null = null
 
   try {
     const [streamDataResponse, userDataResponse] = await Promise.all([
-      fetch(`${getPublicEnv().BACKEND_URL}/streams/${params.username}`),
-      fetch(`${getPublicEnv().BACKEND_URL}/streamer/${params.username}`)
+      fetch(`${getPublicEnv().BACKEND_URL}/streams/${params.username}`, {
+        next: { revalidate: 60 }
+      }),
+      fetch(`${getPublicEnv().BACKEND_URL}/streamer/${params.username}`, {
+        next: { revalidate: 60 }
+      })
     ])
 
     if (streamDataResponse.status !== 404) {

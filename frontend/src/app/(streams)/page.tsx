@@ -8,7 +8,9 @@ import { unstable_noStore as noStore } from 'next/cache';
 
 export default async function Home() {
   noStore();
-  const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`)
+  const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`, {
+    next: { revalidate: 60 }
+  })
 
   const data = await streams.json()
 
