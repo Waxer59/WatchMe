@@ -1,6 +1,8 @@
 package streamer_controller
 
 import (
+	"sort"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/waxer59/watchMe/internal/streamer/streamer_service"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
@@ -33,6 +35,11 @@ func getStreamer(c *fiber.Ctx) error {
 	if streamer == nil {
 		return c.SendStatus(fiber.StatusNotFound)
 	}
+
+	// Order streams by created_at DESC
+	sort.Slice(streamer.Streams, func(i, j int) bool {
+		return streamer.Streams[i].CreatedAt.After(streamer.Streams[j].CreatedAt)
+	})
 
 	return c.JSON(streamer)
 }

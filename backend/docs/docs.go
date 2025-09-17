@@ -112,6 +112,24 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/streams/edit-stream/:playbackId": {
+            "patch": {
+                "description": "Edit the title of a live stream",
+                "tags": [
+                    "Streams"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Playback ID of the stream",
+                        "name": "playbackId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/streams/feed": {
             "get": {
                 "description": "Get the feed for the home page",

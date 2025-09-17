@@ -187,3 +187,39 @@ func GetStreamsByUserId(userId uuid.UUID) ([]streams_entities.Stream, error) {
 
 	return streams, nil
 }
+
+func GetStreamByPlaybackId(playbackId string) (*streams_entities.Stream, error) {
+	db := database.DB
+
+	var stream streams_entities.Stream
+
+	err := db.Find(&stream, "playback_id = ?", playbackId).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &stream, nil
+}
+
+func EditStreamByPlaybackId(playbackId string, stream *streams_entities.Stream) error {
+	db := database.DB
+
+	updateFields := map[string]interface{}{}
+
+	if stream.Title != "" {
+		updateFields["title"] = stream.Title
+	}
+
+	if stream.Category != "" {
+		updateFields["category"] = stream.Category
+	}
+
+	err := db.Table("streams").Where("playback_id = ?", playbackId).Updates(updateFields).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

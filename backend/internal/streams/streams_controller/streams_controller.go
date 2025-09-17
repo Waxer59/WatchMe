@@ -3,6 +3,7 @@ package streams_controller
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"github.com/waxer59/watchMe/internal/streams/streams_entities"
 	"github.com/waxer59/watchMe/internal/streams/streams_service"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
@@ -16,6 +17,7 @@ func New(router fiber.Router) {
 	streams.Delete("/delete-key/:streamKeyId", router_middlewares.AuthMiddleware, deleteStreamKey)
 	streams.Get("/feed", getStreamFeed)
 	streams.Get("/:username", getLiveStream)
+	streams.Patch("/edit-stream/:playbackId", router_middlewares.AuthMiddleware, editStream)
 }
 
 // @title			Generate Stream Key
@@ -113,4 +115,51 @@ func getLiveStream(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(stream)
+}
+
+type EditStream struct {
+	Title    string `json:"title"`
+	Category string `json:"category"`
+}
+
+// @title			Edit Stream
+// @description	Edit the title of a live stream
+// @tags			Streams
+// @router			/streams/edit-stream/:playbackId [patch]
+// @param			playbackId	path string	true	"Playback ID of the stream"
+func editStream(c *fiber.Ctx) error {
+	playbackId := c.Params("playbackId")
+
+	var streamData EditStream
+
+	err := c.BodyParser(&streamData)
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	stream, err := streams_service.GetStreamByPlaybackId(playbackId)
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	if stream.UserId == uuid.Nil {
+		return c.SendStatus(fiber.StatusNotFound)
+	}
+
+	if stream.UserId != c.Locals("user").(*user_entities.User).ID {
+		return c.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	err = streams_service.EditStreamByPlaybackId(playbackId, &streams_entities.Stream{
+		Title:    streamData.Title,
+		Category: streamData.Category,
+	})
+
+	if err != nil {
+		return c.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	return c.SendStatus(fiber.StatusOK)
 }

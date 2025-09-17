@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { toaster } from '../ui/toaster'
 import { StreamCategory } from '@/types'
 
-const categories = createListCollection({
+export const categories = createListCollection({
   items: [
     { label: 'Gaming', value: 'gaming' },
     { label: 'Music', value: 'music' },
@@ -126,12 +126,12 @@ export const StreamSettings = () => {
             <Select.Positioner>
               <Select.Content
                 className={'bg-gray-800 rounded-lg border border-gray-700 p-2'}>
-                {categories.items.map((framework) => (
+                {categories.items.map((category) => (
                   <Select.Item
-                    item={framework}
-                    key={framework.value}
+                    item={category}
+                    key={category.value}
                     className="cursor-pointer">
-                    {framework.label}
+                    {category.label}
                     <Select.ItemIndicator />
                   </Select.Item>
                 ))}

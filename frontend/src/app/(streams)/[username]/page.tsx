@@ -2,7 +2,7 @@ import { NoStreaming } from '@/components/streamer/no-streaming'
 import { Streaming } from '@/components/streamer/streaming'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { getBlurredMuxThumbnail } from '@/helpers/server/getBlurredMuxThumbnail'
-import { StreamData, StreamerDetails } from '@/types'
+import { StreamCategory, StreamData, StreamerDetails } from '@/types'
 import { unstable_noStore as noStore } from 'next/cache';
 import { FrownIcon } from 'lucide-react'
 
@@ -48,6 +48,7 @@ export default async function User({
       {streamData ? (
         <Streaming
           title={streamData!.title}
+          category={streamData!.category as StreamCategory}
           streamer={userData}
           playbackId={streamData!.playback_id}
           blurHashBase64={blurHashBase64!}
