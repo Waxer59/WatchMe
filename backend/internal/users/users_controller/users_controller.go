@@ -2,6 +2,7 @@ package users_controller
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
@@ -38,6 +39,11 @@ func getUser(c *fiber.Ctx) error {
 	}
 
 	user.StreamKeys = streamKeys
+
+	// Order streams by created_at DESC
+	sort.Slice(user.Streams, func(i, j int) bool {
+		return user.Streams[i].CreatedAt.After(user.Streams[j].CreatedAt)
+	})
 
 	for _, followingUser := range followingUsers {
 		// Prevent giving the following user's sensitive info as stream keys

@@ -2,6 +2,7 @@
 
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { useAccountStore } from '@/store/account'
+import { useUiStore } from '@/store/ui'
 import { StreamerDetails } from '@/types'
 import { Button } from '@chakra-ui/react'
 
@@ -12,10 +13,12 @@ interface Props {
 }
 
 const FollowButton: React.FC<Props> = ({ streamer, onFollow, onUnfollow }) => {
+  const isLoggedIn = useAccountStore((state) => state.isLoggedIn)
   const userId = useAccountStore((state) => state.id)
   const isFollowing = useAccountStore((state) =>
     state.following.find((following) => following.id === streamer.id)
   )
+  const setIsLoginModalOpen = useUiStore((state) => state.setIsLoginModalOpen)
   const addFollowing = useAccountStore((state) => state.addFollowing)
   const removeFollowing = useAccountStore((state) => state.removeFollowing)
 
@@ -24,6 +27,11 @@ const FollowButton: React.FC<Props> = ({ streamer, onFollow, onUnfollow }) => {
   }
 
   const handleFollow = async () => {
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true)
+      return
+    }
+
     try {
       await fetch(
         getPublicEnv().BACKEND_URL + '/users/follow/' + streamer.username,

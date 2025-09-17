@@ -1,8 +1,10 @@
 package streams_service
 
 import (
+	"fmt"
 	"os"
 
+	"github.com/google/uuid"
 	muxgo "github.com/muxinc/mux-go/v6"
 	"github.com/waxer59/watchMe/database"
 	"github.com/waxer59/watchMe/internal/streams/streams_entities"
@@ -13,6 +15,7 @@ type StreamFeed struct {
 	Title      string `json:"title"`
 	Username   string `json:"username"`
 	Avatar     string `json:"avatar"`
+	Category   string `json:"category"`
 	PlaybackId string `json:"playback_id"`
 }
 
@@ -51,7 +54,8 @@ func GetStreamFeed() ([]StreamFeed, error) {
 		}
 
 		streamsFeed = append(streamsFeed, StreamFeed{
-			Title:      user.Username, // TODO: Add title
+			Title:      stream.Title,
+			Category:   stream.Category,
 			Username:   user.Username,
 			Avatar:     user.Avatar,
 			PlaybackId: stream.PlaybackId,
@@ -59,20 +63,6 @@ func GetStreamFeed() ([]StreamFeed, error) {
 	}
 
 	return streamsFeed, nil
-}
-
-func GetStreams() ([]streams_entities.Stream, error) {
-	db := database.DB
-
-	var streams []streams_entities.Stream
-
-	err := db.Find(&streams).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return streams, nil
 }
 
 func DeleteStreamKey(streamKeyId string) error {
@@ -115,4 +105,85 @@ func GetLiveStreamByUsername(username string) (*streams_entities.Stream, error) 
 	}
 
 	return &stream, nil
+}
+
+func GetStreamInProgressByUserId(userId uuid.UUID) (*streams_entities.Stream, error) {
+	db := database.DB
+
+	var stream streams_entities.Stream
+
+	err := db.Find(&stream, "user_id = ? and is_completed = ?", userId, false).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &stream, nil
+}
+
+func UpdateStreamById(id uuid.UUID, stream *streams_entities.Stream) error {
+	db := database.DB
+
+	updateField := map[string]interface{}{}
+
+	if stream.Title != "" {
+		updateField["title"] = stream.Title
+	}
+
+	if stream.PlaybackId != "" {
+		updateField["playback_id"] = stream.PlaybackId
+	}
+
+	if stream.Category != "" {
+		updateField["category"] = stream.Category
+	}
+
+	if stream.Viewers != 0 {
+		updateField["viewers"] = stream.Viewers
+	}
+
+	if stream.IsCompleted {
+		updateField["is_completed"] = stream.IsCompleted
+	}
+
+	updateField["is_upload_done"] = stream.IsUploadDone
+
+	err := db.Model(&streams_entities.Stream{
+		ID: id,
+	}).Updates(updateField).Error
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func GetNonUploadedStreamByLiveStreamId(liveStreamId string) (*streams_entities.Stream, error) {
+	db := database.DB
+
+	var stream streams_entities.Stream
+
+	err := db.Find(&stream, "live_stream_id = ? and is_upload_done = ?", liveStreamId, false).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &stream, nil
+}
+
+func GetStreamsByUserId(userId uuid.UUID) ([]streams_entities.Stream, error) {
+	db := database.DB
+
+	var streams []streams_entities.Stream
+
+	err := db.Find(&streams, "user_id = ?", userId).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return streams, nil
 }

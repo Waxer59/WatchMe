@@ -16,9 +16,13 @@ func New(router fiber.Router) {
 }
 
 func muxWebhook(c *fiber.Ctx) error {
+	// We need to send a 200 OK response inmediately to acknowledge the webhook
+	c.SendStatus(fiber.StatusOK)
+
 	var webhook mux_models.MuxWebhook
 
 	err := c.BodyParser(&webhook)
+	fmt.Println(webhook.Type)
 
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
@@ -30,14 +34,13 @@ func muxWebhook(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
-	fmt.Println(webhook.Type)
-	fmt.Println(webhook.Data.StreamKey)
-
 	switch webhook.Type {
 	case "video.live_stream.active":
 		err = mux_service.HandleStreamActive(webhook)
 	case "video.live_stream.disconnected":
 		err = mux_service.HandleStreamDisconnected(webhook)
+	case "video.asset.live_stream_completed":
+		err = mux_service.HandleAssetLiveStreamCompleted(webhook)
 	}
 
 	if err != nil {

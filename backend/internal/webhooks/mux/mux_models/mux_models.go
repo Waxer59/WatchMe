@@ -21,6 +21,7 @@ type MuxWebhook struct {
 		Id            string       `json:"id"`
 		ActiveAssetId string       `json:"active_asset_id"`
 		PlaybackIds   []PlaybackId `json:"playback_ids"`
+		LiveStreamId  string       `json:"live_stream_id"`
 	} `json:"data"`
 	CreatedAt      string      `json:"created_at"`
 	AccessorSource interface{} `json:"accessor_source"`

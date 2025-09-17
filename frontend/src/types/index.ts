@@ -5,6 +5,7 @@ export interface StreamKey {
 
 export interface StreamFeedDetails {
   title: string
+  category: string
   username: string
   avatar: string
   playback_id: string
@@ -17,6 +18,7 @@ export interface StreamerDetails {
   presence_color: string
   followers: number
   is_streaming: boolean
+  streams: StreamData[]
 }
 
 export interface StreamMessage {

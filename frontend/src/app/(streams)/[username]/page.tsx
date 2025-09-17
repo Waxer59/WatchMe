@@ -3,6 +3,7 @@ import { Streaming } from '@/components/streamer/streaming'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { getBlurredMuxThumbnail } from '@/helpers/server/getBlurredMuxThumbnail'
 import { StreamData, StreamerDetails } from '@/types'
+import { unstable_noStore as noStore } from 'next/cache';
 import { FrownIcon } from 'lucide-react'
 
 export default async function User({
@@ -10,6 +11,7 @@ export default async function User({
 }: {
   params: { username: string }
 }) {
+  noStore();
   let streamData: StreamData | null = null
   let userData: StreamerDetails | null = null
   let blurHashBase64: string | null = null
@@ -45,14 +47,15 @@ export default async function User({
     <div className="rounded-lg w-full overflow-y-auto scrollbar-hide">
       {streamData ? (
         <Streaming
+          title={streamData!.title}
           streamer={userData}
           playbackId={streamData!.playback_id}
           blurHashBase64={blurHashBase64!}
-          savedStreams={[]}
+          savedStreams={userData.streams}
           streamingChat={[]}
         />
       ) : (
-        <NoStreaming streamer={userData} savedStreams={[]} />
+        <NoStreaming streamer={userData} savedStreams={userData.streams} />
       )}
     </div>
   )

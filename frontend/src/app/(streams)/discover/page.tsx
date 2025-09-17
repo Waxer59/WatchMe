@@ -27,7 +27,8 @@ const Page = async () => {
                 thumbnail_gif={`https://image.mux.com/${stream.playback_id}/animated.webp`}
                 username={stream.username}
                 avatar={stream.avatar}
-                topic="Art"
+                category={stream.category}
+                isLive
                 count={0}
               />
             </li>

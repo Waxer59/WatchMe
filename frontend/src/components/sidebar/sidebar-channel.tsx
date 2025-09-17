@@ -6,7 +6,7 @@ interface SidebarChannelProps {
   isLive?: boolean
   username: string
   avatar: string
-  topic?: string
+  category?: string
   count?: number
   [key: string]: unknown
 }
@@ -15,7 +15,7 @@ export const SidebarChannel: React.FC<SidebarChannelProps> = ({
   username,
   avatar,
   isLive,
-  topic,
+  category,
   count,
   ...props
 }) => {
@@ -39,7 +39,7 @@ export const SidebarChannel: React.FC<SidebarChannelProps> = ({
         <div className="flex items-center justify-between flex-1">
           <div className="flex flex-col gap-1 text-left">
             <p className="text-sm text-white truncate">{username}</p>
-            <p className="text-xs text-gray-400 truncate">{topic}</p>
+            <p className="text-xs text-gray-400 truncate">{category}</p>
           </div>
           <div className="flex items-center gap-2">
             <EyeIcon className="text-gray-400 h-4 w-4" />

@@ -6,9 +6,12 @@ import { UserAvatar } from './user-avatar'
 import { GithubIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useAccountStore } from '@/store/account'
+import { useUiStore } from '@/store/ui'
 
 export function Navbar() {
   const isLoggedIn = useAccountStore((state) => state.isLoggedIn)
+  const setIsLoginModalOpen = useUiStore((state) => state.setIsLoginModalOpen)
+  const isLoginModalOpen = useUiStore((state) => state.isLoginModalOpen)
 
   return (
     <Box
@@ -31,7 +34,7 @@ export function Navbar() {
         {isLoggedIn ? (
           <UserAvatar />
         ) : (
-          <Dialog.Root placement="center">
+          <Dialog.Root placement="center" onOpenChange={(open) => setIsLoginModalOpen(open.open)} open={isLoginModalOpen}>
             <Dialog.Trigger asChild>
               <Button variant="subtle" colorPalette="gray" rounded="lg">
                 Log in

@@ -117,20 +117,8 @@ swag fmt
 
 You can view the documentation at `http://localhost:<port>/swagger`.
 
-# Ngrok
+# Forward a port
 
-When using de backend its necessary to recieve webhooks from Mux. To do this you can use [ngrok](https://ngrok.com/).
+When using de backend its necessary to recieve webhooks from Mux.
 
-## Installation
-
-To install ngrok refer to the [installation guide](https://ngrok.com/docs/getting-started/).
-
-## Usage
-
-To start ngrok, run the following command:
-
-```bash
-ngrok http <backend-port>
-```
-
-This will return the ngrok url, with this url you can recieve webhooks from Mux after configuring the webhooks in the Mux dashboard.
+You can use the integrated Port Forwarding feature of VS Code to forward a port to your local machine.

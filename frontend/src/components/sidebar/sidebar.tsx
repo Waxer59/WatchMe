@@ -56,7 +56,7 @@ export function Sidebar() {
             username={following.username}
             avatar={following.avatar}
             isLive={following.is_streaming}
-            topic="Art"
+            category="Art"
             count={24}
           />
         ))}

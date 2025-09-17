@@ -11,8 +11,10 @@ interface Props {
   username: string
   avatar: string
   title: string
-  topic: string
-  count: number
+  category: string
+  count?: number
+  isLive?: boolean
+  href?: string
 }
 
 export const HomeChannel: React.FC<Props> = ({
@@ -20,15 +22,17 @@ export const HomeChannel: React.FC<Props> = ({
   thumbnail,
   thumbnail_gif,
   avatar,
-  topic,
+  category,
   count,
-  title
+  title,
+  href,
+  isLive
 }) => {
   return (
     <Link
       scroll={false}
-      href={`/${username}`}
-      className="text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm bg-gray-800 border-gray-700 overflow-hidden hover:border-white transition-colors cursor-pointer group">
+      href={href ? href : `/${username}`}
+      className="text-card-foreground flex flex-col gap-4 rounded-xl border shadow-sm bg-gray-800 border-gray-700 overflow-hidden hover:border-white transition-colors cursor-pointer group">
       <div className="relative">
         <img
           alt={title}
@@ -45,16 +49,20 @@ export const HomeChannel: React.FC<Props> = ({
             target.src = thumbnail
           }}
         />
-        <span
-          data-slot="badge"
-          className="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent [a&amp;]:hover:bg-primary/90 absolute top-2 left-2 bg-red-600 hover:bg-red-600 text-white">
-          <div className="w-2 h-2 bg-white rounded-full mr-1 animate-pulse"></div>
-          LIVE
-        </span>
-        <div className="absolute bottom-2 right-2 bg-black/70 text-white text-sm px-2 py-1 rounded flex items-center">
-          <EyeIcon size={24} strokeWidth={1.5} />
-          <span className="ml-1">{formatViewersCountShort(count)}</span>
-        </div>
+        {isLive && (
+          <>
+            <span
+              data-slot="badge"
+              className="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent [a&amp;]:hover:bg-primary/90 absolute top-2 left-2 bg-red-600 hover:bg-red-600 text-white">
+              <div className="w-2 h-2 bg-white rounded-full mr-1 animate-pulse"></div>
+              LIVE
+            </span>
+            <div className="absolute bottom-2 right-2 bg-black/70 text-white text-sm px-2 py-1 rounded flex items-center">
+              <EyeIcon size={24} strokeWidth={1.5} />
+              <span className="ml-1">{formatViewersCountShort(count!)}</span>
+            </div>
+          </>
+        )}
       </div>
       <div data-slot="card-content" className="p-4">
         <div className="flex items-start space-x-3">
@@ -68,7 +76,7 @@ export const HomeChannel: React.FC<Props> = ({
             </h3>
             <div className="flex flex-col gap-1">
               <p className="text-white text-md font-medium">{username}</p>
-              <p className="text-gray-400">{topic}</p>
+              <p className="text-gray-400">{category}</p>
             </div>
           </div>
         </div>

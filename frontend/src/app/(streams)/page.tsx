@@ -1,4 +1,5 @@
 import { HomeChannel } from '@/components/home/home-channel'
+import { categoryCodeToCategory } from '@/helpers/categoryCodeToCategory';
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { VideosLayout } from '@/layouts/videos-layout';
 import { StreamFeedDetails } from '@/types';
@@ -29,7 +30,8 @@ export default async function Home() {
                 thumbnail_gif={`https://image.mux.com/${stream.playback_id}/animated.webp`}
                 username={stream.username}
                 avatar={stream.avatar}
-                topic="Art"
+                category={categoryCodeToCategory(stream.category)}
+                isLive
                 count={0}
               />
             </li>

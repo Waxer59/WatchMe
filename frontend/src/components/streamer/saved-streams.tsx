@@ -3,6 +3,7 @@ import React from 'react'
 import { HomeChannel } from '../home/home-channel'
 import { VideoOffIcon } from 'lucide-react'
 import { VideosLayout } from '@/layouts/videos-layout'
+import { categoryCodeToCategory } from '@/helpers/categoryCodeToCategory'
 
 interface Props {
   username: string
@@ -18,13 +19,14 @@ export const SavedStreams: React.FC<Props> = ({ savedStreams, username, avatar }
           {savedStreams.map((savedStream) => (
             <li key={savedStream.id}>
               <HomeChannel
+                href={`/${username}/${savedStream.playback_id}`}
                 title={savedStream.title}
                 thumbnail={`https://image.mux.com/${savedStream.playback_id}/thumbnail.webp`}
                 thumbnail_gif={`https://image.mux.com/${savedStream.playback_id}/animated.webp`}
                 username={username}
                 avatar={avatar}
-                topic={savedStream.category}
-                count={0}
+                category={categoryCodeToCategory(savedStream.category)}
+                isLive={false}
               />
             </li>
           ))}
