@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/waxer59/watchMe/internal/streamer/streamer_cache"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
 	"github.com/waxer59/watchMe/router/router_middlewares"
@@ -28,24 +29,30 @@ func getUser(c *fiber.Ctx) error {
 	streamKeys, err := users_service.FindAllStreamKeysByUserId(user.ID)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	followingUsers, err := users_service.FindAllFollowingUsersByUserId(user.ID)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	user.StreamKeys = streamKeys
 
 	for _, followingUser := range followingUsers {
+		isStreaming, err := streamer_cache.IsUserStreamingByUserId(followingUser.ID.String())
+
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
+		}
+
 		// Prevent giving the following user's sensitive info as stream keys
 		user.Following = append(user.Following, user_entities.User{
 			ID:            followingUser.ID,
 			Username:      followingUser.Username,
 			Avatar:        followingUser.Avatar,
-			IsStreaming:   followingUser.IsStreaming,
+			IsStreaming:   isStreaming,
 			Streams:       followingUser.Streams,
 			PresenceColor: followingUser.PresenceColor,
 		})
@@ -66,10 +73,10 @@ func followUser(c *fiber.Ctx) error {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.Status(fiber.StatusOK).Send([]byte("{}"))
 }
 
 // @title			Unfollow User
@@ -83,10 +90,10 @@ func unfollowUser(c *fiber.Ctx) error {
 	err := users_service.UnfollowUserByUsername(c.Locals("user").(*user_entities.User), username)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.Status(fiber.StatusOK).Send([]byte("{}"))
 }
 
 // @title			Update User
@@ -99,7 +106,7 @@ func updateUser(c *fiber.Ctx) error {
 	err := c.BodyParser(&user)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	err = users_service.UpdateUserById(c.Locals("user").(*user_entities.User).ID, users_service.UpdateUser{
@@ -112,8 +119,8 @@ func updateUser(c *fiber.Ctx) error {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.Status(fiber.StatusOK).Send([]byte("{}"))
 }

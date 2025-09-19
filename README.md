@@ -25,6 +25,8 @@ To set up the frontend, follow these steps:
  ```bash
  pnpm dev
  ```
+* The `NEXT_PUBLIC_ENVIRONMENT` is the environment the frontend is running in, either `DEV` or `PROD`.
+* The `NEXT_PUBLIC_BACKEND_URL` is the URL of the backend e.g. `http://localhost:3000/api`.
 
 ### Dependencies
 The frontend uses the following dependencies:
@@ -66,6 +68,7 @@ To set up the backend, follow these steps:
 * The `FRONTEND_URL` is the URL of the frontend.
 * The `MUX_TOKEN_ID` and `MUX_SECRET_KEY` are the Mux credentials, this services is being used for live streaming
 * The `MUX_WEBHOOK_SECRET` is the secret key used to sign the Mux webhooks.
+* `REDIS_PORT`, `REDIS_HOST`, `REDIS_PASSWORD`, and `REDIS_USERNAME` are the Redis connection details.
 * The `ENVIRONMENT` is the environment the backend is running in, either `DEV` or `PROD`.
 
 > [!TIP]

@@ -8,17 +8,17 @@ import (
 	"github.com/google/uuid"
 	"github.com/waxer59/watchMe/config"
 	"github.com/waxer59/watchMe/database"
+	"github.com/waxer59/watchMe/internal/streamer/streamer_cache"
+	"github.com/waxer59/watchMe/internal/streams/streams_entities"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 )
 
 type UpdateUser struct {
-	Username                  string                       `json:"username"`
-	Avatar                    string                       `json:"avatar"`
-	PresenceColor             string                       `json:"presence_color"`
-	DefaultStreamTitle        string                       `json:"default_stream_title"`
-	DefaultStreamCategory     user_entities.StreamCategory `json:"default_stream_category"`
-	IsStreaming               bool
-	IsUpdatingStreamingStatus bool
+	Username              string                          `json:"username"`
+	Avatar                string                          `json:"avatar"`
+	PresenceColor         string                          `json:"presence_color"`
+	DefaultStreamTitle    string                          `json:"default_stream_title"`
+	DefaultStreamCategory streams_entities.StreamCategory `json:"default_stream_category"`
 }
 
 func CreateGithubUser(user *user_entities.User) (*user_entities.User, error) {
@@ -91,10 +91,6 @@ func UpdateUserById(id uuid.UUID, updateUser UpdateUser) error {
 		updateFields["avatar"] = updateUser.Avatar
 	}
 
-	if updateUser.IsUpdatingStreamingStatus {
-		updateFields["is_streaming"] = updateUser.IsStreaming
-	}
-
 	if updateUser.PresenceColor != "" {
 		updateFields["presence_color"] = updateUser.PresenceColor
 	}
@@ -105,7 +101,7 @@ func UpdateUserById(id uuid.UUID, updateUser UpdateUser) error {
 
 	if updateUser.DefaultStreamCategory != "" {
 
-		if !slices.Contains(user_entities.StreamCategories, updateUser.DefaultStreamCategory) {
+		if !slices.Contains(streams_entities.StreamCategories, updateUser.DefaultStreamCategory) {
 			return errors.New("default stream category not found")
 		}
 
@@ -128,7 +124,13 @@ func GetUsersStreaming() ([]user_entities.User, error) {
 
 	var users []user_entities.User
 
-	err := db.Find(&users, "is_streaming = ?", true).Error
+	usersStreamingIds, err := streamer_cache.GetUsersIdsStreaming()
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Find(&users, "id IN ?", usersStreamingIds).Error
 
 	if err != nil {
 		return nil, err

@@ -12,6 +12,7 @@
 tmp/
 postgres/
 _postgres/
+_redis/
 
 .env
 

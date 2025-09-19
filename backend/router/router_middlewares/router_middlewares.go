@@ -14,13 +14,13 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	jwtToken, err := jwt_utils.ParseJwtToken(cookie)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusUnauthorized)
+		return c.Status(fiber.StatusUnauthorized).Send([]byte("{}"))
 	}
 
 	user, err := users_service.GetUserById(jwtToken["id"].(string))
 
 	if err != nil || user.ID == uuid.Nil {
-		return c.SendStatus(fiber.StatusUnauthorized)
+		return c.Status(fiber.StatusUnauthorized).Send([]byte("{}"))
 	}
 
 	// Add user to context
@@ -39,13 +39,13 @@ func OptionalAuthMiddleware(c *fiber.Ctx) error {
 	jwtToken, err := jwt_utils.ParseJwtToken(cookie)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusUnauthorized)
+		return c.Status(fiber.StatusUnauthorized).Send([]byte("{}"))
 	}
 
 	user, err := users_service.GetUserById(jwtToken["id"].(string))
 
 	if err != nil || user.ID == uuid.Nil {
-		return c.SendStatus(fiber.StatusUnauthorized)
+		return c.Status(fiber.StatusUnauthorized).Send([]byte("{}"))
 	}
 
 	// Add user to context

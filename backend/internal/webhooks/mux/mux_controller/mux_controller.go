@@ -25,7 +25,7 @@ func muxWebhook(c *fiber.Ctx) error {
 	fmt.Println(webhook.Type)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	err = mux_helper.IsValidMuxSignature(c.Get("Mux-Signature"), c.Body())

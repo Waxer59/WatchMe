@@ -15,7 +15,7 @@ import {
   StreamerDetails,
   StreamMessage
 } from '@/types'
-import { Suspense, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { SavedStreams } from './saved-streams'
 import FollowButton from './follow-button'
 import MuxPlayer from '@mux/mux-player-react/lazy'
@@ -25,8 +25,10 @@ import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { toaster } from '../ui/toaster'
 import { categories } from '../settings/stream-settings'
 import { categoryCodeToCategory } from '@/helpers/categoryCodeToCategory'
+import { useSocketChatEvents } from '@/hooks/useSocketChatEvents'
 
 interface Props {
+  id: string
   title: string
   category: StreamCategory
   streamer: StreamerDetails
@@ -38,6 +40,7 @@ interface Props {
 }
 
 export const Streaming: React.FC<Props> = ({
+  id,
   title,
   category,
   streamer,
@@ -47,6 +50,7 @@ export const Streaming: React.FC<Props> = ({
   blurHashBase64,
   showChat = true
 }) => {
+  const { sendJoinUserChannel, sendLeaveUserChannel } = useSocketChatEvents()
   const [savedStreams, setSavedStreams] = useState(savedStreamsProp)
   const [newCategory, setNewCategory] = useState<StreamCategory>(category)
   const currentUserId = useAccountStore((state) => state.id)
@@ -93,8 +97,19 @@ export const Streaming: React.FC<Props> = ({
   }
 
   const onDeleteStream = (playbackId: string) => {
-    setSavedStreams(savedStreams.filter((savedStream) => savedStream.playback_id !== playbackId))
+    setSavedStreams(
+      savedStreams.filter(
+        (savedStream) => savedStream.playback_id !== playbackId
+      )
+    )
   }
+
+  useEffect(() => {
+    sendJoinUserChannel(id)
+    return () => {
+      sendLeaveUserChannel(id)
+    }
+  }, [])
 
   return (
     <div className="flex gap-4 h-full">
@@ -184,7 +199,9 @@ export const Streaming: React.FC<Props> = ({
                   </Select.Positioner>
                 </Select.Root>
               ) : (
-                <h3 className='text-xl font-semibold text-gray-400'>{categoryCodeToCategory(category)}</h3>
+                <h3 className="text-xl font-semibold text-gray-400">
+                  {categoryCodeToCategory(category)}
+                </h3>
               )}
             </div>
           </div>

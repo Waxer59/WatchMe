@@ -23,6 +23,7 @@ export interface StreamerDetails {
 
 export interface StreamMessage {
   id: string
+  presenceColor: string
   username: string
   content: string
 }
@@ -42,6 +43,16 @@ export enum StreamCategory {
   JUST_CHATTING = 'just_chatting'
 }
 
+export enum WebSocketSendEvent {
+  JOIN_USER_CHANNEL = 'join-user-channel',
+  LEAVE_USER_CHANNEL = 'leave-user-channel',
+  SEND_MESSAGE = 'send-message'
+}
+
+export enum WebSocketReceiveEvent {
+  STREAM_VIEWERS_COUNT = 'stream-viewers-count'
+}
+
 export const allCategories = [
   StreamCategory.ART,
   StreamCategory.GAMING,
@@ -49,3 +60,8 @@ export const allCategories = [
   StreamCategory.TECH,
   StreamCategory.JUST_CHATTING
 ]
+
+export enum Environment {
+  DEV = 'DEV',
+  PROD = 'PROD'
+}

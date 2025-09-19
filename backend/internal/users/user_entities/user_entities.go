@@ -9,24 +9,6 @@ import (
 
 var validate = validator.New()
 
-type StreamCategory string
-
-const (
-	ART           StreamCategory = "art"
-	MUSIC         StreamCategory = "music"
-	TECH          StreamCategory = "tech"
-	GAMING        StreamCategory = "gaming"
-	JUST_CHATTING StreamCategory = "just_chatting"
-)
-
-var StreamCategories = []StreamCategory{
-	ART,
-	MUSIC,
-	TECH,
-	JUST_CHATTING,
-	GAMING,
-}
-
 type User struct {
 	ID                    uuid.UUID                 `gorm:"type:uuid;primary_key" json:"id,omitempty"`
 	Username              string                    `gorm:"unique;not null" validate:"required" json:"username,omitempty"`
@@ -37,7 +19,7 @@ type User struct {
 	DefaultStreamCategory string                    `gorm:"default:just_chatting;" json:"default_stream_category,omitempty"`
 	StreamKeys            []StreamKey               `json:"stream_keys,omitempty"`
 	Streams               []streams_entities.Stream `json:"streams,omitempty"`
-	IsStreaming           bool                      `gorm:"default:false" json:"is_streaming,omitempty"`
+	IsStreaming           bool                      `gorm:"-" json:"is_streaming,omitempty"`
 	Following             []User                    `gorm:"many2many:user_following;" json:"following,omitempty"`
 }
 

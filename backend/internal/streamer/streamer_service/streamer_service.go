@@ -41,7 +41,7 @@ func GetStreamer(username string) (*Streamer, error) {
 	streamsToInclude := []streams_entities.Stream{}
 
 	for _, stream := range streams {
-		if !stream.IsCompleted {
+		if !stream.IsUploadDone {
 			continue
 		}
 

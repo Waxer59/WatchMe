@@ -3,9 +3,12 @@ package mux_service
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+	"github.com/waxer59/watchMe/internal/streamer/streamer_cache"
 	"github.com/waxer59/watchMe/internal/streams/streams_entities"
 	"github.com/waxer59/watchMe/internal/streams/streams_service"
 	"github.com/waxer59/watchMe/internal/users/users_service"
+	"github.com/waxer59/watchMe/internal/viewers/viewers_service"
 	"github.com/waxer59/watchMe/internal/webhooks/mux/mux_models"
 )
 
@@ -17,10 +20,17 @@ func HandleStreamActive(webhook mux_models.MuxWebhook) error {
 		return err
 	}
 
+	isStreaming, err := streamer_cache.IsUserStreamingByUserId(streamKeyEntity.UserID.String())
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
 	user, err := users_service.GetUserById(streamKeyEntity.UserID.String())
 
 	// Handle duplicate webhooks from Mux
-	if user.IsStreaming {
+	if isStreaming {
 		return nil
 	}
 
@@ -29,9 +39,15 @@ func HandleStreamActive(webhook mux_models.MuxWebhook) error {
 		return err
 	}
 
-	err = users_service.UpdateUserById(user.ID, users_service.UpdateUser{
-		IsStreaming:               true,
-		IsUpdatingStreamingStatus: true,
+	streamId := uuid.New()
+
+	err = streams_service.CreateStream(&streams_entities.Stream{
+		ID:           streamId,
+		UserId:       user.ID,
+		Title:        user.DefaultStreamTitle,
+		Category:     user.DefaultStreamCategory,
+		LiveStreamId: webhook.Object.Id,
+		PlaybackId:   webhook.Data.PlaybackIds[0].Id,
 	})
 
 	if err != nil {
@@ -39,14 +55,17 @@ func HandleStreamActive(webhook mux_models.MuxWebhook) error {
 		return err
 	}
 
-	err = streams_service.CreateStream(&streams_entities.Stream{
-		UserId:       user.ID,
-		Title:        user.DefaultStreamTitle,
-		Category:     user.DefaultStreamCategory,
-		LiveStreamId: webhook.Object.Id,
-		PlaybackId:   webhook.Data.PlaybackIds[0].Id,
-		IsCompleted:  false,
+	err = viewers_service.CreateViewers(streamId.String(), viewers_service.Viewers{
+		Count:    0,
+		Category: user.DefaultStreamCategory,
 	})
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	err = streamer_cache.SetUserStreamingByUserId(user.ID.String(), streamId.String())
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -66,8 +85,15 @@ func HandleStreamDisconnected(webhook mux_models.MuxWebhook) error {
 
 	user, err := users_service.GetUserById(streamKeyEntity.UserID.String())
 
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	isStreaming, err := streamer_cache.IsUserStreamingByUserId(streamKeyEntity.UserID.String())
+
 	// Handle duplicate webhooks from Mux
-	if !user.IsStreaming {
+	if !isStreaming {
 		return nil
 	}
 
@@ -76,17 +102,7 @@ func HandleStreamDisconnected(webhook mux_models.MuxWebhook) error {
 		return err
 	}
 
-	err = users_service.UpdateUserById(user.ID, users_service.UpdateUser{
-		IsStreaming:               false,
-		IsUpdatingStreamingStatus: true,
-	})
-
-	if err != nil {
-		fmt.Println(err.Error())
-		return err
-	}
-
-	streamInProgress, err := streams_service.GetStreamInProgressByUserId(user.ID)
+	streamInProgress, err := streams_service.GetLatestNonUploadedStream(user.ID)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -94,8 +110,6 @@ func HandleStreamDisconnected(webhook mux_models.MuxWebhook) error {
 	}
 
 	if streamInProgress != nil {
-		streamInProgress.IsCompleted = true
-
 		err = streams_service.UpdateStreamById(streamInProgress.ID, streamInProgress)
 
 		if err != nil {
@@ -104,18 +118,35 @@ func HandleStreamDisconnected(webhook mux_models.MuxWebhook) error {
 		}
 	}
 
-	return nil
-}
-
-func HandleAssetLiveStreamCompleted(webhook mux_models.MuxWebhook) error {
-	stream, err := streams_service.GetNonUploadedStreamByLiveStreamId(webhook.Data.LiveStreamId)
+	err = viewers_service.DeleteViewerCount(streamInProgress.ID.String())
 
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
 	}
 
+	err = streamer_cache.DeleteUserStreamingByUserId(user.ID.String())
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func HandleAssetLiveStreamCompleted(webhook mux_models.MuxWebhook) error {
+	stream, err := streams_service.GetLatestNonUploadedStreamByLiveStreamId(webhook.Data.LiveStreamId)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	fmt.Printf("stream: %+v\n", stream)
+
 	if stream.IsUploadDone {
+		fmt.Println("stream already uploaded")
 		return nil
 	}
 

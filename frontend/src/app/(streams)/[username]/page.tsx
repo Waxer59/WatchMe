@@ -51,6 +51,7 @@ export default async function User({
     <div className="rounded-lg w-full overflow-y-auto scrollbar-hide">
       {streamData ? (
         <Streaming
+          id={streamData!.id}
           title={streamData!.title}
           category={streamData!.category as StreamCategory}
           streamer={userData}

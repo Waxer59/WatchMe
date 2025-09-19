@@ -34,14 +34,14 @@ func generateStreamKey(c *fiber.Ctx) error {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	_, err = users_service.CreateStreamKey(streamKey.Data.Id, streamKey.Data.StreamKey, c.Locals("user").(*user_entities.User).ID)
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	return c.JSON(fiber.Map{
@@ -61,26 +61,26 @@ func deleteStreamKey(c *fiber.Ctx) error {
 	streamKey, err := users_service.FindStreamKeyById(streamKeyId)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	if streamKey.UserID != c.Locals("user").(*user_entities.User).ID {
-		return c.SendStatus(fiber.StatusUnauthorized)
+		return c.Status(fiber.StatusUnauthorized).Send([]byte("{}"))
 	}
 
 	err = streams_service.DeleteStreamKey(streamKeyId)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	err = users_service.DeleteStreamKeyById(streamKeyId)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.Status(fiber.StatusOK).Send([]byte("{}"))
 }
 
 // @title			Get Stream Feed
@@ -93,7 +93,8 @@ func getStreamFeed(c *fiber.Ctx) error {
 	streamsFeed, err := streams_service.GetStreamFeed(&category)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		fmt.Println(err.Error())
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	return c.JSON(streamsFeed)
@@ -110,15 +111,15 @@ func getLiveStream(c *fiber.Ctx) error {
 	stream, err := streams_service.GetLiveStreamByUsername(username)
 
 	if stream == nil {
-		return c.SendStatus(fiber.StatusNotFound)
+		return c.Status(fiber.StatusNotFound).Send([]byte("{}"))
 	}
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	if stream.UserId == uuid.Nil {
-		return c.SendStatus(fiber.StatusNotFound)
+		return c.Status(fiber.StatusNotFound).Send([]byte("{}"))
 	}
 
 	return c.JSON(stream)
@@ -142,21 +143,21 @@ func editStream(c *fiber.Ctx) error {
 	err := c.BodyParser(&streamData)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	stream, err := streams_service.GetStreamByPlaybackId(playbackId)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	if stream.UserId == uuid.Nil {
-		return c.SendStatus(fiber.StatusNotFound)
+		return c.Status(fiber.StatusNotFound).Send([]byte("{}"))
 	}
 
 	if stream.UserId != c.Locals("user").(*user_entities.User).ID {
-		return c.SendStatus(fiber.StatusUnauthorized)
+		return c.Status(fiber.StatusUnauthorized).Send([]byte("{}"))
 	}
 
 	err = streams_service.EditStreamByPlaybackId(playbackId, &streams_entities.Stream{
@@ -165,10 +166,10 @@ func editStream(c *fiber.Ctx) error {
 	})
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.Status(fiber.StatusOK).Send([]byte("{}"))
 }
 
 // @title			Delete Stream
@@ -183,23 +184,23 @@ func deleteStream(c *fiber.Ctx) error {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	if stream.UserId == uuid.Nil {
-		return c.SendStatus(fiber.StatusNotFound)
+		return c.Status(fiber.StatusNotFound).Send([]byte("{}"))
 	}
 
 	if stream.UserId != c.Locals("user").(*user_entities.User).ID {
-		return c.SendStatus(fiber.StatusUnauthorized)
+		return c.Status(fiber.StatusUnauthorized).Send([]byte("{}"))
 	}
 
 	err = streams_service.DeleteStreamByPlaybackId(playbackId)
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.Status(fiber.StatusOK).Send([]byte("{}"))
 }

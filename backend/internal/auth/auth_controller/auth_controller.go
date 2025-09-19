@@ -37,7 +37,7 @@ func githubLogin(c *fiber.Ctx) error {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	return c.Redirect(url)
@@ -51,14 +51,14 @@ func githubCallback(c *fiber.Ctx) error {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	profile, err := auth_service.GetGithubUser(token)
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	profileIdString := strconv.Itoa(profile.ID)
@@ -71,7 +71,7 @@ func githubCallback(c *fiber.Ctx) error {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	jwtToken, err := jwt_utils.GenerateJwtToken(jwt.MapClaims{
@@ -80,7 +80,7 @@ func githubCallback(c *fiber.Ctx) error {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	c.Cookie(&fiber.Cookie{
@@ -108,5 +108,5 @@ func logout(c *fiber.Ctx) error {
 		SameSite: fiber.CookieSameSiteLaxMode,
 	})
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.Status(fiber.StatusOK).Send([]byte("{}"))
 }

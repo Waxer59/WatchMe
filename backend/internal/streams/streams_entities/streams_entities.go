@@ -8,6 +8,24 @@ import (
 	"gorm.io/gorm"
 )
 
+type StreamCategory string
+
+const (
+	ART           StreamCategory = "art"
+	MUSIC         StreamCategory = "music"
+	TECH          StreamCategory = "tech"
+	GAMING        StreamCategory = "gaming"
+	JUST_CHATTING StreamCategory = "just_chatting"
+)
+
+var StreamCategories = []StreamCategory{
+	ART,
+	MUSIC,
+	TECH,
+	JUST_CHATTING,
+	GAMING,
+}
+
 var validate = validator.New()
 
 type Stream struct {
@@ -17,9 +35,8 @@ type Stream struct {
 	LiveStreamId string    `gorm:"not null" json:"-"`
 	PlaybackId   string    `gorm:"not null" json:"playback_id,omitempty"`
 	Category     string    `json:"category,omitempty"`
-	Viewers      int       `json:"viewers,omitempty"`
+	Viewers      int       `json:"viewers,omitempty" gorm:"-"`
 	AssetId      string    `json:"-"`
-	IsCompleted  bool      `json:"is_completed,omitempty"`
 	IsUploadDone bool      `json:"-" default:"false"`
 	CreatedAt    time.Time `json:"-" gorm:"default:CURRENT_TIMESTAMP"`
 }

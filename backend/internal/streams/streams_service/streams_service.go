@@ -8,8 +8,10 @@ import (
 	muxgo "github.com/muxinc/mux-go/v6"
 	"github.com/waxer59/watchMe/config"
 	"github.com/waxer59/watchMe/database"
+	"github.com/waxer59/watchMe/internal/streamer/streamer_cache"
 	"github.com/waxer59/watchMe/internal/streams/streams_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
+	"github.com/waxer59/watchMe/internal/viewers/viewers_service"
 )
 
 type StreamFeed struct {
@@ -97,15 +99,17 @@ func GetLiveStreamByUsername(username string) (*streams_entities.Stream, error) 
 		return nil, nil
 	}
 
-	if !user.IsStreaming {
-		return nil, nil
+	if err != nil {
+		return nil, err
 	}
+
+	streamingId, err := streamer_cache.GetStreamingIdByUserId(user.ID.String())
 
 	if err != nil {
 		return nil, err
 	}
 
-	err = db.Find(&stream, "user_id = ? and is_completed = ?", user.ID, false).Error
+	err = db.Find(&stream, "id = ?", streamingId).Error
 
 	if err != nil {
 		return nil, err
@@ -114,12 +118,15 @@ func GetLiveStreamByUsername(username string) (*streams_entities.Stream, error) 
 	return &stream, nil
 }
 
-func GetStreamInProgressByUserId(userId uuid.UUID) (*streams_entities.Stream, error) {
+func GetLatestNonUploadedStream(userId uuid.UUID) (*streams_entities.Stream, error) {
 	db := database.DB
 
 	var stream streams_entities.Stream
 
-	err := db.Find(&stream, "user_id = ? and is_completed = ?", userId, false).Error
+	err := db.
+		Where("user_id = ? AND is_upload_done = ?", userId, false).
+		Order("created_at DESC").
+		First(&stream).Error
 
 	if err != nil {
 		return nil, err
@@ -143,14 +150,10 @@ func UpdateStreamById(id uuid.UUID, stream *streams_entities.Stream) error {
 
 	if stream.Category != "" {
 		updateField["category"] = stream.Category
-	}
 
-	if stream.Viewers != 0 {
-		updateField["viewers"] = stream.Viewers
-	}
-
-	if stream.IsCompleted {
-		updateField["is_completed"] = stream.IsCompleted
+		if !stream.IsUploadDone {
+			viewers_service.ChangeCategoryViewerCount(stream.ID.String(), stream.Category)
+		}
 	}
 
 	if stream.AssetId != "" {
@@ -171,12 +174,15 @@ func UpdateStreamById(id uuid.UUID, stream *streams_entities.Stream) error {
 	return nil
 }
 
-func GetNonUploadedStreamByLiveStreamId(liveStreamId string) (*streams_entities.Stream, error) {
+func GetLatestNonUploadedStreamByLiveStreamId(liveStreamId string) (*streams_entities.Stream, error) {
 	db := database.DB
 
 	var stream streams_entities.Stream
 
-	err := db.Find(&stream, "live_stream_id = ? and is_upload_done = ?", liveStreamId, false).Error
+	err := db.
+		Where("live_stream_id = ? AND is_upload_done = ?", liveStreamId, false).
+		Order("created_at DESC").
+		First(&stream).Error
 
 	if err != nil {
 		return nil, err
@@ -262,4 +268,18 @@ func DeleteStreamByPlaybackId(playbackId string) error {
 	}
 
 	return nil
+}
+
+func GetStreamById(id uuid.UUID) (*streams_entities.Stream, error) {
+	db := database.DB
+
+	var stream streams_entities.Stream
+
+	err := db.Find(&stream, "id = ?", id).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &stream, nil
 }

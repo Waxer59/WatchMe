@@ -1,13 +1,20 @@
 'use client'
 
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react'
-import { ColorModeProvider, type ColorModeProviderProps } from '../components/ui/color-mode'
+import {
+  ColorModeProvider,
+  type ColorModeProviderProps
+} from '../components/ui/color-mode'
 import { useEffect } from 'react'
 import { useAccountStore } from '@/store/account'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { Toaster } from '../components/ui/toaster'
+import { useSocketChat } from '@/hooks/useSocketChat'
+
+let isConnectedToSocket = false
 
 export function Provider(props: ColorModeProviderProps) {
+  const { connectSocket } = useSocketChat()
   const setUsername = useAccountStore((state) => state.setUsername)
   const setAvatar = useAccountStore((state) => state.setAvatar)
   const setIsLoggedIn = useAccountStore((state) => state.setIsLoggedIn)
@@ -60,6 +67,13 @@ export function Provider(props: ColorModeProviderProps) {
     })
 
     getUserData()
+
+    if (isConnectedToSocket) {
+      return
+    }
+
+    connectSocket()
+    isConnectedToSocket = true
   }, [])
 
   return (

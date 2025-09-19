@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -12,6 +13,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 	"github.com/waxer59/watchMe/database"
+	"github.com/waxer59/watchMe/internal/ws/ws_gateway"
+	"github.com/waxer59/watchMe/redis"
 	"github.com/waxer59/watchMe/router"
 
 	_ "github.com/waxer59/watchMe/docs"
@@ -40,7 +43,17 @@ func main() {
 	middlewares(app)
 
 	database.Connect()
+	redis.Connect()
+	defer redis.RedisClient.Close()
 	router.New(app)
+
+	// WebSocket
+	ws_gateway.New(app)
+
+	ctx := context.Background()
+
+	// Start with a clean state
+	redis.RedisClient.FlushDB(ctx)
 
 	log.Fatal(app.Listen(fmt.Sprintf(":%s", os.Getenv("PORT"))))
 }

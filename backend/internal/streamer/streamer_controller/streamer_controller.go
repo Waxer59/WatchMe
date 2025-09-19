@@ -4,6 +4,7 @@ import (
 	"sort"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/waxer59/watchMe/internal/streamer/streamer_cache"
 	"github.com/waxer59/watchMe/internal/streamer/streamer_service"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
@@ -29,11 +30,11 @@ func getStreamer(c *fiber.Ctx) error {
 	streamer, err := streamer_service.GetStreamer(username)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	if streamer == nil {
-		return c.SendStatus(fiber.StatusNotFound)
+		return c.Status(fiber.StatusNotFound).Send([]byte("{}"))
 	}
 
 	// Order streams by created_at DESC
@@ -55,18 +56,24 @@ func getSearchStreamer(c *fiber.Ctx) error {
 	users, err := users_service.FindUsernameSearch(username)
 
 	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
 	usersFound := []user_entities.User{}
 
 	for _, searchUser := range users {
+		isStreaming, err := streamer_cache.IsUserStreamingByUserId(searchUser.ID.String())
+
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
+		}
+
 		// Prevent giving the following user's sensitive info as stream keys
 		usersFound = append(usersFound, user_entities.User{
 			ID:            searchUser.ID,
 			Username:      searchUser.Username,
 			Avatar:        searchUser.Avatar,
-			IsStreaming:   searchUser.IsStreaming,
+			IsStreaming:   isStreaming,
 			Streams:       searchUser.Streams,
 			PresenceColor: searchUser.PresenceColor,
 		})
