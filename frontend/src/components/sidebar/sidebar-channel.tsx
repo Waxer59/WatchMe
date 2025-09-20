@@ -20,7 +20,10 @@ export const SidebarChannel: React.FC<SidebarChannelProps> = ({
   ...props
 }) => {
   return (
-    <Link className="w-full p-2 flex items-center gap-4 rounded-md hover:bg-gray-700 transition-all cursor-pointer" href={`/${username}`} {...props}>
+    <Link
+      className="w-full p-2 flex items-center gap-4 rounded-md hover:bg-gray-700 transition-all cursor-pointer"
+      href={`/${username}`}
+      {...props}>
       <Avatar.Root colorPalette="blue">
         <Avatar.Fallback name={username} />
         <Avatar.Image src={avatar} />

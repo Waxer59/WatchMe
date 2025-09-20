@@ -12,7 +12,7 @@ interface Props {
   avatar: string
   title: string
   category: string
-  count?: number
+  viewers?: number
   isLive?: boolean
   href?: string
 }
@@ -23,7 +23,7 @@ export const HomeChannel: React.FC<Props> = ({
   thumbnail_gif,
   avatar,
   category,
-  count,
+  viewers,
   title,
   href,
   isLive
@@ -59,7 +59,7 @@ export const HomeChannel: React.FC<Props> = ({
             </span>
             <div className="absolute bottom-2 right-2 bg-black/70 text-white text-sm px-2 py-1 rounded flex items-center">
               <EyeIcon size={24} strokeWidth={1.5} />
-              <span className="ml-1">{formatViewersCountShort(count!)}</span>
+              <span className="ml-1">{formatViewersCountShort(viewers!)}</span>
             </div>
           </>
         )}
@@ -75,7 +75,9 @@ export const HomeChannel: React.FC<Props> = ({
               {title}
             </h3>
             <div className="flex flex-col gap-1">
-              <p className="text-white text-md font-medium text-left">{username}</p>
+              <p className="text-white text-md font-medium text-left">
+                {username}
+              </p>
               <p className="text-gray-400">{category}</p>
             </div>
           </div>

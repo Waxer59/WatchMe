@@ -1,10 +1,9 @@
-import { NoStreaming } from '@/components/streamer/no-streaming'
-import { Streaming } from '@/components/streamer/streaming'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { getBlurredMuxThumbnail } from '@/helpers/server/getBlurredMuxThumbnail'
-import { StreamCategory, StreamData, StreamerDetails } from '@/types'
+import { StreamData, StreamerDetails } from '@/types'
 import { unstable_noStore as noStore } from 'next/cache'
 import { FrownIcon } from 'lucide-react'
+import { StreamerSection } from '@/components/streamer/streamer-section'
 
 export default async function User({
   params
@@ -48,23 +47,11 @@ export default async function User({
   }
 
   return (
-    <div className="rounded-lg w-full overflow-y-auto scrollbar-hide">
-      {streamData ? (
-        <Streaming
-          id={streamData!.id}
-          title={streamData!.title}
-          category={streamData!.category as StreamCategory}
-          streamer={userData}
-          playbackId={streamData!.playback_id}
-          blurHashBase64={blurHashBase64!}
-          savedStreams={userData.streams}
-          streamingChat={[]}
-          showViewers
-        />
-      ) : (
-        <NoStreaming streamer={userData} savedStreams={userData.streams} />
-      )}
-    </div>
+    <StreamerSection
+      userData={userData}
+      streamData={streamData}
+      blurHashBase64={blurHashBase64}
+    />
   )
 }
 

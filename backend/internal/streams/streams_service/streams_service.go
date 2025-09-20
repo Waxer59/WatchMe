@@ -20,6 +20,7 @@ type StreamFeed struct {
 	Avatar     string `json:"avatar"`
 	Category   string `json:"category"`
 	PlaybackId string `json:"playback_id"`
+	Viewers    int64  `json:"viewers"`
 }
 
 func GenerateStreamKey(channelId string) (muxgo.LiveStreamResponse, error) {
@@ -56,12 +57,19 @@ func GetStreamFeed(category *string) ([]StreamFeed, error) {
 			continue
 		}
 
+		viewers, err := viewers_service.GetViewerCount(stream.ID.String())
+
+		if err != nil {
+			return nil, err
+		}
+
 		streamsFeed = append(streamsFeed, StreamFeed{
 			Title:      stream.Title,
 			Category:   stream.Category,
 			Username:   user.Username,
 			Avatar:     user.Avatar,
 			PlaybackId: stream.PlaybackId,
+			Viewers:    viewers,
 		})
 	}
 
@@ -114,6 +122,14 @@ func GetLiveStreamByUsername(username string) (*streams_entities.Stream, error) 
 	if err != nil {
 		return nil, err
 	}
+
+	viewers, err := viewers_service.GetViewerCount(stream.ID.String())
+
+	if err != nil {
+		return nil, err
+	}
+
+	stream.Viewers = viewers
 
 	return &stream, nil
 }

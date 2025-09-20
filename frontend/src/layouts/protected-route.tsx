@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useAccountStore } from "@/store/account"
-import { useRouter } from "next/navigation";
-import { useEffect } from 'react';
+import { useAccountStore } from '@/store/account'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 interface Props {
   children: React.ReactNode

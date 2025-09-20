@@ -1,13 +1,13 @@
 import { HomeChannel } from '@/components/home/home-channel'
-import { categoryCodeToCategory } from '@/helpers/categoryCodeToCategory';
+import { categoryCodeToCategory } from '@/helpers/categoryCodeToCategory'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
-import { VideosLayout } from '@/layouts/videos-layout';
-import { StreamFeedDetails } from '@/types';
+import { VideosLayout } from '@/layouts/videos-layout'
+import { StreamFeedDetails } from '@/types'
 import { VideoOffIcon } from 'lucide-react'
-import { unstable_noStore as noStore } from 'next/cache';
+import { unstable_noStore as noStore } from 'next/cache'
 
 export default async function Home() {
-  noStore();
+  noStore()
   const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`, {
     next: { revalidate: 0 }
   })
@@ -33,8 +33,8 @@ export default async function Home() {
                 username={stream.username}
                 avatar={stream.avatar}
                 category={categoryCodeToCategory(stream.category)}
+                viewers={stream.viewers}
                 isLive
-                count={0}
               />
             </li>
           ))}

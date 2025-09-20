@@ -14,8 +14,12 @@ export const FollowChannelCard: React.FC<Props> = ({ streamer }) => {
         <Avatar.Fallback name={streamer.username} className="text-4xl" />
         <Avatar.Image src={streamer.avatar} />
       </Avatar.Root>
-      <Link className="hover:underline cursor-pointer" href={`/${streamer.username}`}>
-        <h3 className="text-lg font-semibold w-[10ch] max-w-[10ch] truncate">{streamer.username}</h3>
+      <Link
+        className="hover:underline cursor-pointer"
+        href={`/${streamer.username}`}>
+        <h3 className="text-lg font-semibold w-[10ch] max-w-[10ch] truncate">
+          {streamer.username}
+        </h3>
       </Link>
       <FollowButton streamer={streamer} />
     </li>

@@ -10,6 +10,7 @@ import (
 	"github.com/waxer59/watchMe/internal/users/users_service"
 	"github.com/waxer59/watchMe/internal/viewers/viewers_service"
 	"github.com/waxer59/watchMe/internal/webhooks/mux/mux_models"
+	"github.com/waxer59/watchMe/internal/ws/ws_service"
 )
 
 func HandleStreamActive(webhook mux_models.MuxWebhook) error {
@@ -40,15 +41,16 @@ func HandleStreamActive(webhook mux_models.MuxWebhook) error {
 	}
 
 	streamId := uuid.New()
-
-	err = streams_service.CreateStream(&streams_entities.Stream{
+	stream := streams_entities.Stream{
 		ID:           streamId,
 		UserId:       user.ID,
 		Title:        user.DefaultStreamTitle,
 		Category:     user.DefaultStreamCategory,
 		LiveStreamId: webhook.Object.Id,
 		PlaybackId:   webhook.Data.PlaybackIds[0].Id,
-	})
+	}
+
+	err = streams_service.CreateStream(&stream)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -71,6 +73,9 @@ func HandleStreamActive(webhook mux_models.MuxWebhook) error {
 		fmt.Println(err.Error())
 		return err
 	}
+
+	// Notify room users
+	ws_service.NotifyRoomUserStreaming(user.ID.String(), &stream)
 
 	return nil
 }
@@ -117,6 +122,9 @@ func HandleStreamDisconnected(webhook mux_models.MuxWebhook) error {
 			return err
 		}
 	}
+
+	// Notify room users
+	ws_service.NotifyRoomUserStopStreaming(user.ID.String(), streamInProgress.ID.String())
 
 	err = viewers_service.DeleteViewerCount(streamInProgress.ID.String())
 

@@ -34,7 +34,10 @@ export function Navbar() {
         {isLoggedIn ? (
           <UserAvatar />
         ) : (
-          <Dialog.Root placement="center" onOpenChange={(open) => setIsLoginModalOpen(open.open)} open={isLoginModalOpen}>
+          <Dialog.Root
+            placement="center"
+            onOpenChange={(open) => setIsLoginModalOpen(open.open)}
+            open={isLoginModalOpen}>
             <Dialog.Trigger asChild>
               <Button variant="subtle" colorPalette="gray" rounded="lg">
                 Log in

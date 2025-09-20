@@ -35,7 +35,7 @@ type Stream struct {
 	LiveStreamId string    `gorm:"not null" json:"-"`
 	PlaybackId   string    `gorm:"not null" json:"playback_id,omitempty"`
 	Category     string    `json:"category,omitempty"`
-	Viewers      int       `json:"viewers,omitempty" gorm:"-"`
+	Viewers      int64     `json:"viewers,omitempty" gorm:"-"`
 	AssetId      string    `json:"-"`
 	IsUploadDone bool      `json:"-" default:"false"`
 	CreatedAt    time.Time `json:"-" gorm:"default:CURRENT_TIMESTAMP"`

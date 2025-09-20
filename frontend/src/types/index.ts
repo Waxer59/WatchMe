@@ -9,6 +9,7 @@ export interface StreamFeedDetails {
   username: string
   avatar: string
   playback_id: string
+  viewers: number
 }
 
 export interface StreamerDetails {
@@ -33,6 +34,7 @@ export interface StreamData {
   title: string
   category: string
   playback_id: string
+  viewers: number
 }
 
 export enum StreamCategory {
@@ -51,7 +53,8 @@ export enum WebSocketSendEvent {
 
 export enum WebSocketReceiveEvent {
   STREAM_VIEWERS_COUNT = 'stream-viewers-count',
-  STREAM_ON = 'stream-on'
+  STREAM_ON = 'stream-on',
+  STREAM_OFF = 'stream-off'
 }
 
 export const allCategories = [

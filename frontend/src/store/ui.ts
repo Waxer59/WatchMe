@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
 interface State {
-  searchInput: string,
+  searchInput: string
   isLoginModalOpen: boolean
 }
 
@@ -21,7 +21,10 @@ export const useUiStore = create<State & Actions>()(
   devtools((set) => ({
     ...initialState,
     setSearchInput: (searchInput: string) => set({ searchInput }),
-    setIsLoginModalOpen: (isLoginModalOpen: boolean) => set({ isLoginModalOpen }),
+    setIsLoginModalOpen: (isLoginModalOpen: boolean) =>
+      set({ isLoginModalOpen }),
     clear: () => set(initialState)
-  }))
+  }), {
+    name: 'ui',
+  })
 )

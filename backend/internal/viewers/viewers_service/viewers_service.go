@@ -2,6 +2,7 @@ package viewers_service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -20,14 +21,13 @@ func IncrementViewerCount(streamId string) (int, error) {
 	count, err := redis.RedisClient.HGet(context, fmt.Sprintf("viewers:%s", streamId), "count").Result()
 
 	if err != nil {
-		redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", streamId), 1, 0)
 		return 0, err
 	}
 
 	countInt, err := strconv.ParseInt(count, 10, 64)
 
 	if err != nil {
-		return 0, err
+		return 0, errors.New("error parsing count")
 	}
 
 	redis.RedisClient.HIncrBy(context, fmt.Sprintf("viewers:%s", streamId), "count", 1)
@@ -117,6 +117,18 @@ func CreateViewers(streamId string, viewers Viewers) error {
 	context := context.Background()
 
 	err := redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", streamId), viewers).Err()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func SetViewersByStreamId(streamId string, count int) error {
+	context := context.Background()
+
+	err := redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", streamId), count, 0).Err()
 
 	if err != nil {
 		return err

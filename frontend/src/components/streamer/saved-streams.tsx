@@ -62,8 +62,7 @@ export const SavedStreams: React.FC<Props> = ({
               <StreamActions
                 handleDeleteStream={handleDeleteStream}
                 playbackId={savedStream.playback_id}
-                disabled={!isOwnChannel}
-                >
+                disabled={!isOwnChannel}>
                 <HomeChannel
                   href={`/${username}/${savedStream.playback_id}`}
                   title={savedStream.title}

@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
 import type {
   ButtonProps,
   GroupProps,
   InputProps,
-  StackProps,
-} from "@chakra-ui/react"
+  StackProps
+} from '@chakra-ui/react'
 import {
   Box,
   HStack,
@@ -14,10 +14,10 @@ import {
   InputGroup,
   Stack,
   mergeRefs,
-  useControllableState,
-} from "@chakra-ui/react"
-import * as React from "react"
-import { Eye, EyeOff } from "lucide-react"
+  useControllableState
+} from '@chakra-ui/react'
+import * as React from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 
 export interface PasswordVisibilityProps {
   /**
@@ -60,7 +60,7 @@ export const PasswordInput = React.forwardRef<
   const [visible, setVisible] = useControllableState({
     value: visibleProp,
     defaultValue: defaultVisible || false,
-    onChange: onVisibleChange,
+    onChange: onVisibleChange
   })
 
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -75,17 +75,15 @@ export const PasswordInput = React.forwardRef<
             if (e.button !== 0) return
             e.preventDefault()
             setVisible(!visible)
-          }}
-        >
+          }}>
           {visible ? visibilityIcon.off : visibilityIcon.on}
         </VisibilityTrigger>
       }
-      {...rootProps}
-    >
+      {...rootProps}>
       <Input
         {...rest}
         ref={mergeRefs(ref, inputRef)}
-        type={visible ? "text" : "password"}
+        type={visible ? 'text' : 'password'}
       />
     </InputGroup>
   )
@@ -106,7 +104,7 @@ const VisibilityTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     )
-  },
+  }
 )
 
 interface PasswordStrengthMeterProps extends StackProps {
@@ -132,12 +130,12 @@ export const PasswordStrengthMeter = React.forwardRef<
             height="1"
             flex="1"
             rounded="sm"
-            data-selected={index < value ? "" : undefined}
+            data-selected={index < value ? '' : undefined}
             layerStyle="fill.subtle"
             colorPalette="gray"
             _selected={{
               colorPalette,
-              layerStyle: "fill.solid",
+              layerStyle: 'fill.solid'
             }}
           />
         ))}
@@ -150,10 +148,10 @@ export const PasswordStrengthMeter = React.forwardRef<
 function getColorPalette(percent: number) {
   switch (true) {
     case percent < 33:
-      return { label: "Low", colorPalette: "red" }
+      return { label: 'Low', colorPalette: 'red' }
     case percent < 66:
-      return { label: "Medium", colorPalette: "orange" }
+      return { label: 'Medium', colorPalette: 'orange' }
     default:
-      return { label: "High", colorPalette: "green" }
+      return { label: 'High', colorPalette: 'green' }
   }
 }

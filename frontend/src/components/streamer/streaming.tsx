@@ -21,7 +21,7 @@ import {
   StreamerDetails,
   StreamMessage
 } from '@/types'
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useRef, useState } from 'react'
 import { SavedStreams } from './saved-streams'
 import FollowButton from './follow-button'
 import MuxPlayer from '@mux/mux-player-react/lazy'
@@ -31,13 +31,9 @@ import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { toaster } from '../ui/toaster'
 import { categories } from '../settings/stream-settings'
 import { categoryCodeToCategory } from '@/helpers/categoryCodeToCategory'
-import { useSocketEvents } from '@/hooks/useSocketEvents'
 import { useStreamStore } from '@/store/stream'
 
-let hasJoined = false
-
 interface Props {
-  id: string
   title: string
   category: StreamCategory
   streamer: StreamerDetails
@@ -50,7 +46,6 @@ interface Props {
 }
 
 export const Streaming: React.FC<Props> = ({
-  id,
   title,
   category,
   streamer,
@@ -62,8 +57,6 @@ export const Streaming: React.FC<Props> = ({
   showViewers = false
 }) => {
   const viewers = useStreamStore((state) => state.viewers)
-  const clearStreamStore = useStreamStore((state) => state.clear)
-  const { sendJoinUserChannel, sendLeaveUserChannel } = useSocketEvents()
   const [savedStreams, setSavedStreams] = useState(savedStreamsProp)
   const [newCategory, setNewCategory] = useState<StreamCategory>(category)
   const currentUserId = useAccountStore((state) => state.id)
@@ -116,19 +109,6 @@ export const Streaming: React.FC<Props> = ({
       )
     )
   }
-
-  useEffect(() => {
-    if (hasJoined) {
-      return
-    }
-
-    sendJoinUserChannel(id)
-    hasJoined = true
-    return () => {
-      sendLeaveUserChannel()
-      clearStreamStore()
-    }
-  }, [])
 
   return (
     <div className="flex gap-4 h-full">

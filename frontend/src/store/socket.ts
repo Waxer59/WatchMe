@@ -23,5 +23,7 @@ export const useSocketStore = create<State & Actions>()(
     setSocket: (socket: WebSocket | null) => set({ socket }),
     setIsSocketReady: (isSocketReady: boolean) => set({ isSocketReady }),
     clear: () => set(initialState)
-  }))
+  }), {
+    name: 'socket'
+  })
 )

@@ -8,7 +8,7 @@ export const useSocketEvents = () => {
   const queue = useRef<string[]>([])
 
   useEffect(() => {
-    if(socket && isSocketReady){
+    if (socket && isSocketReady) {
       queue.current.forEach((msg) => socket.send(msg))
       queue.current = []
     }
@@ -19,8 +19,7 @@ export const useSocketEvents = () => {
       event: WebSocketSendEvent.JOIN_USER_CHANNEL,
       data: username
     })
-
-    if (!socket) {
+    if (socket?.readyState !== socket?.OPEN || !socket) {
       queue.current.push(msg)
       return
     }
@@ -30,10 +29,10 @@ export const useSocketEvents = () => {
 
   const sendLeaveUserChannel = () => {
     const msg = JSON.stringify({
-      event: WebSocketSendEvent.LEAVE_USER_CHANNEL,
+      event: WebSocketSendEvent.LEAVE_USER_CHANNEL
     })
 
-    if (!socket) {
+    if (socket?.readyState !== socket?.OPEN || !socket) {
       queue.current.push(msg)
       return
     }
@@ -47,7 +46,7 @@ export const useSocketEvents = () => {
       data: message
     })
 
-    if (!socket) {
+    if (socket?.readyState !== socket?.OPEN || !socket) {
       queue.current.push(msg)
       return
     }
