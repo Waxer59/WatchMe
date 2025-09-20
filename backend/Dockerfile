@@ -1,4 +1,4 @@
-FROM golang:1.22.0-alpine AS builder
+FROM golang:1.25.1-alpine AS builder
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY . .
 
 RUN go build -o /app/main .
 
-FROM alpine:latest
+FROM alpine:3.22.1
 
 WORKDIR /app
 
