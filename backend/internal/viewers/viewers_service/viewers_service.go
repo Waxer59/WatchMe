@@ -14,43 +14,49 @@ type Viewers struct {
 	Category string `json:"category" redis:"category"`
 }
 
-func IncrementViewerCount(streamId string) error {
+func IncrementViewerCount(streamId string) (int, error) {
 	context := context.Background()
 
-	_, err := redis.RedisClient.HGet(context, fmt.Sprintf("viewers:%s", streamId), "count").Result()
+	count, err := redis.RedisClient.HGet(context, fmt.Sprintf("viewers:%s", streamId), "count").Result()
 
 	if err != nil {
 		redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", streamId), 1, 0)
-		return err
+		return 0, err
+	}
+
+	countInt, err := strconv.ParseInt(count, 10, 64)
+
+	if err != nil {
+		return 0, err
 	}
 
 	redis.RedisClient.HIncrBy(context, fmt.Sprintf("viewers:%s", streamId), "count", 1)
 
-	return nil
+	return int(countInt) + 1, nil
 }
 
-func DecrementViewerCount(streamId string) error {
+func DecrementViewerCount(streamId string) (int, error) {
 	context := context.Background()
 
 	viewers, err := redis.RedisClient.HGet(context, fmt.Sprintf("viewers:%s", streamId), "count").Result()
 
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	viewersInt, err := strconv.ParseInt(viewers, 10, 64)
 
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	if viewersInt == 0 {
-		return nil
+		return 0, nil
 	}
 
 	redis.RedisClient.HIncrBy(context, fmt.Sprintf("viewers:%s", streamId), "count", -1)
 
-	return nil
+	return int(viewersInt) - 1, nil
 }
 
 func GetViewerCount(streamId string) (int64, error) {

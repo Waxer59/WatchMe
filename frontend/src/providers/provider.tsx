@@ -9,12 +9,12 @@ import { useEffect } from 'react'
 import { useAccountStore } from '@/store/account'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { Toaster } from '../components/ui/toaster'
-import { useSocketChat } from '@/hooks/useSocketChat'
+import { useSocket } from '@/hooks/useSocket'
 
 let isConnectedToSocket = false
 
 export function Provider(props: ColorModeProviderProps) {
-  const { connectSocket } = useSocketChat()
+  const { connectSocket } = useSocket()
   const setUsername = useAccountStore((state) => state.setUsername)
   const setAvatar = useAccountStore((state) => state.setAvatar)
   const setIsLoggedIn = useAccountStore((state) => state.setIsLoggedIn)
@@ -39,6 +39,12 @@ export function Provider(props: ColorModeProviderProps) {
           credentials: 'include'
         })
         const data = await response.json()
+
+        if(response.status !== 200){
+          clearAccount()
+          return
+        }
+
         setUsername(data.username)
         setAvatar(data.avatar)
         setStreamKeys(data.stream_keys)

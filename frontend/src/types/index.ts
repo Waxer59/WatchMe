@@ -50,7 +50,8 @@ export enum WebSocketSendEvent {
 }
 
 export enum WebSocketReceiveEvent {
-  STREAM_VIEWERS_COUNT = 'stream-viewers-count'
+  STREAM_VIEWERS_COUNT = 'stream-viewers-count',
+  STREAM_ON = 'stream-on'
 }
 
 export const allCategories = [

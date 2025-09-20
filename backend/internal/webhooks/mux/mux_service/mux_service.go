@@ -143,8 +143,6 @@ func HandleAssetLiveStreamCompleted(webhook mux_models.MuxWebhook) error {
 		return err
 	}
 
-	fmt.Printf("stream: %+v\n", stream)
-
 	if stream.IsUploadDone {
 		fmt.Println("stream already uploaded")
 		return nil

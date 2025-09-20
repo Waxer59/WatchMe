@@ -1,10 +1,13 @@
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { useSocketStore } from '@/store/socket'
-import { Environment } from '@/types'
+import { useStreamStore } from '@/store/stream'
+import { Environment, WebSocketReceiveEvent } from '@/types'
 import { useCallback } from 'react'
 
-export const useSocketChat = () => {
+export const useSocket = () => {
   const setSocket = useSocketStore((state) => state.setSocket)
+  const setIsSocketReady = useSocketStore((state) => state.setIsSocketReady)
+  const setViewers = useStreamStore((state) => state.setViewers)
 
   const connectSocket = useCallback(() => {
     let reconnectTimeout: NodeJS.Timeout | null = null
@@ -20,7 +23,7 @@ export const useSocketChat = () => {
 
     socket.onopen = () => {
       console.log('Socket has been opened')
-
+      setIsSocketReady(true)
       if (reconnectTimeout) {
         clearTimeout(reconnectTimeout)
         reconnectTimeout = null
@@ -35,6 +38,16 @@ export const useSocketChat = () => {
     socket.onerror = () => {
       console.log('Socket has been closed')
       socket.close()
+    }
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data)
+
+      switch (message.event) {
+        case WebSocketReceiveEvent.STREAM_VIEWERS_COUNT:
+          setViewers(message.data.viewers)
+          break
+      }
     }
 
     setSocket(socket)

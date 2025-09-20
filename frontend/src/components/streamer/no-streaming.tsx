@@ -7,19 +7,25 @@ import { StreamData, StreamerDetails } from '@/types'
 import { SavedStreams } from './saved-streams'
 
 interface Props {
- streamer: StreamerDetails
- savedStreams: StreamData[]
+  streamer: StreamerDetails
+  savedStreams: StreamData[]
 }
 
 export const NoStreaming: React.FC<Props> = ({
   streamer,
-  savedStreams: savedStreamsProp,
+  savedStreams: savedStreamsProp
 }) => {
   const [savedStreams, setSavedStreams] = useState(savedStreamsProp)
-  const [currentFollowers, setCurrentFollowers] = useState(streamer.followers ?? 0)
+  const [currentFollowers, setCurrentFollowers] = useState(
+    streamer.followers ?? 0
+  )
 
   const onDeleteStream = (playbackId: string) => {
-    setSavedStreams(savedStreams.filter((savedStream) => savedStream.playback_id !== playbackId))
+    setSavedStreams(
+      savedStreams.filter(
+        (savedStream) => savedStream.playback_id !== playbackId
+      )
+    )
   }
 
   return (
@@ -31,14 +37,18 @@ export const NoStreaming: React.FC<Props> = ({
             <Avatar.Image src={streamer.avatar} />
           </Avatar.Root>
           <div className="flex flex-col gap-2">
-            <h2 className="text-3xl font-bold capitalize">{streamer.username}</h2>
+            <h2 className="text-3xl font-bold capitalize">
+              {streamer.username}
+            </h2>
             <p className="text-gray-400">{currentFollowers} followers</p>
           </div>
         </div>
         <FollowButton
           streamer={streamer}
           onFollow={() => setCurrentFollowers(currentFollowers + 1)}
-          onUnfollow={() => setCurrentFollowers((prev) => prev > 0 ? prev - 1 : prev)}
+          onUnfollow={() =>
+            setCurrentFollowers((prev) => (prev > 0 ? prev - 1 : prev))
+          }
         />
       </header>
       <h3 className="text-xl font-bold my-8">Recent Streams</h3>

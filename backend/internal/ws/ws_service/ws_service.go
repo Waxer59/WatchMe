@@ -2,6 +2,7 @@ package ws_service
 
 import (
 	"encoding/json"
+	"fmt"
 	"slices"
 
 	"github.com/gofiber/contrib/socketio"
@@ -15,6 +16,7 @@ const (
 	LEAVE_USER_CHANNEL   = "leave-user-channel"
 	SEND_MESSAGE         = "send-message"
 	STREAM_VIEWERS_COUNT = "stream-viewers-count"
+	STREAM_ON            = "stream-on"
 )
 
 type MessageObject struct {
@@ -26,10 +28,38 @@ var Clients = make(map[string]string)
 var Rooms = make(map[string][]string)
 
 func HandleEventDisconnect(ep *socketio.EventPayload) {
+	currentRoom := ep.Kws.GetStringAttribute("room_id")
+	userId := ep.Kws.GetStringAttribute("user_id")
+
+	if currentRoom != "" {
+		removeUserFromRoom(currentRoom, Clients[userId])
+		count, err := viewers_service.DecrementViewerCount(currentRoom)
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		HandleEmitViewersCountByStreamId(ep, currentRoom, count)
+	}
+
 	delete(Clients, ep.Kws.GetStringAttribute("user_id"))
 }
 
 func HandleEventClose(ep *socketio.EventPayload) {
+	currentRoom := ep.Kws.GetStringAttribute("room_id")
+	userId := ep.Kws.GetStringAttribute("user_id")
+
+	if currentRoom != "" {
+		removeUserFromRoom(currentRoom, Clients[userId])
+		count, err := viewers_service.DecrementViewerCount(currentRoom)
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		HandleEmitViewersCountByStreamId(ep, currentRoom, count)
+	}
+
 	delete(Clients, ep.Kws.GetStringAttribute("user_id"))
 }
 
@@ -37,6 +67,10 @@ func HandleEventJoinUserChannel(ep *socketio.EventPayload, msg MessageObject) {
 	userId := ep.Kws.GetStringAttribute("user_id")
 
 	roomId := msg.Data
+
+	if roomId == nil {
+		return
+	}
 
 	if _, ok := Rooms[roomId.(string)]; !ok {
 		Rooms[roomId.(string)] = []string{}
@@ -58,14 +92,21 @@ func HandleEventJoinUserChannel(ep *socketio.EventPayload, msg MessageObject) {
 
 	if isInDifferentRoom {
 		// Remove the user from the previous room
-		Rooms[currentUserRoom] = slices.Delete(Rooms[currentUserRoom], slices.Index(Rooms[currentUserRoom], userId), 1)
+		removeUserFromRoom(currentUserRoom, Clients[userId])
 		viewers_service.DecrementViewerCount(currentUserRoom)
-		roomCleanup(currentUserRoom)
 	}
 
-	Rooms[roomId.(string)] = append(Rooms[roomId.(string)], userId)
+	Rooms[roomId.(string)] = append(Rooms[roomId.(string)], Clients[userId])
+	count, err := viewers_service.IncrementViewerCount(roomId.(string))
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	HandleEmitViewersCountByStreamId(ep, roomId.(string), count)
+
 	ep.Kws.SetAttribute("room_id", roomId)
-	viewers_service.IncrementViewerCount(roomId.(string))
 }
 
 func HandleEventLeaveUserChannel(ep *socketio.EventPayload, msg MessageObject) {
@@ -76,15 +117,16 @@ func HandleEventLeaveUserChannel(ep *socketio.EventPayload, msg MessageObject) {
 		return
 	}
 
-	userIdx := slices.Index(Rooms[currentRoom], userId)
+	count, err := viewers_service.DecrementViewerCount(currentRoom)
 
-	if userIdx == -1 {
+	if err != nil {
+		fmt.Println(err.Error())
 		return
 	}
 
-	Rooms[currentRoom] = slices.Delete(Rooms[currentRoom], userIdx, 1)
-	viewers_service.DecrementViewerCount(currentRoom)
-	roomCleanup(currentRoom)
+	removeUserFromRoom(currentRoom, Clients[userId])
+
+	HandleEmitViewersCountByStreamId(ep, currentRoom, count)
 }
 
 func HandleEventSendMessage(ep *socketio.EventPayload, msg MessageObject) {
@@ -136,8 +178,43 @@ func HandleEventSendMessage(ep *socketio.EventPayload, msg MessageObject) {
 	ep.Kws.EmitToList(usersToSendMessage, preparedMessage, socketio.TextMessage)
 }
 
-func roomCleanup(roomId string) {
+func removeUserFromRoom(roomId string, userId string) {
+	users, ok := Rooms[roomId]
+
+	if !ok {
+		return
+	}
+
+	userIdx := slices.Index(users, userId)
+	if userIdx == -1 {
+		return
+	}
+
+	Rooms[roomId] = append(users[:userIdx], users[userIdx+1:]...)
+
 	if len(Rooms[roomId]) == 0 {
 		delete(Rooms, roomId)
 	}
+}
+
+func HandleEmitViewersCountByStreamId(ep *socketio.EventPayload, streamId string, count int) {
+
+	message := MessageObject{
+		Data: struct {
+			StreamId string `json:"stream_id"`
+			Viewers  int    `json:"viewers"`
+		}{
+			StreamId: streamId,
+			Viewers:  count,
+		},
+		Event: STREAM_VIEWERS_COUNT,
+	}
+
+	preparedMessage, err := json.Marshal(message)
+
+	if err != nil {
+		return
+	}
+
+	ep.Kws.EmitToList(Rooms[streamId], preparedMessage)
 }

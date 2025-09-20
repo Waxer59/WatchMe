@@ -3,18 +3,21 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
 interface State {
-  streamMessages: StreamMessage[]
+  streamMessages: StreamMessage[],
+  viewers: number
 }
 
 interface Actions {
   setStreamMessages(streamMessages: StreamMessage[]): void
   addStreamMessage(streamMessage: StreamMessage): void
+  setViewers(viewers: number): void
   clearStreamMessages(): void
   clear(): void
 }
 
 const initialState: State = {
-  streamMessages: []
+  streamMessages: [],
+  viewers: 0
 }
 
 export const useStreamStore = create<State & Actions>()(
@@ -24,6 +27,7 @@ export const useStreamStore = create<State & Actions>()(
     addStreamMessage: (streamMessage: StreamMessage) => set((state) => ({
       streamMessages: [...state.streamMessages, streamMessage]
     })),
+    setViewers: (viewers: number) => set({ viewers }),
     clearStreamMessages: () => set({ streamMessages: [] }),
     clear: () => set(initialState)
   }))

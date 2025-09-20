@@ -59,6 +59,7 @@ export default async function User({
           blurHashBase64={blurHashBase64!}
           savedStreams={userData.streams}
           streamingChat={[]}
+          showViewers
         />
       ) : (
         <NoStreaming streamer={userData} savedStreams={userData.streams} />

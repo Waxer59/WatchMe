@@ -2,6 +2,8 @@
 
 <img src="./docs/watchme-og.png" width="800px" />
 
+WatchMe is a live streaming platform that allows users to stream their livestreams to the platform.
+
 ## Frontend
 The frontend is written in React and uses the package [Next.js](https://nextjs.org/) for the frontend framework.
 
@@ -125,3 +127,5 @@ You can view the documentation at `http://localhost:<port>/swagger`.
 When using de backend its necessary to recieve webhooks from Mux.
 
 You can use the integrated Port Forwarding feature of VS Code to forward a port to your local machine.
+
+The webhooks are sent to `<backend_url>/api/webhooks/mux`

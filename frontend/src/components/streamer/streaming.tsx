@@ -8,7 +8,13 @@ import {
   Input,
   Select
 } from '@chakra-ui/react'
-import { CheckIcon, PencilLineIcon, SendIcon, XIcon } from 'lucide-react'
+import {
+  CheckIcon,
+  EyeIcon,
+  PencilLineIcon,
+  SendIcon,
+  XIcon
+} from 'lucide-react'
 import {
   StreamCategory,
   StreamData,
@@ -25,7 +31,10 @@ import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { toaster } from '../ui/toaster'
 import { categories } from '../settings/stream-settings'
 import { categoryCodeToCategory } from '@/helpers/categoryCodeToCategory'
-import { useSocketChatEvents } from '@/hooks/useSocketChatEvents'
+import { useSocketEvents } from '@/hooks/useSocketEvents'
+import { useStreamStore } from '@/store/stream'
+
+let hasJoined = false
 
 interface Props {
   id: string
@@ -37,6 +46,7 @@ interface Props {
   savedStreams: StreamData[]
   blurHashBase64: string
   showChat?: boolean
+  showViewers?: boolean
 }
 
 export const Streaming: React.FC<Props> = ({
@@ -48,9 +58,12 @@ export const Streaming: React.FC<Props> = ({
   savedStreams: savedStreamsProp,
   streamingChat,
   blurHashBase64,
-  showChat = true
+  showChat = true,
+  showViewers = false
 }) => {
-  const { sendJoinUserChannel, sendLeaveUserChannel } = useSocketChatEvents()
+  const viewers = useStreamStore((state) => state.viewers)
+  const clearStreamStore = useStreamStore((state) => state.clear)
+  const { sendJoinUserChannel, sendLeaveUserChannel } = useSocketEvents()
   const [savedStreams, setSavedStreams] = useState(savedStreamsProp)
   const [newCategory, setNewCategory] = useState<StreamCategory>(category)
   const currentUserId = useAccountStore((state) => state.id)
@@ -105,9 +118,15 @@ export const Streaming: React.FC<Props> = ({
   }
 
   useEffect(() => {
+    if (hasJoined) {
+      return
+    }
+
     sendJoinUserChannel(id)
+    hasJoined = true
     return () => {
-      sendLeaveUserChannel(id)
+      sendLeaveUserChannel()
+      clearStreamStore()
     }
   }, [])
 
@@ -130,78 +149,90 @@ export const Streaming: React.FC<Props> = ({
                 />
               </Suspense>
             </div>
-            <div className="flex flex-col gap-2 max-w-[1200px] mx-auto w-full">
-              <Editable.Root
-                defaultValue={title}
-                className="text-4xl font-bold"
-                onValueCommit={(details) =>
-                  handleEditStream({ title: details.value })
-                }
-                disabled={streamer.id !== currentUserId}>
-                <Editable.Preview
-                  className={`hover:bg-gray-700 ${isStreamOwner ? '' : 'hover:bg-transparent cursor-auto'}`}
-                />
-                <Editable.Input />
-                <Editable.Control>
-                  <Editable.EditTrigger
-                    asChild
-                    className={`hover:bg-gray-700 ${isStreamOwner ? '' : 'hidden'}`}>
-                    <IconButton variant="ghost" size="xl">
-                      <PencilLineIcon />
-                    </IconButton>
-                  </Editable.EditTrigger>
-                  <Editable.CancelTrigger asChild className="hover:bg-gray-700">
-                    <IconButton variant="outline" size="xl">
-                      <XIcon />
-                    </IconButton>
-                  </Editable.CancelTrigger>
-                  <Editable.SubmitTrigger asChild className="hover:bg-gray-700">
-                    <IconButton variant="outline" size="xl">
-                      <CheckIcon />
-                    </IconButton>
-                  </Editable.SubmitTrigger>
-                </Editable.Control>
-              </Editable.Root>
-              {isStreamOwner ? (
-                <Select.Root
-                  collection={categories}
-                  value={[newCategory]}
-                  onValueChange={(details) => {
-                    setNewCategory(details.value[0] as StreamCategory)
-                    handleEditStream({ category: details.value[0] })
-                  }}
-                  size="lg"
-                  width="320px">
-                  <Select.HiddenSelect />
-                  <Select.Control>
-                    <Select.Trigger className="border-gray-700 rounded-lg border flex items-center gap-2">
-                      <Select.ValueText placeholder="Select category" />
-                    </Select.Trigger>
-                    <Select.IndicatorGroup>
-                      <Select.Indicator />
-                    </Select.IndicatorGroup>
-                  </Select.Control>
-                  <Select.Positioner>
-                    <Select.Content
-                      className={
-                        'bg-gray-800 rounded-lg border border-gray-700 p-2'
-                      }>
-                      {categories.items.map((category) => (
-                        <Select.Item
-                          item={category}
-                          key={category.value}
-                          className="cursor-pointer">
-                          {category.label}
-                          <Select.ItemIndicator />
-                        </Select.Item>
-                      ))}
-                    </Select.Content>
-                  </Select.Positioner>
-                </Select.Root>
-              ) : (
-                <h3 className="text-xl font-semibold text-gray-400">
-                  {categoryCodeToCategory(category)}
-                </h3>
+            <div className="flex items-center justify-between max-w-[1200px] mx-auto w-full">
+              <div className="flex flex-col gap-2">
+                <Editable.Root
+                  defaultValue={title}
+                  className="text-4xl font-bold"
+                  onValueCommit={(details) =>
+                    handleEditStream({ title: details.value })
+                  }
+                  disabled={streamer.id !== currentUserId}>
+                  <Editable.Preview
+                    className={`hover:bg-gray-700 ${isStreamOwner ? '' : 'hover:bg-transparent cursor-auto'}`}
+                  />
+                  <Editable.Input />
+                  <Editable.Control>
+                    <Editable.EditTrigger
+                      asChild
+                      className={`hover:bg-gray-700 ${isStreamOwner ? '' : 'hidden'}`}>
+                      <IconButton variant="ghost" size="xl">
+                        <PencilLineIcon />
+                      </IconButton>
+                    </Editable.EditTrigger>
+                    <Editable.CancelTrigger
+                      asChild
+                      className="hover:bg-gray-700">
+                      <IconButton variant="outline" size="xl">
+                        <XIcon />
+                      </IconButton>
+                    </Editable.CancelTrigger>
+                    <Editable.SubmitTrigger
+                      asChild
+                      className="hover:bg-gray-700">
+                      <IconButton variant="outline" size="xl">
+                        <CheckIcon />
+                      </IconButton>
+                    </Editable.SubmitTrigger>
+                  </Editable.Control>
+                </Editable.Root>
+                {isStreamOwner ? (
+                  <Select.Root
+                    collection={categories}
+                    value={[newCategory]}
+                    onValueChange={(details) => {
+                      setNewCategory(details.value[0] as StreamCategory)
+                      handleEditStream({ category: details.value[0] })
+                    }}
+                    size="lg"
+                    width="320px">
+                    <Select.HiddenSelect />
+                    <Select.Control>
+                      <Select.Trigger className="border-gray-700 rounded-lg border flex items-center gap-2">
+                        <Select.ValueText placeholder="Select category" />
+                      </Select.Trigger>
+                      <Select.IndicatorGroup>
+                        <Select.Indicator />
+                      </Select.IndicatorGroup>
+                    </Select.Control>
+                    <Select.Positioner>
+                      <Select.Content
+                        className={
+                          'bg-gray-800 rounded-lg border border-gray-700 p-2'
+                        }>
+                        {categories.items.map((category) => (
+                          <Select.Item
+                            item={category}
+                            key={category.value}
+                            className="cursor-pointer">
+                            {category.label}
+                            <Select.ItemIndicator />
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Select.Root>
+                ) : (
+                  <h3 className="text-xl font-semibold text-gray-400">
+                    {categoryCodeToCategory(category)}
+                  </h3>
+                )}
+              </div>
+              {showViewers && (
+                <div className="flex items-center gap-4">
+                  <EyeIcon className="text-gray-400 h-8 w-8" />
+                  <span className="text-2xl text-gray-400">{viewers}</span>
+                </div>
               )}
             </div>
           </div>

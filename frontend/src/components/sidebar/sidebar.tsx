@@ -50,7 +50,7 @@ export function Sidebar() {
         Followed Channels
       </h3>
       <div className="space-y-2">
-        {following.map((following) => (
+        {following?.map((following) => (
           <SidebarChannel
             key={following.id}
             username={following.username}

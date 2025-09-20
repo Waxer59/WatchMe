@@ -16,7 +16,7 @@ const FollowButton: React.FC<Props> = ({ streamer, onFollow, onUnfollow }) => {
   const isLoggedIn = useAccountStore((state) => state.isLoggedIn)
   const userId = useAccountStore((state) => state.id)
   const isFollowing = useAccountStore((state) =>
-    state.following.find((following) => following.id === streamer.id)
+    state?.following?.find((following) => following.id === streamer.id)
   )
   const setIsLoginModalOpen = useUiStore((state) => state.setIsLoginModalOpen)
   const addFollowing = useAccountStore((state) => state.addFollowing)
