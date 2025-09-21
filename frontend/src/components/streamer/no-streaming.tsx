@@ -5,6 +5,7 @@ import FollowButton from './follow-button'
 import { useState } from 'react'
 import { StreamData, StreamerDetails } from '@/types'
 import { SavedStreams } from './saved-streams'
+import { useStreamStore } from '@/store/stream'
 
 interface Props {
   streamer: StreamerDetails
@@ -13,20 +14,11 @@ interface Props {
 
 export const NoStreaming: React.FC<Props> = ({
   streamer,
-  savedStreams: savedStreamsProp
 }) => {
-  const [savedStreams, setSavedStreams] = useState(savedStreamsProp)
+  const streamerData = useStreamStore((state) => state.streamerData)
   const [currentFollowers, setCurrentFollowers] = useState(
     streamer.followers ?? 0
   )
-
-  const onDeleteStream = (playbackId: string) => {
-    setSavedStreams(
-      savedStreams.filter(
-        (savedStream) => savedStream.playback_id !== playbackId
-      )
-    )
-  }
 
   return (
     <div className="p-6">
@@ -56,8 +48,7 @@ export const NoStreaming: React.FC<Props> = ({
         userId={streamer.id}
         username={streamer.username}
         avatar={streamer.avatar}
-        savedStreams={savedStreams}
-        onDeleteStream={onDeleteStream}
+        savedStreams={streamerData?.streams ?? []}
       />
     </div>
   )

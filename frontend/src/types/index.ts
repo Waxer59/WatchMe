@@ -35,6 +35,7 @@ export interface StreamData {
   category: string
   playback_id: string
   viewers: number
+  created_at: string
 }
 
 export enum StreamCategory {

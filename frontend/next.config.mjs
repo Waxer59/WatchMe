@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    optimizePackageImports: ['@chakra-ui/react'],
-    staleTimes: {
-      dynamic: 0
-    }
+    optimizePackageImports: ['@chakra-ui/react']
   },
   reactStrictMode: false // This is causing multiple issues with ws
 }

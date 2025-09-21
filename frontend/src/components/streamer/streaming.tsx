@@ -17,11 +17,10 @@ import {
 } from 'lucide-react'
 import {
   StreamCategory,
-  StreamData,
   StreamerDetails,
   StreamMessage
 } from '@/types'
-import { Suspense, useRef, useState } from 'react'
+import { Suspense, useRef, useState } from 'react';
 import { SavedStreams } from './saved-streams'
 import FollowButton from './follow-button'
 import MuxPlayer from '@mux/mux-player-react/lazy'
@@ -39,7 +38,6 @@ interface Props {
   streamer: StreamerDetails
   playbackId: string
   streamingChat: StreamMessage[]
-  savedStreams: StreamData[]
   blurHashBase64: string
   showChat?: boolean
   showViewers?: boolean
@@ -50,20 +48,19 @@ export const Streaming: React.FC<Props> = ({
   category,
   streamer,
   playbackId,
-  savedStreams: savedStreamsProp,
   streamingChat,
   blurHashBase64,
   showChat = true,
   showViewers = false
 }) => {
   const viewers = useStreamStore((state) => state.viewers)
-  const [savedStreams, setSavedStreams] = useState(savedStreamsProp)
   const [newCategory, setNewCategory] = useState<StreamCategory>(category)
   const currentUserId = useAccountStore((state) => state.id)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [currentFollowers, setCurrentFollowers] = useState(
     streamer.followers ?? 0
   )
+  const streamerData = useStreamStore((state) => state.streamerData)
   const isStreamOwner = streamer.id === currentUserId
 
   const handleEditStream = async ({
@@ -100,14 +97,6 @@ export const Streaming: React.FC<Props> = ({
         description: 'Something went wrong while updating the stream'
       })
     }
-  }
-
-  const onDeleteStream = (playbackId: string) => {
-    setSavedStreams(
-      savedStreams.filter(
-        (savedStream) => savedStream.playback_id !== playbackId
-      )
-    )
   }
 
   return (
@@ -249,8 +238,7 @@ export const Streaming: React.FC<Props> = ({
               userId={streamer.id}
               username={streamer.username}
               avatar={streamer.avatar}
-              savedStreams={savedStreams}
-              onDeleteStream={onDeleteStream}
+              savedStreams={streamerData?.streams ?? []}
             />
           </div>
         </div>

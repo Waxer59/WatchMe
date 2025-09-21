@@ -31,15 +31,15 @@ export const StreamerSection: React.FC<Props> = ({
       return
     }
 
-    setStreamData(streamDataProp)
-    setStreamerData(userData)
     if (streamDataProp) {
       sendJoinUserChannel(streamDataProp!.id)
       setViewers((streamDataProp?.viewers ?? 0) + 1)
     } else {
       sendJoinUserChannel(userData.id)
     }
-
+    
+    setStreamData(streamDataProp)
+    setStreamerData(userData)
     hasJoined.current = true
 
     return () => {
@@ -56,7 +56,6 @@ export const StreamerSection: React.FC<Props> = ({
           streamer={userData}
           playbackId={streamData!.playback_id}
           blurHashBase64={blurHashBase64!}
-          savedStreams={userData.streams}
           streamingChat={[]}
           showViewers
         />

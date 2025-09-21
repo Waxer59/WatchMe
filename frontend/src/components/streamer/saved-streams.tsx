@@ -10,6 +10,7 @@ import { useAccountStore } from '@/store/account'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { toaster } from '../ui/toaster'
 import { StreamActions } from '@/layouts/stream-actions'
+import { useStreamStore } from '@/store/stream'
 
 interface Props {
   userId: string
@@ -28,8 +29,23 @@ export const SavedStreams: React.FC<Props> = ({
 }) => {
   const currentUserId = useAccountStore((state) => state.id)
   const isOwnChannel = currentUserId === userId
+  const pushStreamerStream = useStreamStore((state) => state.pushStreamerStream)
+  const deleteStreamerStream = useStreamStore(
+    (state) => state.deleteStreamerStream
+  )
 
   const handleDeleteStream = async (playbackId: string) => {
+    const savedStream = savedStreams.find(
+      (savedStream) => savedStream.playback_id === playbackId
+    )
+
+    if (!savedStream) {
+      return
+    }
+
+    deleteStreamerStream(playbackId)
+    onDeleteStream?.(playbackId)
+
     try {
       await fetch(
         `${getPublicEnv().BACKEND_URL}/streams/delete-stream/${playbackId}`,
@@ -43,8 +59,8 @@ export const SavedStreams: React.FC<Props> = ({
         title: 'Success',
         description: 'Stream deleted successfully'
       })
-      onDeleteStream?.(playbackId)
     } catch (error) {
+      pushStreamerStream(savedStream)
       console.log(error)
       toaster.error({
         title: 'Error',
