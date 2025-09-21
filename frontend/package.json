@@ -43,10 +43,10 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "frontend/src/**/*.{ts,tsx,js,jsx}": [
+    "src/**/*.{ts,tsx,js,jsx}": [
       "pnpm lint"
     ],
-    "frontend/src/**/*.{ts,tsx,js,jsx,html,css,md}": [
+    "src/**/*.{ts,tsx,js,jsx,html,css,md}": [
       "pnpm prettier --write"
     ]
   }
