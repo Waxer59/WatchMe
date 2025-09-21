@@ -13,6 +13,7 @@ export const useSocket = () => {
   const setIsSocketReady = useSocketStore((state) => state.setIsSocketReady)
   const setViewers = useStreamStore((state) => state.setViewers)
   const setStreamData = useStreamStore((state) => state.setStream)
+  const addStreamMessage = useStreamStore((state) => state.addStreamMessage)
   const reconnectTimeout = useRef<NodeJS.Timeout | null>(null)
   const isConnecting = useRef<boolean>(false)
 
@@ -76,6 +77,9 @@ export const useSocket = () => {
             break
           case WebSocketReceiveEvent.STREAM_OFF:
             setStreamData(null)
+            break
+          case WebSocketReceiveEvent.SEND_MESSAGE:
+            addStreamMessage(message.data)
             break
         }
       }

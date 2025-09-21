@@ -152,13 +152,13 @@ func HandleEventSendMessage(ep *socketio.EventPayload, msg MessageObject) {
 
 	usersToSendMessage := make([]string, 0)
 
-	for _, userId := range Rooms[roomId] {
+	for _, clientId := range Rooms[roomId] {
 		// Omit sender
-		if userId == user.ID.String() {
+		if reverseClientIdSearch(clientId) == user.ID.String() {
 			continue
 		}
 
-		usersToSendMessage = append(usersToSendMessage, userId)
+		usersToSendMessage = append(usersToSendMessage, clientId)
 	}
 
 	msgSend := MessageObject{
@@ -268,4 +268,17 @@ func NotifyRoomUserStopStreaming(userId string) {
 	}
 
 	socketio.EmitToList(Rooms[userId], preparedMessage, socketio.TextMessage)
+}
+
+// All clients are identified by an internal UUID that's used by fiber/socketio
+// to send messages to the client. This function is used to reverse the search
+// and find the client's DB UUID from the internal UUID.
+func reverseClientIdSearch(clientIdToSearch string) string {
+	for userId, clientId := range Clients {
+		if clientId == clientIdToSearch {
+			return userId
+		}
+	}
+
+	return ""
 }

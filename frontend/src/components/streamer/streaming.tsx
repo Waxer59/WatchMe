@@ -15,12 +15,8 @@ import {
   SendIcon,
   XIcon
 } from 'lucide-react'
-import {
-  StreamCategory,
-  StreamerDetails,
-  StreamMessage
-} from '@/types'
-import { Suspense, useRef, useState } from 'react';
+import { StreamCategory, StreamerDetails } from '@/types'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { SavedStreams } from './saved-streams'
 import FollowButton from './follow-button'
 import MuxPlayer from '@mux/mux-player-react/lazy'
@@ -31,13 +27,14 @@ import { toaster } from '../ui/toaster'
 import { categories } from '../settings/stream-settings'
 import { categoryCodeToCategory } from '@/helpers/categoryCodeToCategory'
 import { useStreamStore } from '@/store/stream'
+import { useSocketEvents } from '@/hooks/useSocketEvents'
+import { useUiStore } from '@/store/ui'
 
 interface Props {
   title: string
   category: StreamCategory
   streamer: StreamerDetails
   playbackId: string
-  streamingChat: StreamMessage[]
   blurHashBase64: string
   showChat?: boolean
   showViewers?: boolean
@@ -48,7 +45,6 @@ export const Streaming: React.FC<Props> = ({
   category,
   streamer,
   playbackId,
-  streamingChat,
   blurHashBase64,
   showChat = true,
   showViewers = false
@@ -60,8 +56,15 @@ export const Streaming: React.FC<Props> = ({
   const [currentFollowers, setCurrentFollowers] = useState(
     streamer.followers ?? 0
   )
+  const ownUsername = useAccountStore((state) => state.username)
+  const streamMessages = useStreamStore((state) => state.streamMessages)
   const streamerData = useStreamStore((state) => state.streamerData)
   const isStreamOwner = streamer.id === currentUserId
+  const isLoggedIn = useAccountStore((state) => state.isLoggedIn)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const setIsLoginModalOpen = useUiStore((state) => state.setIsLoginModalOpen)
+  const addStreamMessage = useStreamStore((state) => state.addStreamMessage)
+  const { sendSendMessage } = useSocketEvents()
 
   const handleEditStream = async ({
     title,
@@ -98,6 +101,49 @@ export const Streaming: React.FC<Props> = ({
       })
     }
   }
+
+  const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true)
+      return
+    }
+
+    const form = e.target as HTMLFormElement
+    const formData = new FormData(form)
+
+    const message = formData.get('message') as string
+
+    if (!message.trim()) {
+      toaster.error({
+        title: 'Error',
+        description: 'Please enter a message'
+      })
+      return
+    }
+
+    sendSendMessage(message)
+    addStreamMessage({
+      id: crypto.randomUUID(),
+      presence_color: streamer.presence_color,
+      user_name: ownUsername,
+      message: message
+    })
+
+    form.reset()
+  }
+
+  useEffect(() => {
+    if (!messagesContainerRef.current) {
+      return
+    }
+    const scrollHeight = messagesContainerRef.current.scrollHeight
+    const height = messagesContainerRef.current.clientHeight
+    const maxScrollTop = scrollHeight - height
+
+    messagesContainerRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0
+  }, [streamMessages])
 
   return (
     <div className="flex gap-4 h-full">
@@ -245,26 +291,36 @@ export const Streaming: React.FC<Props> = ({
       </div>
       {showChat && (
         <div className="w-[340px] h-[calc(100vh-125px)] border border-gray-700 rounded-lg bg-gray-800 flex flex-col gap-3 p-3 sticky top-0">
-          <div className="overflow-auto h-full max-h-[calc(100vh-200px)]">
+          <div className="overflow-auto h-full max-h-[calc(100vh-200px)]" ref={messagesContainerRef}>
             <ul className="flex flex-col gap-2">
-              {streamingChat.map((message) => (
+              {streamMessages.map((message) => (
                 <li className="flex items-center gap-2" key={message.id}>
                   <p className="max-w-[275px]">
-                    <span className="text-white font-bold">
-                      {message.username}
+                    <span
+                      className="font-bold"
+                      style={{ color: message.presence_color }}>
+                      {message.user_name}
                       <span className="font-normal">: </span>
                     </span>
-                    {message.content}
+                    {message.message}
                   </p>
                 </li>
               ))}
             </ul>
           </div>
-          <form className="flex gap-2">
+          <form className="flex gap-2" onSubmit={handleSendMessage}>
             <Field.Root>
-              <Input placeholder="Send a message" className="border-gray-700" />
+              <Input
+                placeholder="Send a message"
+                className="border-gray-700"
+                name="message"
+              />
             </Field.Root>
-            <IconButton variant="subtle" colorPalette="blue" size="lg">
+            <IconButton
+              variant="subtle"
+              colorPalette="blue"
+              size="lg"
+              type="submit">
               <SendIcon />
             </IconButton>
           </form>

@@ -52,7 +52,6 @@ export const StreamerSection: React.FC<Props> = ({
           streamer={userData}
           playbackId={streamData!.playback_id}
           blurHashBase64={blurHashBase64!}
-          streamingChat={[]}
           showViewers
         />
       ) : (

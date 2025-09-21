@@ -27,6 +27,20 @@ export const useSocketEvents = () => {
     socket?.send(msg)
   }
 
+  const sendSendMessage = (message: string) => {
+    const msg = JSON.stringify({
+      event: WebSocketSendEvent.SEND_MESSAGE,
+      data: message
+    })
+
+    if (socket?.readyState !== socket?.OPEN || !socket) {
+      queue.current.push(msg)
+      return
+    }
+
+    socket?.send(msg)
+  }
+
   const sendLeaveUserChannel = () => {
     const msg = JSON.stringify({
       event: WebSocketSendEvent.LEAVE_USER_CHANNEL
@@ -57,6 +71,7 @@ export const useSocketEvents = () => {
   return {
     sendJoinUserChannel,
     sendLeaveUserChannel,
-    sendMessage
+    sendMessage,
+    sendSendMessage
   }
 }

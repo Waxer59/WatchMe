@@ -30,7 +30,9 @@ func New(app *fiber.App) {
 
 		if user != nil {
 			userId = user.(*user_entities.User).ID.String()
-			kws.SetAttribute("is_authenticated", true)
+			kws.SetAttribute("is_authenticated", "true")
+		} else {
+			kws.SetAttribute("is_authenticated", "false")
 		}
 
 		// Add the connection to the list of the connected clients

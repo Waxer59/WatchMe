@@ -24,9 +24,9 @@ export interface StreamerDetails {
 
 export interface StreamMessage {
   id: string
-  presenceColor: string
-  username: string
-  content: string
+  presence_color: string
+  user_name: string
+  message: string
 }
 
 export interface StreamData {
@@ -55,7 +55,8 @@ export enum WebSocketSendEvent {
 export enum WebSocketReceiveEvent {
   STREAM_VIEWERS_COUNT = 'stream-viewers-count',
   STREAM_ON = 'stream-on',
-  STREAM_OFF = 'stream-off'
+  STREAM_OFF = 'stream-off',
+  SEND_MESSAGE = 'send-message'
 }
 
 export const allCategories = [
