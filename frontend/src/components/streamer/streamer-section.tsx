@@ -31,13 +31,9 @@ export const StreamerSection: React.FC<Props> = ({
       return
     }
 
-    if (streamDataProp) {
-      sendJoinUserChannel(streamDataProp!.id)
-      setViewers((streamDataProp?.viewers ?? 0) + 1)
-    } else {
-      sendJoinUserChannel(userData.id)
-    }
-    
+    setViewers((streamDataProp?.viewers ?? 0) + 1)
+    sendJoinUserChannel(userData.id)
+
     setStreamData(streamDataProp)
     setStreamerData(userData)
     hasJoined.current = true

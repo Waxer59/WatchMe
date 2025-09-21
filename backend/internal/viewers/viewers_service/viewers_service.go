@@ -11,58 +11,54 @@ import (
 )
 
 type Viewers struct {
-	Count    int64  `json:"count" redis:"count"`
+	Count    int    `json:"count" redis:"count"`
 	Category string `json:"category" redis:"category"`
 }
 
-func IncrementViewerCount(streamId string) (int, error) {
+func IncrementViewerCount(userId string) (int, error) {
 	context := context.Background()
 
-	count, err := redis.RedisClient.HGet(context, fmt.Sprintf("viewers:%s", streamId), "count").Result()
+	viewers, err := GetViewersHashByUserId(userId)
 
 	if err != nil {
 		return 0, err
 	}
 
-	countInt, err := strconv.ParseInt(count, 10, 64)
-
-	if err != nil {
-		return 0, errors.New("error parsing count")
+	if viewers.Category == "" {
+		return 0, errors.New("stream not active")
 	}
 
-	redis.RedisClient.HIncrBy(context, fmt.Sprintf("viewers:%s", streamId), "count", 1)
+	viewers.Count++
 
-	return int(countInt) + 1, nil
+	redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", userId), viewers)
+
+	return viewers.Count, nil
 }
 
-func DecrementViewerCount(streamId string) (int, error) {
+func DecrementViewerCount(userId string) (int, error) {
 	context := context.Background()
 
-	viewers, err := redis.RedisClient.HGet(context, fmt.Sprintf("viewers:%s", streamId), "count").Result()
+	viewers, err := GetViewersHashByUserId(userId)
 
 	if err != nil {
 		return 0, err
 	}
 
-	viewersInt, err := strconv.ParseInt(viewers, 10, 64)
-
-	if err != nil {
-		return 0, err
+	if viewers.Category == "" {
+		return 0, errors.New("stream not active")
 	}
 
-	if viewersInt == 0 {
-		return 0, nil
-	}
+	viewers.Count--
 
-	redis.RedisClient.HIncrBy(context, fmt.Sprintf("viewers:%s", streamId), "count", -1)
+	redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", userId), viewers)
 
-	return int(viewersInt) - 1, nil
+	return viewers.Count, nil
 }
 
-func GetViewerCount(streamId string) (int64, error) {
+func GetViewerCount(userId string) (int64, error) {
 	context := context.Background()
 
-	count, err := redis.RedisClient.HGet(context, fmt.Sprintf("viewers:%s", streamId), "count").Result()
+	count, err := redis.RedisClient.HGet(context, fmt.Sprintf("viewers:%s", userId), "count").Result()
 
 	if err != nil {
 		return 0, err
@@ -71,12 +67,12 @@ func GetViewerCount(streamId string) (int64, error) {
 	return strconv.ParseInt(count, 10, 64)
 }
 
-func ChangeCategoryViewerCount(streamId string, category string) error {
+func ChangeCategoryViewerCount(userId string, category string) error {
 	context := context.Background()
 
 	// Check if the key exists
 	// If not omit all the process
-	exists, err := redis.RedisClient.Exists(context, fmt.Sprintf("viewers:%s", streamId)).Result()
+	exists, err := redis.RedisClient.Exists(context, fmt.Sprintf("viewers:%s", userId)).Result()
 
 	if err != nil {
 		return err
@@ -86,12 +82,15 @@ func ChangeCategoryViewerCount(streamId string, category string) error {
 		return nil
 	}
 
-	_, err = redis.RedisClient.HGet(context, fmt.Sprintf("viewers:%s", streamId), "category").Result()
+	viewers, err := GetViewersHashByUserId(userId)
 
 	if err != nil {
-		redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", streamId), "category", category)
 		return err
 	}
+
+	viewers.Category = category
+
+	redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", userId), viewers)
 
 	return nil
 }
@@ -101,10 +100,24 @@ func GetViewerCountByCategory(category streams_entities.StreamCategory) (int64, 
 	return 0, nil
 }
 
-func DeleteViewerCount(streamId string) error {
+func GetViewersHashByUserId(userId string) (Viewers, error) {
 	context := context.Background()
 
-	err := redis.RedisClient.Del(context, fmt.Sprintf("viewers:%s", streamId)).Err()
+	var viewers Viewers
+
+	err := redis.RedisClient.HGetAll(context, fmt.Sprintf("viewers:%s", userId)).Scan(&viewers)
+
+	if err != nil {
+		return Viewers{}, err
+	}
+
+	return viewers, nil
+}
+
+func DeleteViewerCount(userId string) error {
+	context := context.Background()
+
+	err := redis.RedisClient.Del(context, fmt.Sprintf("viewers:%s", userId)).Err()
 
 	if err != nil {
 		return err
@@ -113,10 +126,10 @@ func DeleteViewerCount(streamId string) error {
 	return nil
 }
 
-func CreateViewers(streamId string, viewers Viewers) error {
+func CreateViewers(userId string, viewers Viewers) error {
 	context := context.Background()
 
-	err := redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", streamId), viewers).Err()
+	err := redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", userId), viewers).Err()
 
 	if err != nil {
 		return err
@@ -125,10 +138,18 @@ func CreateViewers(streamId string, viewers Viewers) error {
 	return nil
 }
 
-func SetViewersByStreamId(streamId string, count int) error {
+func SetViewersByUserId(userId string, count int) error {
 	context := context.Background()
 
-	err := redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", streamId), count, 0).Err()
+	viewers, err := GetViewersHashByUserId(userId)
+
+	if err != nil {
+		return err
+	}
+
+	viewers.Count = count
+
+	err = redis.RedisClient.HSet(context, fmt.Sprintf("viewers:%s", userId), viewers).Err()
 
 	if err != nil {
 		return err

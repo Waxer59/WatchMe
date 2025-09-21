@@ -41,7 +41,7 @@ func HandleEventDisconnect(ep *socketio.EventPayload) {
 			fmt.Println(err.Error())
 			return
 		}
-		HandleEmitViewersCountByStreamId(currentRoom, count)
+		HandleEmitViewersCountByUserId(currentRoom, count)
 	}
 
 	delete(Clients, ep.Kws.GetStringAttribute("user_id"))
@@ -59,7 +59,7 @@ func HandleEventClose(ep *socketio.EventPayload) {
 			fmt.Println(err.Error())
 			return
 		}
-		HandleEmitViewersCountByStreamId(currentRoom, count)
+		HandleEmitViewersCountByUserId(currentRoom, count)
 	}
 
 	delete(Clients, ep.Kws.GetStringAttribute("user_id"))
@@ -74,11 +74,10 @@ func HandleEventJoinUserChannel(ep *socketio.EventPayload, msg MessageObject) {
 		return
 	}
 
-	Rooms[roomId.(string)] = append(Rooms[roomId.(string)], Clients[userId])
+	oldUserRoom := ep.Kws.GetStringAttribute("room_id")
 
-	currentUserRoom := ep.Kws.GetStringAttribute("room_id")
-	isAlreadyInRoom := currentUserRoom == roomId
-	isInDifferentRoom := currentUserRoom != "" && currentUserRoom != roomId
+	isAlreadyInRoom := oldUserRoom == roomId
+	isInDifferentRoom := oldUserRoom != "" && oldUserRoom != roomId
 
 	if isAlreadyInRoom {
 		return
@@ -89,22 +88,23 @@ func HandleEventJoinUserChannel(ep *socketio.EventPayload, msg MessageObject) {
 	// already in another room, in that case we
 	// have to remove the client from the previous room
 	// and add it to the new room
-
-	ep.Kws.SetAttribute("room_id", roomId)
-
 	if isInDifferentRoom {
 		// Remove the user from the previous room
-		removeUserFromRoom(currentUserRoom, Clients[userId])
-		count, err := viewers_service.DecrementViewerCount(currentUserRoom)
+		removeUserFromRoom(oldUserRoom, Clients[userId])
+
+		// Decrement the viewer count & notify old room
+		count, err := viewers_service.DecrementViewerCount(oldUserRoom)
 
 		if err != nil {
 			fmt.Println(err.Error())
 			return
 		}
 
-		HandleEmitViewersCountByStreamId(roomId.(string), count)
-		return
+		HandleEmitViewersCountByUserId(oldUserRoom, count)
 	}
+
+	ep.Kws.SetAttribute("room_id", roomId)
+	Rooms[roomId.(string)] = append(Rooms[roomId.(string)], Clients[userId])
 
 	count, err := viewers_service.IncrementViewerCount(roomId.(string))
 
@@ -113,7 +113,7 @@ func HandleEventJoinUserChannel(ep *socketio.EventPayload, msg MessageObject) {
 		return
 	}
 
-	HandleEmitViewersCountByStreamId(roomId.(string), count)
+	HandleEmitViewersCountByUserId(roomId.(string), count)
 }
 
 func HandleEventLeaveUserChannel(ep *socketio.EventPayload, msg MessageObject) {
@@ -133,7 +133,8 @@ func HandleEventLeaveUserChannel(ep *socketio.EventPayload, msg MessageObject) {
 		return
 	}
 
-	HandleEmitViewersCountByStreamId(currentRoom, count)
+	ep.Kws.SetAttribute("room_id", "")
+	HandleEmitViewersCountByUserId(currentRoom, count)
 }
 
 func HandleEventSendMessage(ep *socketio.EventPayload, msg MessageObject) {
@@ -152,7 +153,8 @@ func HandleEventSendMessage(ep *socketio.EventPayload, msg MessageObject) {
 	usersToSendMessage := make([]string, 0)
 
 	for _, userId := range Rooms[roomId] {
-		if userId == ep.Kws.GetStringAttribute("user_id") {
+		// Omit sender
+		if userId == user.ID.String() {
 			continue
 		}
 
@@ -204,14 +206,12 @@ func removeUserFromRoom(roomId string, userId string) {
 	}
 }
 
-func HandleEmitViewersCountByStreamId(streamId string, count int) {
+func HandleEmitViewersCountByUserId(userId string, count int) {
 	message := MessageObject{
 		Data: struct {
-			StreamId string `json:"stream_id"`
-			Viewers  int    `json:"viewers"`
+			Viewers int `json:"viewers"`
 		}{
-			StreamId: streamId,
-			Viewers:  count,
+			Viewers: count,
 		},
 		Event: STREAM_VIEWERS_COUNT,
 	}
@@ -222,15 +222,10 @@ func HandleEmitViewersCountByStreamId(streamId string, count int) {
 		return
 	}
 
-	socketio.EmitToList(Rooms[streamId], preparedMessage)
+	socketio.EmitToList(Rooms[userId], preparedMessage)
 }
 
 func NotifyRoomUserStreaming(userId string, stream *streams_entities.Stream) {
-	// If a user is not streaming, all users visiting their channel
-	// are joined to a room whose id is the user’s id.
-	// When the stream starts, all users who were in that room are notified
-	// and moved to the new room whose id is the stream id.
-
 	notificationMessage := MessageObject{
 		Data: struct {
 			Stream *streams_entities.Stream `json:"stream"`
@@ -249,26 +244,20 @@ func NotifyRoomUserStreaming(userId string, stream *streams_entities.Stream) {
 	// Notify all users in the room
 	socketio.EmitToList(Rooms[userId], preparedMessage, socketio.TextMessage)
 
-	// Move all users in the room to the new room
-	Rooms[stream.ID.String()] = Rooms[userId]
-
 	// Set viewers count
-	viewers_service.SetViewersByStreamId(stream.ID.String(), len(Rooms[stream.ID.String()]))
+	err = viewers_service.SetViewersByUserId(userId, len(Rooms[userId]))
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
 	// Notify viewers
-	HandleEmitViewersCountByStreamId(stream.ID.String(), len(Rooms[stream.ID.String()]))
-
-	// Delete the old room
-	delete(Rooms, userId)
+	HandleEmitViewersCountByUserId(userId, len(Rooms[userId]))
 }
 
-func NotifyRoomUserStopStreaming(userId string, streamId string) {
+func NotifyRoomUserStopStreaming(userId string) {
 	notificationMessage := MessageObject{
-		Data: struct {
-			StreamId string `json:"stream_id"`
-		}{
-			StreamId: streamId,
-		},
 		Event: STREAM_OFF,
 	}
 
@@ -278,10 +267,5 @@ func NotifyRoomUserStopStreaming(userId string, streamId string) {
 		return
 	}
 
-	socketio.EmitToList(Rooms[streamId], preparedMessage, socketio.TextMessage)
-
-	// Move all users in the room to the new room
-	Rooms[userId] = Rooms[streamId]
-
-	delete(Rooms, streamId)
+	socketio.EmitToList(Rooms[userId], preparedMessage, socketio.TextMessage)
 }

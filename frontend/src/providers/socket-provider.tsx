@@ -15,19 +15,19 @@ export const SocketProvider: React.FC<Props> = ({ children }) => {
   const { connectSocket } = useSocket()
   const { sendJoinUserChannel } = useSocketEvents()
 
-useEffect(() => {
-  function handleRecover() {
-    const state = useStreamStore.getState()
-    if (state.streamData || state.streamerData) {
-      sendJoinUserChannel(state.streamData?.id ?? state.streamerData!.id)
+  useEffect(() => {
+    function handleRecover() {
+      const state = useStreamStore.getState()
+      if (state.streamerData) {
+        sendJoinUserChannel(state.streamerData!.id)
+      }
     }
-  }
 
-  if (!isConnectedToSocket) {
-    connectSocket({ onRecover: handleRecover })
-    isConnectedToSocket = true
-  }
-}, [])
+    if (!isConnectedToSocket) {
+      connectSocket({ onRecover: handleRecover })
+      isConnectedToSocket = true
+    }
+  }, [])
 
   return children
 }

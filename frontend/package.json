@@ -43,11 +43,11 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx,js,jsx}": [
-      "eslint --fix"
+    "frontend/src/**/*.{ts,tsx,js,jsx}": [
+      "npx lint"
     ],
-    "src/**/*.{ts,tsx,js,jsx,html,css,md}": [
-      "prettier --write"
+    "frontend/src/**/*.{ts,tsx,js,jsx,html,css,md}": [
+      "npx prettier --write"
     ]
   }
 }

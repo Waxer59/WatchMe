@@ -25,15 +25,15 @@ const (
 	GithubOauthState = "github_oauth_state"
 )
 
-var oauthConf = &oauth2.Config{
-	ClientID:     os.Getenv("OAUTH_GITHUB_CLIENT_ID"),
-	ClientSecret: os.Getenv("OAUTH_GITHUB_CLIENT_SECRET"),
-	RedirectURL:  os.Getenv("OAUTH_GITHUB_REDIRECT_URL"),
-	Endpoint:     github.Endpoint,
-	Scopes:       []string{"user"},
-}
-
 func GithubLogin(c *fiber.Ctx) (string, error) {
+	oauthConf := oauth2.Config{
+		ClientID:     os.Getenv("OAUTH_GITHUB_CLIENT_ID"),
+		ClientSecret: os.Getenv("OAUTH_GITHUB_CLIENT_SECRET"),
+		RedirectURL:  os.Getenv("OAUTH_GITHUB_REDIRECT_URL"),
+		Endpoint:     github.Endpoint,
+		Scopes:       []string{"user"},
+	}
+
 	sess, err := config.FiberSession.Get(c)
 
 	if err != nil {
@@ -54,6 +54,14 @@ func GithubLogin(c *fiber.Ctx) (string, error) {
 }
 
 func GithubCallback(c *fiber.Ctx) (*oauth2.Token, error) {
+	oauthConf := oauth2.Config{
+		ClientID:     os.Getenv("OAUTH_GITHUB_CLIENT_ID"),
+		ClientSecret: os.Getenv("OAUTH_GITHUB_CLIENT_SECRET"),
+		RedirectURL:  os.Getenv("OAUTH_GITHUB_REDIRECT_URL"),
+		Endpoint:     github.Endpoint,
+		Scopes:       []string{"user"},
+	}
+
 	sess, err := config.FiberSession.Get(c)
 
 	if err != nil {

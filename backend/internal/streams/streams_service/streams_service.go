@@ -57,7 +57,7 @@ func GetStreamFeed(category *string) ([]StreamFeed, error) {
 			continue
 		}
 
-		viewers, err := viewers_service.GetViewerCount(stream.ID.String())
+		viewers, err := viewers_service.GetViewerCount(user.ID.String())
 
 		if err != nil {
 			return nil, err
@@ -123,7 +123,7 @@ func GetLiveStreamByUsername(username string) (*streams_entities.Stream, error) 
 		return nil, err
 	}
 
-	viewers, err := viewers_service.GetViewerCount(stream.ID.String())
+	viewers, err := viewers_service.GetViewerCount(user.ID.String())
 
 	if err != nil {
 		return nil, err
@@ -167,8 +167,14 @@ func UpdateStreamById(id uuid.UUID, stream *streams_entities.Stream) error {
 	if stream.Category != "" {
 		updateField["category"] = stream.Category
 
+		user, err := users_service.GetUserById(stream.UserId.String())
+
+		if err != nil {
+			return err
+		}
+
 		if !stream.IsUploadDone {
-			viewers_service.ChangeCategoryViewerCount(stream.ID.String(), stream.Category)
+			viewers_service.ChangeCategoryViewerCount(user.ID.String(), stream.Category)
 		}
 	}
 

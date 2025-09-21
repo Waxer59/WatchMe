@@ -38,7 +38,7 @@ type Stream struct {
 	Viewers      int64     `json:"viewers,omitempty" gorm:"-"`
 	AssetId      string    `json:"-"`
 	IsUploadDone bool      `json:"-" default:"false"`
-	CreatedAt    time.Time `json:"-" gorm:"default:CURRENT_TIMESTAMP"`
+	CreatedAt    time.Time `json:"created_at,omitempty" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
 func (u *Stream) BeforeSave(tx *gorm.DB) error {

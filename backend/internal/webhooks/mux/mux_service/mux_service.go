@@ -57,7 +57,7 @@ func HandleStreamActive(webhook mux_models.MuxWebhook) error {
 		return err
 	}
 
-	err = viewers_service.CreateViewers(streamId.String(), viewers_service.Viewers{
+	err = viewers_service.CreateViewers(user.ID.String(), viewers_service.Viewers{
 		Count:    0,
 		Category: user.DefaultStreamCategory,
 	})
@@ -124,9 +124,9 @@ func HandleStreamDisconnected(webhook mux_models.MuxWebhook) error {
 	}
 
 	// Notify room users
-	ws_service.NotifyRoomUserStopStreaming(user.ID.String(), streamInProgress.ID.String())
+	ws_service.NotifyRoomUserStopStreaming(user.ID.String())
 
-	err = viewers_service.DeleteViewerCount(streamInProgress.ID.String())
+	err = viewers_service.DeleteViewerCount(user.ID.String())
 
 	if err != nil {
 		fmt.Println(err.Error())
