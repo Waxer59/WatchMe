@@ -1,7 +1,7 @@
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 import { useSocketStore } from '@/store/socket'
 import { useStreamStore } from '@/store/stream'
-import { Environment, WebSocketReceiveEvent } from '@/types'
+import { WebSocketReceiveEvent } from '@/types'
 import { useCallback, useRef } from 'react'
 
 interface Config {
@@ -29,10 +29,8 @@ export const useSocket = () => {
 
       const socket = new WebSocket(
         `${getPublicEnv()
-          .BACKEND_URL?.replace(
-            'http',
-            getPublicEnv().ENVIRONMENT === Environment.DEV ? 'ws' : 'wss'
-          )
+          .BACKEND_URL?.replace('http', 'ws')
+          .replace('https', 'wss')
           .replace('/api', '')}/ws`
       )
 
