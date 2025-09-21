@@ -44,10 +44,10 @@
   },
   "lint-staged": {
     "frontend/src/**/*.{ts,tsx,js,jsx}": [
-      "npx lint"
+      "lint"
     ],
     "frontend/src/**/*.{ts,tsx,js,jsx,html,css,md}": [
-      "npx prettier --write"
+      "prettier --write"
     ]
   }
 }
