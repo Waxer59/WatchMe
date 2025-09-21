@@ -44,10 +44,10 @@
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx}": [
-      "pnpm lint"
+      "npx next lint --dir ./"
     ],
     "src/**/*.{ts,tsx,js,jsx,html,css,md}": [
-      "pnpm prettier --write"
+      "npx prettier --write"
     ]
   }
 }

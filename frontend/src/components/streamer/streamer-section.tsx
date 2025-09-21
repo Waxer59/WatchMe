@@ -53,6 +53,7 @@ export const StreamerSection: React.FC<Props> = ({
           playbackId={streamData!.playback_id}
           blurHashBase64={blurHashBase64!}
           showViewers
+          showChat
         />
       ) : (
         <NoStreaming streamer={userData} savedStreams={userData.streams} />

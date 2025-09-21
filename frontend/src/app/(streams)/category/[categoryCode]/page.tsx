@@ -32,11 +32,11 @@ const Page = async ({ params }: { params: { categoryCode: string } }) => {
                 title={stream.title}
                 thumbnail={`https://image.mux.com/${stream.playback_id}/thumbnail.webp`}
                 thumbnail_gif={`https://image.mux.com/${stream.playback_id}/animated.webp`}
+                viewers={stream.viewers}
                 username={stream.username}
                 avatar={stream.avatar}
                 category={stream.category}
                 isLive
-                count={0}
               />
             </li>
           ))}

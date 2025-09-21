@@ -46,7 +46,7 @@ export const Streaming: React.FC<Props> = ({
   streamer,
   playbackId,
   blurHashBase64,
-  showChat = true,
+  showChat = false,
   showViewers = false
 }) => {
   const viewers = useStreamStore((state) => state.viewers)

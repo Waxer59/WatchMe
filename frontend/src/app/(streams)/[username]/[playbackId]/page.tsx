@@ -46,10 +46,6 @@ const Page = async ({
       streamer={userData}
       playbackId={params.playbackId}
       blurHashBase64={blurHashBase64!}
-      savedStreams={userData.streams.filter(
-        (stream) => stream.playback_id !== params.playbackId
-      )}
-      streamingChat={[]}
       showChat={false}
     />
   )

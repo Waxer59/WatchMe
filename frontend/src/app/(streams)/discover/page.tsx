@@ -28,10 +28,10 @@ const Page = async () => {
                 thumbnail={`https://image.mux.com/${stream.playback_id}/thumbnail.webp`}
                 thumbnail_gif={`https://image.mux.com/${stream.playback_id}/animated.webp`}
                 username={stream.username}
+                viewers={stream.viewers}
                 avatar={stream.avatar}
                 category={stream.category}
                 isLive
-                count={0}
               />
             </li>
           ))}
