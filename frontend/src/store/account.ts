@@ -47,39 +47,42 @@ const initialState: State = {
 }
 
 export const useAccountStore = create<State & Actions>()(
-  devtools((set) => ({
-    ...initialState,
-    setUsername: (username: string) => set({ username }),
-    setAvatar: (avatar: string) => set({ avatar }),
-    setIsLoading: (isLoading: boolean) => set({ isLoading }),
-    setStreamKeys: (streamKeys: StreamKey[]) =>
-      set({ stream_keys: streamKeys }),
-    addStreamKey: (id: string, key: string) =>
-      set((state) => ({
-        stream_keys: [...state.stream_keys, { id, key }]
-      })),
-    setId: (id: string) => set({ id }),
-    removeStreamKey: (id: string) =>
-      set((state) => ({
-        stream_keys: state.stream_keys.filter((key) => key.id !== id)
-      })),
-    setFollowing: (following: StreamerDetails[]) => set({ following }),
-    addFollowing: (following: StreamerDetails) =>
-      set((state) => ({
-        following: [...state.following, following]
-      })),
-    setPresenceColor: (presence_color: string) => set({ presence_color }),
-    removeFollowing: (id: string) =>
-      set((state) => ({
-        following: state.following.filter((following) => following.id !== id)
-      })),
-    setIsLoggedIn: (isLoggedIn: boolean) => set({ isLoggedIn }),
-    setDefaultStreamTitle: (defaultStreamTitle: string) =>
-      set({ default_stream_title: defaultStreamTitle }),
-    setDefaultStreamCategory: (defaultStreamCategory: StreamCategory) =>
-      set({ default_stream_category: defaultStreamCategory }),
-    clear: () => set(initialState)
-  }), {
-    name: 'account'
-  })
+  devtools(
+    (set) => ({
+      ...initialState,
+      setUsername: (username: string) => set({ username }),
+      setAvatar: (avatar: string) => set({ avatar }),
+      setIsLoading: (isLoading: boolean) => set({ isLoading }),
+      setStreamKeys: (streamKeys: StreamKey[]) =>
+        set({ stream_keys: streamKeys }),
+      addStreamKey: (id: string, key: string) =>
+        set((state) => ({
+          stream_keys: [...state.stream_keys, { id, key }]
+        })),
+      setId: (id: string) => set({ id }),
+      removeStreamKey: (id: string) =>
+        set((state) => ({
+          stream_keys: state.stream_keys.filter((key) => key.id !== id)
+        })),
+      setFollowing: (following: StreamerDetails[]) => set({ following }),
+      addFollowing: (following: StreamerDetails) =>
+        set((state) => ({
+          following: [...state.following, following]
+        })),
+      setPresenceColor: (presence_color: string) => set({ presence_color }),
+      removeFollowing: (id: string) =>
+        set((state) => ({
+          following: state.following.filter((following) => following.id !== id)
+        })),
+      setIsLoggedIn: (isLoggedIn: boolean) => set({ isLoggedIn }),
+      setDefaultStreamTitle: (defaultStreamTitle: string) =>
+        set({ default_stream_title: defaultStreamTitle }),
+      setDefaultStreamCategory: (defaultStreamCategory: StreamCategory) =>
+        set({ default_stream_category: defaultStreamCategory }),
+      clear: () => set(initialState)
+    }),
+    {
+      name: 'account'
+    }
+  )
 )

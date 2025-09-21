@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "cd .. && husky frontend/.husky",
-    "prettier": "prettier --write ."
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@chakra-ui/next-js": "^2.4.2",
@@ -44,10 +44,10 @@
   },
   "lint-staged": {
     "frontend/src/**/*.{ts,tsx,js,jsx}": [
-      "lint"
+      "pnpm lint"
     ],
     "frontend/src/**/*.{ts,tsx,js,jsx,html,css,md}": [
-      "prettier --write"
+      "pnpm prettier --write"
     ]
   }
 }

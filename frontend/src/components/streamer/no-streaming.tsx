@@ -12,9 +12,7 @@ interface Props {
   savedStreams: StreamData[]
 }
 
-export const NoStreaming: React.FC<Props> = ({
-  streamer,
-}) => {
+export const NoStreaming: React.FC<Props> = ({ streamer }) => {
   const streamerData = useStreamStore((state) => state.streamerData)
   const [currentFollowers, setCurrentFollowers] = useState(
     streamer.followers ?? 0

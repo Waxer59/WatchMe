@@ -18,12 +18,15 @@ const initialState: State = {
 }
 
 export const useSocketStore = create<State & Actions>()(
-  devtools((set) => ({
-    ...initialState,
-    setSocket: (socket: WebSocket | null) => set({ socket }),
-    setIsSocketReady: (isSocketReady: boolean) => set({ isSocketReady }),
-    clear: () => set(initialState)
-  }), {
-    name: 'socket'
-  })
+  devtools(
+    (set) => ({
+      ...initialState,
+      setSocket: (socket: WebSocket | null) => set({ socket }),
+      setIsSocketReady: (isSocketReady: boolean) => set({ isSocketReady }),
+      clear: () => set(initialState)
+    }),
+    {
+      name: 'socket'
+    }
+  )
 )

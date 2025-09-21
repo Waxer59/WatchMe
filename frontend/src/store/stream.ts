@@ -46,7 +46,7 @@ export const useStreamStore = create<State & Actions>()(
             return { streamerData: null }
           }
 
-          const newStreamerData = {...state.streamerData}
+          const newStreamerData = { ...state.streamerData }
           if (newStreamerData) {
             newStreamerData.streams = newStreamerData?.streams?.filter(
               (stream) => stream.playback_id !== playbackId
@@ -54,19 +54,26 @@ export const useStreamStore = create<State & Actions>()(
           }
           return { streamerData: newStreamerData }
         }),
-        pushStreamerStream: (stream: StreamData) =>
-          set((state) => {
-            if (!state.streamerData) {
-              return { streamerData: null }
-            }
+      pushStreamerStream: (stream: StreamData) =>
+        set((state) => {
+          if (!state.streamerData) {
+            return { streamerData: null }
+          }
 
-            const newStreamerData = {...state.streamerData}
-            if (newStreamerData) {
-              newStreamerData.streams = [...newStreamerData?.streams, stream].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) // Sort by created_at DESC
-            }
+          const newStreamerData = { ...state.streamerData }
+          if (newStreamerData) {
+            newStreamerData.streams = [
+              ...newStreamerData?.streams,
+              stream
+            ].sort(
+              (a, b) =>
+                new Date(b.created_at).getTime() -
+                new Date(a.created_at).getTime()
+            ) // Sort by created_at DESC
+          }
 
-            return { streamerData: newStreamerData }
-          }),
+          return { streamerData: newStreamerData }
+        }),
       setStreamerData: (streamerData: StreamerDetails | null) =>
         set({ streamerData }),
       setViewers: (viewers: number) => set({ viewers }),

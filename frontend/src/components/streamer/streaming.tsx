@@ -291,7 +291,9 @@ export const Streaming: React.FC<Props> = ({
       </div>
       {showChat && (
         <div className="w-[340px] h-[calc(100vh-125px)] border border-gray-700 rounded-lg bg-gray-800 flex flex-col gap-3 p-3 sticky top-0">
-          <div className="overflow-auto h-full max-h-[calc(100vh-200px)]" ref={messagesContainerRef}>
+          <div
+            className="overflow-auto h-full max-h-[calc(100vh-200px)]"
+            ref={messagesContainerRef}>
             <ul className="flex flex-col gap-2">
               {streamMessages.map((message) => (
                 <li className="flex items-center gap-2" key={message.id}>
