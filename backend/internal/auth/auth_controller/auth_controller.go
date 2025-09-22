@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/waxer59/watchMe/helpers"
 	"github.com/waxer59/watchMe/internal/auth/auth_service"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
@@ -83,9 +84,17 @@ func githubCallback(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
 	}
 
+	domain, err := helpers.GetDomainFromUrl(os.Getenv("FRONTEND_URL"))
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
+	}
+
 	c.Cookie(&fiber.Cookie{
 		Name:     CookieAuth,
 		Value:    jwtToken,
+		Domain:   domain,
 		HTTPOnly: true,
 		Secure:   true,
 		Expires:  time.Now().Add(AuthExpiration * time.Second),
@@ -99,9 +108,17 @@ func githubCallback(c *fiber.Ctx) error {
 // @tags	Auth
 // @router	/auth/logout [post]
 func logout(c *fiber.Ctx) error {
+	domain, err := helpers.GetDomainFromUrl(os.Getenv("FRONTEND_URL"))
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
+	}
+
 	c.Cookie(&fiber.Cookie{
 		Name:     CookieAuth,
 		Value:    "",
+		Domain:   domain,
 		HTTPOnly: true,
 		Secure:   true,
 		Expires:  time.Now().Add(-1 * AuthExpiration * time.Second),
