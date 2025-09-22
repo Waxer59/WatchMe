@@ -5,6 +5,7 @@ export async function middleware(request: Request) {
   const cookies = request.headers.get('Cookie')
 
   try {
+    console.log({ cookies })
     const response = await fetch(`${getPublicEnv().BACKEND_URL}/users`, {
       method: 'GET',
       headers: {
