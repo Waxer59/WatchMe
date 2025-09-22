@@ -9,6 +9,7 @@ interface Props {
   thumbnail: string
   thumbnail_gif: string
   username: string
+  presence_color: string
   avatar: string
   title: string
   category: string
@@ -21,6 +22,7 @@ export const HomeChannel: React.FC<Props> = ({
   username,
   thumbnail,
   thumbnail_gif,
+  presence_color,
   avatar,
   category,
   viewers,
@@ -66,7 +68,7 @@ export const HomeChannel: React.FC<Props> = ({
       </div>
       <div data-slot="card-content" className="p-4">
         <div className="flex items-start space-x-3">
-          <Avatar.Root colorPalette="blue">
+          <Avatar.Root style={{ backgroundColor: presence_color }}>
             <Avatar.Fallback name={username} />
             <Avatar.Image src={avatar} />
           </Avatar.Root>

@@ -8,41 +8,33 @@ import {
   PodcastIcon
 } from 'lucide-react'
 import { SidebarCategory } from './sidebar-category'
-import { StreamCategory } from '@/types'
+import { StreamCategoriesViewers, StreamCategory } from '@/types'
 
-export const SidebarCategories = () => {
+interface Props {
+  categories: StreamCategoriesViewers[]
+}
+
+const STREAM_CATEGORIES_ICONS: {
+  [key in StreamCategory]: React.ComponentType
+} = {
+  gaming: Gamepad2Icon,
+  music: MusicIcon,
+  art: PaletteIcon,
+  tech: ZapIcon,
+  just_chatting: PodcastIcon
+}
+
+export const SidebarCategories = ({ categories = [] }: Props) => {
   return (
     <div className="space-y-2">
-      <SidebarCategory
-        icon={Gamepad2Icon}
-        name="Gaming"
-        code={StreamCategory.GAMING}
-        count="24k"
-      />
-      <SidebarCategory
-        icon={MusicIcon}
-        name="Music"
-        count="24k"
-        code={StreamCategory.MUSIC}
-      />
-      <SidebarCategory
-        icon={PaletteIcon}
-        name="Art"
-        count="24k"
-        code={StreamCategory.ART}
-      />
-      <SidebarCategory
-        icon={ZapIcon}
-        name="Tech"
-        count="24k"
-        code={StreamCategory.TECH}
-      />
-      <SidebarCategory
-        icon={PodcastIcon}
-        name="Just Chatting"
-        count="24k"
-        code={StreamCategory.JUST_CHATTING}
-      />
+      {categories.map((category) => (
+        <SidebarCategory
+          key={category.category}
+          icon={STREAM_CATEGORIES_ICONS[category.category as StreamCategory]}
+          count={+category.viewers}
+          code={category.category as StreamCategory}
+        />
+      ))}
     </div>
   )
 }

@@ -257,7 +257,9 @@ export const Streaming: React.FC<Props> = ({
                 className="flex items-center gap-4"
                 href={`/${streamer.username}`}
                 scroll={false}>
-                <Avatar.Root colorPalette="blue" className="w-24 h-24">
+                <Avatar.Root
+                  style={{ backgroundColor: streamer.presence_color }}
+                  className="w-24 h-24">
                   <Avatar.Fallback
                     name={streamer.username}
                     className="text-4xl"

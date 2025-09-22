@@ -94,6 +94,15 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/streams/categories/viewers": {
+            "get": {
+                "description": "Get the number of viewers for each category",
+                "tags": [
+                    "Streams"
+                ],
+                "responses": {}
+            }
+        },
         "/streams/delete-key/:streamKeyId": {
             "delete": {
                 "description": "Delete a stream key for a live stream",

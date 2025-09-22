@@ -57,6 +57,12 @@ paths:
       responses: {}
       tags:
       - Streams
+  /streams/categories/viewers:
+    get:
+      description: Get the number of viewers for each category
+      responses: {}
+      tags:
+      - Streams
   /streams/delete-key/:streamKeyId:
     delete:
       description: Delete a stream key for a live stream

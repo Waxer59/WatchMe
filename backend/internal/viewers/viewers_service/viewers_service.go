@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/waxer59/watchMe/internal/streams/streams_entities"
 	"github.com/waxer59/watchMe/redis"
 )
 
@@ -95,9 +94,48 @@ func ChangeCategoryViewerCount(userId string, category string) error {
 	return nil
 }
 
-func GetViewerCountByCategory(category streams_entities.StreamCategory) (int64, error) {
-	// TODO
-	return 0, nil
+func GetViewerCountByCategory(category string) (int, error) {
+	ctx := context.Background()
+
+	var cursor uint64
+	var keys []string
+	prefix := "viewers:*"
+
+	// Get all keys matching the prefix
+	for {
+		ks, c, err := redis.RedisClient.Scan(ctx, cursor, prefix, 100).Result()
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return 0, err
+		}
+
+		keys = append(keys, ks...)
+		cursor = c
+
+		if cursor == 0 {
+			break
+		}
+	}
+
+	var viewers Viewers
+	totalCount := 0
+
+	// Count the members of the category
+	for _, key := range keys {
+		err := redis.RedisClient.HGetAll(ctx, key).Scan(&viewers)
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return 0, err
+		}
+
+		if viewers.Category == category {
+			totalCount += viewers.Count
+		}
+	}
+
+	return totalCount, nil
 }
 
 func GetViewersHashByUserId(userId string) (Viewers, error) {

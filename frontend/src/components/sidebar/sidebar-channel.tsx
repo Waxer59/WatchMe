@@ -3,9 +3,10 @@ import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 
 interface SidebarChannelProps {
-  isLive?: boolean
   username: string
   avatar: string
+  presence_color: string
+  isLive?: boolean
   category?: string
   count?: number
   [key: string]: unknown
@@ -14,6 +15,7 @@ interface SidebarChannelProps {
 export const SidebarChannel: React.FC<SidebarChannelProps> = ({
   username,
   avatar,
+  presence_color,
   isLive,
   category,
   count,
@@ -24,7 +26,7 @@ export const SidebarChannel: React.FC<SidebarChannelProps> = ({
       className="w-full p-2 flex items-center gap-4 rounded-md hover:bg-gray-700 transition-all cursor-pointer"
       href={`/${username}`}
       {...props}>
-      <Avatar.Root colorPalette="blue">
+      <Avatar.Root style={{ backgroundColor: presence_color }}>
         <Avatar.Fallback name={username} />
         <Avatar.Image src={avatar} />
         {isLive && (

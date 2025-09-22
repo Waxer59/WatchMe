@@ -9,6 +9,7 @@ import Link from 'next/link'
 export function UserAvatar() {
   const avatar = useAccountStore((state) => state.avatar)
   const username = useAccountStore((state) => state.username)
+  const presence_color = useAccountStore((state) => state.presence_color)
   const clearAccount = useAccountStore((state) => state.clear)
 
   const handleLogout = async () => {
@@ -24,7 +25,7 @@ export function UserAvatar() {
     <Menu.Root>
       <Menu.Trigger asChild>
         <Button variant="plain" className="outline-none">
-          <Avatar.Root colorPalette="gray">
+          <Avatar.Root style={{ backgroundColor: presence_color }}>
             <Avatar.Fallback name={username} />
             <Avatar.Image src={avatar} />
           </Avatar.Root>

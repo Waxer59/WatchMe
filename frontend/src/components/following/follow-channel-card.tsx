@@ -10,7 +10,9 @@ interface Props {
 export const FollowChannelCard: React.FC<Props> = ({ streamer }) => {
   return (
     <li className="flex items-center gap-4 rounded-lg bg-gray-800 border border-gray-700 p-4">
-      <Avatar.Root colorPalette="blue" size="2xl">
+      <Avatar.Root
+        size="2xl"
+        style={{ backgroundColor: streamer.presence_color }}>
         <Avatar.Fallback name={streamer.username} className="text-4xl" />
         <Avatar.Image src={streamer.avatar} />
       </Avatar.Root>

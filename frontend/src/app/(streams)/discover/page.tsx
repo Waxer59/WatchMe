@@ -7,11 +7,19 @@ import { unstable_noStore as noStore } from 'next/cache'
 
 const Page = async () => {
   noStore()
-  const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`, {
-    next: { revalidate: 0 }
-  })
 
-  const data = await streams.json()
+  let streamsData: StreamFeedDetails[] = []
+
+  try {
+    const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`, {
+      next: { revalidate: 0 }
+    })
+
+    const data = await streams.json()
+    streamsData = data
+  } catch (error) {
+    console.log(error)
+  }
 
   return (
     <>
@@ -19,9 +27,9 @@ const Page = async () => {
         <h1 className="text-3xl font-bold">Discover</h1>
         <p className="text-gray-400">Discover new streamers</p>
       </header>
-      {data.length > 0 ? (
+      {streamsData.length > 0 ? (
         <VideosLayout>
-          {data.map((stream: StreamFeedDetails) => (
+          {streamsData.map((stream: StreamFeedDetails) => (
             <li key={stream.username}>
               <HomeChannel
                 title={stream.title}
@@ -30,6 +38,7 @@ const Page = async () => {
                 username={stream.username}
                 viewers={stream.viewers}
                 avatar={stream.avatar}
+                presence_color={stream.presence_color}
                 category={stream.category}
                 isLive
               />

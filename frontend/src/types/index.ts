@@ -10,6 +10,7 @@ export interface StreamFeedDetails {
   avatar: string
   playback_id: string
   viewers: number
+  presence_color: string
 }
 
 export interface StreamerDetails {
@@ -70,4 +71,9 @@ export const allCategories = [
 export enum Environment {
   DEV = 'DEV',
   PROD = 'PROD'
+}
+
+export interface StreamCategoriesViewers {
+  category: string
+  viewers: number
 }

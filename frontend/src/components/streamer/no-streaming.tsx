@@ -22,7 +22,10 @@ export const NoStreaming: React.FC<Props> = ({ streamer }) => {
     <div className="p-6">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Avatar.Root colorPalette="blue" size="full" className="w-32 h-32">
+          <Avatar.Root
+            style={{ backgroundColor: streamer.presence_color }}
+            size="full"
+            className="w-32 h-32">
             <Avatar.Fallback name={streamer.username} className="text-4xl" />
             <Avatar.Image src={streamer.avatar} />
           </Avatar.Root>

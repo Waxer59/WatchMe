@@ -15,12 +15,13 @@ import (
 )
 
 type StreamFeed struct {
-	Title      string `json:"title"`
-	Username   string `json:"username"`
-	Avatar     string `json:"avatar"`
-	Category   string `json:"category"`
-	PlaybackId string `json:"playback_id"`
-	Viewers    int64  `json:"viewers"`
+	Title         string `json:"title"`
+	Username      string `json:"username"`
+	Avatar        string `json:"avatar"`
+	Category      string `json:"category"`
+	PlaybackId    string `json:"playback_id"`
+	Viewers       int64  `json:"viewers"`
+	PresenceColor string `json:"presence_color"`
 }
 
 func GenerateStreamKey(channelId string) (muxgo.LiveStreamResponse, error) {
@@ -64,12 +65,13 @@ func GetStreamFeed(category *string) ([]StreamFeed, error) {
 		}
 
 		streamsFeed = append(streamsFeed, StreamFeed{
-			Title:      stream.Title,
-			Category:   stream.Category,
-			Username:   user.Username,
-			Avatar:     user.Avatar,
-			PlaybackId: stream.PlaybackId,
-			Viewers:    viewers,
+			Title:         stream.Title,
+			Category:      stream.Category,
+			Username:      user.Username,
+			Avatar:        user.Avatar,
+			PlaybackId:    stream.PlaybackId,
+			Viewers:       viewers,
+			PresenceColor: user.PresenceColor,
 		})
 	}
 

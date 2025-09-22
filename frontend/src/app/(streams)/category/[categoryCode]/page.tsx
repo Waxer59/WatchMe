@@ -13,20 +13,26 @@ const Page = async ({ params }: { params: { categoryCode: string } }) => {
   }
 
   noStore()
-  const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`, {
-    next: { revalidate: 0 }
-  })
+  let streamsData: StreamFeedDetails[] = []
 
-  const data = await streams.json()
+  try {
+    const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`, {
+      next: { revalidate: 0 }
+    })
 
+    const data = await streams.json()
+    streamsData = data
+  } catch (error) {
+    console.log(error)
+  }
   return (
     <>
       <h1 className="text-3xl font-bold mb-8">
         {categoryCodeToCategory(params.categoryCode)}
       </h1>
-      {data.length > 0 ? (
+      {streamsData.length > 0 ? (
         <VideosLayout>
-          {data.map((stream: StreamFeedDetails) => (
+          {streamsData.map((stream: StreamFeedDetails) => (
             <li key={stream.username}>
               <HomeChannel
                 title={stream.title}
@@ -34,6 +40,7 @@ const Page = async ({ params }: { params: { categoryCode: string } }) => {
                 thumbnail_gif={`https://image.mux.com/${stream.playback_id}/animated.webp`}
                 viewers={stream.viewers}
                 username={stream.username}
+                presence_color={stream.presence_color}
                 avatar={stream.avatar}
                 category={stream.category}
                 isLive

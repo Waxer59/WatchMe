@@ -4,14 +4,19 @@ import { getPublicEnv } from './helpers/getPublicEnv'
 export async function middleware(request: Request) {
   const cookies = request.headers.get('Cookie')
 
-  const response = await fetch(`${getPublicEnv().BACKEND_URL}/users`, {
-    method: 'GET',
-    headers: {
-      Cookie: cookies ?? ''
-    }
-  })
+  try {
+    const response = await fetch(`${getPublicEnv().BACKEND_URL}/users`, {
+      method: 'GET',
+      headers: {
+        Cookie: cookies ?? ''
+      }
+    })
 
-  if (response.status === 401) {
+    if (response.status === 401) {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+  } catch (error) {
+    console.log(error)
     return NextResponse.redirect(new URL('/', request.url))
   }
 
@@ -19,5 +24,5 @@ export async function middleware(request: Request) {
 }
 
 export const config = {
-  matcher: '/settings'
+  matcher: ['/settings', '/following']
 }

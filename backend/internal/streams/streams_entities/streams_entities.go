@@ -10,6 +10,10 @@ import (
 
 type StreamCategory string
 
+func (s StreamCategory) String() string {
+	return string(s)
+}
+
 const (
 	ART           StreamCategory = "art"
 	MUSIC         StreamCategory = "music"

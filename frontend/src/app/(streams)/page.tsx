@@ -8,11 +8,19 @@ import { unstable_noStore as noStore } from 'next/cache'
 
 export default async function Home() {
   noStore()
-  const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`, {
-    next: { revalidate: 0 }
-  })
 
-  const data = await streams.json()
+  let streamsData: StreamFeedDetails[] = []
+
+  try {
+    const streams = await fetch(`${getPublicEnv().BACKEND_URL}/streams/feed`, {
+      next: { revalidate: 0 }
+    })
+
+    const data = await streams.json()
+    streamsData = data
+  } catch (error) {
+    console.log(error)
+  }
 
   return (
     <>
@@ -22,9 +30,9 @@ export default async function Home() {
           Discover amazing live content from creators around the world
         </p>
       </header>
-      {data.length > 0 ? (
+      {streamsData.length > 0 ? (
         <VideosLayout>
-          {data.map((stream: StreamFeedDetails) => (
+          {streamsData.map((stream: StreamFeedDetails) => (
             <li key={stream.username}>
               <HomeChannel
                 title={stream.title}
@@ -32,6 +40,7 @@ export default async function Home() {
                 thumbnail_gif={`https://image.mux.com/${stream.playback_id}/animated.webp`}
                 username={stream.username}
                 avatar={stream.avatar}
+                presence_color={stream.presence_color}
                 category={categoryCodeToCategory(stream.category)}
                 viewers={stream.viewers}
                 isLive

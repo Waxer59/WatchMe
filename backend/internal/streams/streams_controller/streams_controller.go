@@ -9,6 +9,7 @@ import (
 	"github.com/waxer59/watchMe/internal/streams/streams_service"
 	"github.com/waxer59/watchMe/internal/users/user_entities"
 	"github.com/waxer59/watchMe/internal/users/users_service"
+	"github.com/waxer59/watchMe/internal/viewers/viewers_service"
 	"github.com/waxer59/watchMe/router/router_middlewares"
 )
 
@@ -21,6 +22,7 @@ func New(router fiber.Router) {
 	streams.Get("/:username", getLiveStream)
 	streams.Patch("/edit-stream/:playbackId", router_middlewares.AuthMiddleware, editStream)
 	streams.Delete("/delete-stream/:playbackId", router_middlewares.AuthMiddleware, deleteStream)
+	streams.Get("/categories/viewers", getStreamCategoriesViewers)
 }
 
 // @title			Generate Stream Key
@@ -203,4 +205,32 @@ func deleteStream(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).Send([]byte("{}"))
+}
+
+type StreamCategoriesViewers struct {
+	Category string `json:"category"`
+	Viewers  int    `json:"viewers"`
+}
+
+// @title			Get Stream Categories Viewers
+// @description	Get the number of viewers for each category
+// @tags			Streams
+// @router			/streams/categories/viewers [get]
+func getStreamCategoriesViewers(c *fiber.Ctx) error {
+	categories := make([]StreamCategoriesViewers, 0)
+
+	for _, category := range streams_entities.StreamCategories {
+		viewers, err := viewers_service.GetViewerCountByCategory(category.String())
+
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).Send([]byte("{}"))
+		}
+
+		categories = append(categories, StreamCategoriesViewers{
+			Category: category.String(),
+			Viewers:  viewers,
+		})
+	}
+
+	return c.JSON(categories)
 }

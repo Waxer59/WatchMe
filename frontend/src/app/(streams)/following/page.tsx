@@ -2,9 +2,20 @@
 
 import { FollowChannelCard } from '@/components/following/follow-channel-card'
 import { useAccountStore } from '@/store/account'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 const Page = () => {
+  const router = useRouter()
+  const isLoading = useAccountStore((state) => state.isLoading)
+  const isLoggedIn = useAccountStore((state) => state.isLoggedIn)
   const following = useAccountStore((state) => state.following)
+
+  useEffect(() => {
+    if (!isLoggedIn && !isLoading) {
+      router.push('/')
+    }
+  }, [isLoading, isLoggedIn])
 
   return (
     <>
