@@ -7,6 +7,7 @@ import { GithubIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useAccountStore } from '@/store/account'
 import { useUiStore } from '@/store/ui'
+import { getPublicEnv } from '@/helpers/getPublicEnv'
 
 export function Navbar() {
   const isLoggedIn = useAccountStore((state) => state.isLoggedIn)
@@ -58,7 +59,7 @@ export function Navbar() {
                     rounded="lg"
                     className="w-full"
                     asChild>
-                    <Link href="http://localhost:3001/api/auth/github">
+                    <Link href={`${getPublicEnv().BACKEND_URL}/auth/github`}>
                       <GithubIcon />
                       Github
                     </Link>

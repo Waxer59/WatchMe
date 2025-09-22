@@ -25,10 +25,10 @@ func New(router fiber.Router) {
 	streams.Get("/categories/viewers", getStreamCategoriesViewers)
 }
 
-// @title			Generate Stream Key
-// @description	Generate a stream key for a live stream
-// @tags			Streams
-// @router			/streams/generate-key [get]
+//	@title			Generate Stream Key
+//	@description	Generate a stream key for a live stream
+//	@tags			Streams
+//	@router			/streams/generate-key [get]
 func generateStreamKey(c *fiber.Ctx) error {
 	channelId := c.Params("channelId")
 
@@ -52,11 +52,11 @@ func generateStreamKey(c *fiber.Ctx) error {
 	})
 }
 
-// @title	Delete Stream Key
-// @description	Delete a stream key for a live stream
-// @tags Streams
-// @router /streams/delete-key/:streamKeyId [delete]
-// @param	streamKeyId path string	true	"Stream key id"
+//	@title			Delete Stream Key
+//	@description	Delete a stream key for a live stream
+//	@tags			Streams
+//	@router			/streams/delete-key/:streamKeyId [delete]
+//	@param			streamKeyId	path	string	true	"Stream key id"
 func deleteStreamKey(c *fiber.Ctx) error {
 	streamKeyId := c.Params("streamKeyId")
 
@@ -85,10 +85,10 @@ func deleteStreamKey(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).Send([]byte("{}"))
 }
 
-// @title			Get Stream Feed
-// @description	Get the feed for the home page
-// @tags			Streams
-// @router			/streams/feed [get]
+//	@title			Get Stream Feed
+//	@description	Get the feed for the home page
+//	@tags			Streams
+//	@router			/streams/feed [get]
 func getStreamFeed(c *fiber.Ctx) error {
 	category := c.Query("category")
 
@@ -102,11 +102,11 @@ func getStreamFeed(c *fiber.Ctx) error {
 	return c.JSON(streamsFeed)
 }
 
-// @title			Get Live Stream
-// @description	Get the live stream for the user
-// @tags			Streams
-// @router			/streams/:username [get]
-// @param			username	path string	true	"Username of the user"
+//	@title			Get Live Stream
+//	@description	Get the live stream for the user
+//	@tags			Streams
+//	@router			/streams/:username [get]
+//	@param			username	path	string	true	"Username of the user"
 func getLiveStream(c *fiber.Ctx) error {
 	username := c.Params("username")
 
@@ -132,11 +132,11 @@ type EditStream struct {
 	Category string `json:"category"`
 }
 
-// @title			Edit Stream
-// @description	Edit the title of a live stream
-// @tags			Streams
-// @router			/streams/edit-stream/:playbackId [patch]
-// @param			playbackId	path string	true	"Playback ID of the stream"
+//	@title			Edit Stream
+//	@description	Edit the title of a live stream
+//	@tags			Streams
+//	@router			/streams/edit-stream/:playbackId [patch]
+//	@param			playbackId	path	string	true	"Playback ID of the stream"
 func editStream(c *fiber.Ctx) error {
 	playbackId := c.Params("playbackId")
 
@@ -174,11 +174,11 @@ func editStream(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).Send([]byte("{}"))
 }
 
-// @title			Delete Stream
-// @description	Delete the stream from the database
-// @tags			Streams
-// @router			/streams/delete-stream/:playbackId [delete]
-// @param			playbackId	path string	true	"Playback ID of the stream"
+//	@title			Delete Stream
+//	@description	Delete the stream from the database
+//	@tags			Streams
+//	@router			/streams/delete-stream/:playbackId [delete]
+//	@param			playbackId	path	string	true	"Playback ID of the stream"
 func deleteStream(c *fiber.Ctx) error {
 	playbackId := c.Params("playbackId")
 
@@ -212,10 +212,10 @@ type StreamCategoriesViewers struct {
 	Viewers  int    `json:"viewers"`
 }
 
-// @title			Get Stream Categories Viewers
-// @description	Get the number of viewers for each category
-// @tags			Streams
-// @router			/streams/categories/viewers [get]
+//	@title			Get Stream Categories Viewers
+//	@description	Get the number of viewers for each category
+//	@tags			Streams
+//	@router			/streams/categories/viewers [get]
 func getStreamCategoriesViewers(c *fiber.Ctx) error {
 	categories := make([]StreamCategoriesViewers, 0)
 
