@@ -65,6 +65,7 @@ To set up the backend, follow these steps:
 * The `OAUTH_GITHUB_REDIRECT_URL`, `OAUTH_GITHUB_CLIENT_ID`, and `OAUTH_GITHUB_CLIENT_SECRET` are the OAuth2 credentials for your Github application.
 * The `DB_PASSWORD`, `DB_PORT`, `DB_HOST`, `DB_NAME`, and `DB_USERNAME` are the database connection details.
 * The `COOKIE_ENCRYPTION_KEY` is a random string used to encrypt the cookies.
+* The `COOKIE_DOMAIN` is the domain used for the cookies.
 * The `JWT_SECRET_KEY` is a random string used to sign the JWT tokens.
 * The `PORT` is the port the backend will listen on.
 * The `FRONTEND_URL` is the URL of the frontend.
