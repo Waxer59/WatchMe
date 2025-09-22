@@ -41,7 +41,7 @@ export const AuthProvder: React.FC<Props> = ({ children }) => {
 
         setUsername(data.username)
         setAvatar(data.avatar)
-        setStreamKeys(data.stream_keys)
+        setStreamKeys(data?.stream_keys ?? [])
         setId(data.id)
         setFollowing(data.following)
         setPresenceColor(data.presence_color)

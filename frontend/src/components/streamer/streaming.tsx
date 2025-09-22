@@ -298,7 +298,7 @@ export const Streaming: React.FC<Props> = ({
             className="overflow-auto h-full max-h-[calc(100vh-200px)]"
             ref={messagesContainerRef}>
             <ul className="flex flex-col gap-2">
-              {streamMessages.map((message) => (
+              {streamMessages?.map((message) => (
                 <li className="flex items-center gap-2" key={message.id}>
                   <p className="max-w-[275px]">
                     <span

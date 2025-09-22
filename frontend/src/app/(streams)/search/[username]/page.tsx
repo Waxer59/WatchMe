@@ -51,7 +51,7 @@ const Page = ({ params }: { params: { username: string } }) => {
         </div>
       ) : (
         <ul className="flex gap-8 flex-wrap flex-col justify-center items-center lg:justify-normal lg:flex-row">
-          {streamersFound.map((streamer) => (
+          {streamersFound?.map((streamer) => (
             <FollowChannelCard key={streamer.id} streamer={streamer} />
           ))}
         </ul>

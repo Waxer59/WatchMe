@@ -24,7 +24,7 @@ const Page = () => {
         <p className="text-gray-400">This are the users you are following</p>
       </header>
       <ul className="flex gap-8 flex-wrap flex-col justify-center items-center lg:justify-normal lg:flex-row">
-        {following.map((following) => (
+        {following?.map((following) => (
           <FollowChannelCard key={following.id} streamer={following} />
         ))}
       </ul>

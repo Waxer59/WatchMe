@@ -36,6 +36,7 @@ export const ProfileSettings = () => {
   const removeStreamKey = useAccountStore((state) => state.removeStreamKey)
   const setPresenceColor = useAccountStore((state) => state.setPresenceColor)
 
+  console.log(stream_keys)
   useEffect(() => {
     setNewColorHex(presenceColor)
   }, [presenceColor])
@@ -237,7 +238,7 @@ export const ProfileSettings = () => {
             </Dialog.Header>
             <Dialog.Body>
               <ul className="mb-6 gap-4 flex flex-col max-h-64 overflow-y-auto">
-                {stream_keys.map(({ id, key }) => (
+                {stream_keys?.map(({ id, key }) => (
                   <li className="flex items-center gap-4" key={id}>
                     <PasswordInput
                       className="border-gray-700 outline-none"
