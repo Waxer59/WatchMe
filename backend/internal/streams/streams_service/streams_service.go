@@ -279,13 +279,13 @@ func DeleteStreamByPlaybackId(playbackId string) error {
 		return errors.New("stream not found")
 	}
 
-	err = muxClient.AssetsApi.DeleteAsset(stream.AssetId)
+	err = db.Table("streams").Where("playback_id = ?", playbackId).Delete(&streams_entities.Stream{}).Error
 
 	if err != nil {
 		return err
 	}
 
-	err = db.Table("streams").Where("playback_id = ?", playbackId).Delete(&streams_entities.Stream{}).Error
+	err = muxClient.AssetsApi.DeleteAsset(stream.AssetId)
 
 	if err != nil {
 		return err

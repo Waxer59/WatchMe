@@ -43,7 +43,7 @@ export const AuthProvder: React.FC<Props> = ({ children }) => {
         setAvatar(data.avatar)
         setStreamKeys(data?.stream_keys ?? [])
         setId(data.id)
-        setFollowing(data.following)
+        setFollowing(data?.following ?? [])
         setPresenceColor(data.presence_color)
         setDefaultStreamTitle(data.default_stream_title)
         setDefaultStreamCategory(data.default_stream_category)

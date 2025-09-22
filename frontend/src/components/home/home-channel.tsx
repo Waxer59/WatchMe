@@ -73,7 +73,7 @@ export const HomeChannel: React.FC<Props> = ({
             <Avatar.Image src={avatar} />
           </Avatar.Root>
           <div className="flex flex-col gap-1">
-            <h3 className="font-semibold text-white text-lg line-clamp-2">
+            <h3 className="font-semibold text-white text-lg line-clamp-2 text-start">
               {title}
             </h3>
             <div className="flex flex-col gap-1">

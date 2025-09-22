@@ -124,6 +124,7 @@ func HandleEventLeaveUserChannel(ep *socketio.EventPayload, msg MessageObject) {
 		return
 	}
 
+	ep.Kws.SetAttribute("room_id", "")
 	removeUserFromRoom(currentRoom, Clients[userId])
 
 	count, err := viewers_service.DecrementViewerCount(currentRoom)
@@ -133,7 +134,6 @@ func HandleEventLeaveUserChannel(ep *socketio.EventPayload, msg MessageObject) {
 		return
 	}
 
-	ep.Kws.SetAttribute("room_id", "")
 	HandleEmitViewersCountByUserId(currentRoom, count)
 }
 
