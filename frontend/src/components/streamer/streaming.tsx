@@ -286,6 +286,7 @@ export const Streaming: React.FC<Props> = ({
               userId={streamer.id}
               username={streamer.username}
               avatar={streamer.avatar}
+              presence_color={streamer.presence_color}
               savedStreams={streamerData?.streams ?? []}
             />
           </div>

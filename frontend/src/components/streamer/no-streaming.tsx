@@ -49,6 +49,7 @@ export const NoStreaming: React.FC<Props> = ({ streamer }) => {
         userId={streamer.id}
         username={streamer.username}
         avatar={streamer.avatar}
+        presence_color={streamer.presence_color}
         savedStreams={streamerData?.streams ?? []}
       />
     </div>

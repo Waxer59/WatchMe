@@ -15,6 +15,7 @@ import { useStreamStore } from '@/store/stream'
 interface Props {
   userId: string
   username: string
+  presence_color: string
   avatar: string
   savedStreams: StreamData[]
   onDeleteStream?: (playbackId: string) => void
@@ -24,6 +25,7 @@ export const SavedStreams: React.FC<Props> = ({
   userId,
   savedStreams,
   username,
+  presence_color,
   avatar,
   onDeleteStream
 }) => {
@@ -82,6 +84,7 @@ export const SavedStreams: React.FC<Props> = ({
                 <HomeChannel
                   href={`/${username}/${savedStream.playback_id}`}
                   title={savedStream.title}
+                  presence_color={presence_color}
                   thumbnail={`https://image.mux.com/${savedStream.playback_id}/thumbnail.webp`}
                   thumbnail_gif={`https://image.mux.com/${savedStream.playback_id}/animated.webp`}
                   username={username}
