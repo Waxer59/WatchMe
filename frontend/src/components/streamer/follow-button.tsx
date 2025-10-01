@@ -5,6 +5,7 @@ import { useAccountStore } from '@/store/account'
 import { useUiStore } from '@/store/ui'
 import { StreamerDetails } from '@/types'
 import { Button } from '@chakra-ui/react'
+import { UserMinus, UserPlus } from 'lucide-react'
 
 interface Props {
   streamer: StreamerDetails
@@ -70,7 +71,7 @@ const FollowButton: React.FC<Props> = ({ streamer, onFollow, onUnfollow }) => {
       rounded="lg"
       size="lg"
       onClick={isFollowing ? handleUnfollow : handleFollow}>
-      {isFollowing ? 'Unfollow' : 'Follow'}
+      {isFollowing ? <UserMinus /> : <UserPlus />}
     </Button>
   )
 }

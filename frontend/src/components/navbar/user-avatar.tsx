@@ -44,7 +44,7 @@ export function UserAvatar() {
             </Link>
           </Menu.Item>
           <Menu.Item
-            value="logout"
+            value="settings"
             className="cursor-pointer hover:bg-gray-700 transition-all"
             asChild>
             <Link href="/settings">

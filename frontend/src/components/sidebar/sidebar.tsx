@@ -9,12 +9,14 @@ import { usePathname } from 'next/navigation'
 import { useAccountStore } from '@/store/account'
 import Link from 'next/link'
 import { StreamCategoriesViewers } from '@/types'
+import { useUiStore } from '@/store/ui'
 
 interface Props {
   categories: StreamCategoriesViewers[]
 }
 
 export function Sidebar({ categories }: Props) {
+  const isSidebarOpen = useUiStore((state) => state.isSidebarOpen)
   const isLoggedIn = useAccountStore((state) => state.isLoggedIn)
   const following = useAccountStore((state) => state.following)
   const pathname = usePathname()
@@ -24,7 +26,7 @@ export function Sidebar({ categories }: Props) {
       minWidth="64"
       height="full"
       padding="4"
-      className="bg-gray-800 border-r border-gray-700 overflow-auto">
+      className={`bg-gray-800 border-r border-gray-700 overflow-auto transition-transform -translate-x-70 z-99 absolute md:block ${isSidebarOpen ? 'translate-x-0' : ''} md:block md:translate-x-0 md:relative`}>
       <div className="space-y-2">
         <SidebarButton
           icon={<HouseIcon />}

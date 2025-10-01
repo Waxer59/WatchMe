@@ -146,9 +146,9 @@ export const Streaming: React.FC<Props> = ({
   }, [streamMessages])
 
   return (
-    <div className="flex gap-4 h-full">
+    <div className="flex gap-4 h-full flex-col md:flex-row">
       <div
-        className={`${showChat ? 'w-4/5' : 'w-full'} h-full overflow-y-auto scrollbar-hide`}>
+        className={`${showChat ? 'md:w-4/5' : 'w-full'} h-full overflow-y-auto scrollbar-hide`}>
         <div className="flex flex-col gap-12">
           <div className="flex flex-col gap-8">
             <div
@@ -293,7 +293,7 @@ export const Streaming: React.FC<Props> = ({
         </div>
       </div>
       {showChat && (
-        <div className="w-[340px] h-[calc(100vh-125px)] border border-gray-700 rounded-lg bg-gray-800 flex flex-col gap-3 p-3 sticky top-0">
+        <div className="mb-16 md:mb-0 md:w-[340px] h-[calc(100vh-125px)] border border-gray-700 rounded-lg bg-gray-800 flex flex-col gap-3 p-3 sticky top-0">
           <div
             className="overflow-auto h-full max-h-[calc(100vh-200px)]"
             ref={messagesContainerRef}>

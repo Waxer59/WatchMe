@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import '../styles/globals.css'
 import { Provider } from '@/providers/provider'
+import '../styles/globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -48,7 +48,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} overflow-hidden bg-gray-900`}>
+      <body
+        className={`${inter.className} overflow-hidden h-dvh max-h-dvh min-h-dvh bg-gray-900`}>
         <Provider>{children}</Provider>
       </body>
     </html>

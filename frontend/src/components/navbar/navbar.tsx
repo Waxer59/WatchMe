@@ -1,9 +1,9 @@
 'use client'
 
-import { Box, Button, Dialog } from '@chakra-ui/react'
+import { Box, Button, Dialog, IconButton } from '@chakra-ui/react'
 import { SearchInput } from './search-input'
 import { UserAvatar } from './user-avatar'
-import { GithubIcon } from 'lucide-react'
+import { GithubIcon, SidebarIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useAccountStore } from '@/store/account'
 import { useUiStore } from '@/store/ui'
@@ -11,25 +11,41 @@ import { getPublicEnv } from '@/helpers/getPublicEnv'
 
 export function Navbar() {
   const isLoggedIn = useAccountStore((state) => state.isLoggedIn)
-  const setIsLoginModalOpen = useUiStore((state) => state.setIsLoginModalOpen)
   const isLoginModalOpen = useUiStore((state) => state.isLoginModalOpen)
+  const isSidebarOpen = useUiStore((state) => state.isSidebarOpen)
+  const setIsSidebarOpen = useUiStore((state) => state.setIsSidebarOpen)
+  const setIsLoginModalOpen = useUiStore((state) => state.setIsLoginModalOpen)
+
+  const handleOpenSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
 
   return (
     <Box
-      className="bg-gray-800 border-b border-gray-700"
+      className="bg-gray-800 border-b border-gray-700 justify-between"
       as="nav"
       display="flex"
       width="full"
       alignItems="center"
-      justifyContent="space-between"
       padding="4">
-      <Box as="div" display="flex" alignItems="center" gap="12">
+      <Box
+        as="div"
+        display="flex"
+        alignItems="center"
+        gap="12"
+        className="hidden md:block">
         <Link href="/" className="text-2xl uppercase">
           <h1>
             <strong>WATCHME</strong>
           </h1>
         </Link>
       </Box>
+      <IconButton
+        background="transparent"
+        className="text-white md:hidden"
+        onClick={handleOpenSidebar}>
+        <SidebarIcon />
+      </IconButton>
       <SearchInput />
       <Box as="div" display="flex" alignItems="center" gap="2">
         {isLoggedIn ? (

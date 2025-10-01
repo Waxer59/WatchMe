@@ -1,7 +1,6 @@
 import { Box } from '@chakra-ui/react'
 import { Navbar } from '@/components/navbar/navbar'
 import { Sidebar } from '@/components/sidebar/sidebar'
-import '../../styles/globals.css'
 import { getPublicEnv } from '@/helpers/getPublicEnv'
 
 export default async function Layout({
