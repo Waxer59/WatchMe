@@ -24,7 +24,7 @@ const Page = async () => {
   return (
     <>
       <header className="flex flex-col gap-2 mb-8">
-        <h1 className="text-3xl font-bold">Discover</h1>
+        <h1 className="text-3xl font-bold text-white">Discover</h1>
         <p className="text-gray-400">Discover new streamers</p>
       </header>
       {streamsData.length > 0 ? (
@@ -48,7 +48,7 @@ const Page = async () => {
       ) : (
         <div className="flex flex-col items-center justify-center gap-6 rounded-xl border px-8 py-10 shadow-sm bg-gray-800 border-gray-700 overflow-hidden group">
           <VideoOffIcon className="w-12 h-12 text-gray-400" />
-          <p>Looks like no-one is streaming right now</p>
+          <p className="text-white">Looks like no-one is streaming right now</p>
         </div>
       )}
     </>

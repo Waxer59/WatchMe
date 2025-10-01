@@ -99,7 +99,9 @@ export const SavedStreams: React.FC<Props> = ({
       ) : (
         <div className="flex flex-col items-center justify-center gap-6 rounded-xl border px-8 py-10 shadow-sm bg-gray-800 border-gray-700 overflow-hidden group">
           <VideoOffIcon className="w-12 h-12 text-gray-400" />
-          <p>Looks like this user doesn&apos;t have any videos.</p>
+          <p className="text-white">
+            Looks like this user doesn&apos;t have any videos.
+          </p>
         </div>
       )}
     </>

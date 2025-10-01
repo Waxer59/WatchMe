@@ -34,7 +34,7 @@ export function Navbar() {
         alignItems="center"
         gap="12"
         className="hidden md:block">
-        <Link href="/" className="text-2xl uppercase">
+        <Link href="/" className="text-2xl text-white uppercase">
           <h1>
             <strong>WATCHME</strong>
           </h1>

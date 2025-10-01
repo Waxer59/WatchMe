@@ -41,7 +41,7 @@ export default async function User({
     return (
       <div className="flex flex-col items-center justify-center gap-6 rounded-xl border px-8 py-10 shadow-sm bg-gray-800 border-gray-700 overflow-hidden group">
         <FrownIcon className="w-20 h-20 text-gray-400" />
-        <p>Looks like this user doesn&apos;t exist</p>
+        <p className="text-white">Looks like this user doesn&apos;t exist</p>
       </div>
     )
   }

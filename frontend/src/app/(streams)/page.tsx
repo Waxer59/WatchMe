@@ -25,7 +25,7 @@ export default async function Home() {
   return (
     <>
       <header className="flex flex-col gap-2 mb-8">
-        <h2 className="text-3xl font-bold">Live Channels</h2>
+        <h2 className="text-3xl font-bold text-white">Live Channels</h2>
         <p className="text-gray-400">
           Discover amazing live content from creators around the world
         </p>
@@ -51,7 +51,7 @@ export default async function Home() {
       ) : (
         <div className="flex flex-col items-center justify-center gap-6 rounded-xl border px-8 py-10 shadow-sm bg-gray-800 border-gray-700 overflow-hidden group">
           <VideoOffIcon className="w-12 h-12 text-gray-400" />
-          <p>Looks like no-one is streaming right now</p>
+          <p className="text-white">Looks like no-one is streaming right now</p>
         </div>
       )}
     </>
